@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DM Seguridad Digital — Cámaras, alarmas y control de acceso</title>
+<meta name="description" content="Instalación de cámaras de seguridad, alarmas, cerco eléctrico, control de acceso vehicular y videoporteros. Cotiza gratis por WhatsApp.">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#141C24">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ink:#141C24;
+  --ink-soft:#4B5866;
+  --ink-faint:#7C8894;
+  --paper:#EEF0F2;
+  --sheet:#FFFFFF;
+  --line:#DDE1E4;
+  --brand-1:#33A825;
+  --brand-2:#CFE000;
+  --accent:#2F9425;
+  --whatsapp:#25D366;
+  --whatsapp-dark:#1DA851;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'Public Sans', system-ui, -apple-system, Arial, sans-serif;
+  line-height:1.55;
+}
+h1,h2,h3{font-family:'Barlow Semi Condensed', system-ui, sans-serif; text-wrap:balance; margin:0;}
+a{color:inherit;}
+.wrap{max-width:1080px; margin:0 auto; padding:0 20px;}
+img{max-width:100%; display:block;}
+
+/* ---- nav ---- */
+.nav{position:sticky; top:0; z-index:50; background:rgba(20,28,36,0.92); backdrop-filter:blur(6px); border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:12px 20px;}
+.nav-brand{display:flex; align-items:center; gap:10px;}
+.nav-brand img{height:30px; width:auto;}
+.nav-brand span{color:#fff; font-weight:700; font-size:15px; font-family:'Barlow Semi Condensed', sans-serif;}
+.nav-links{display:flex; align-items:center; gap:22px;}
+.nav-links a{color:#C9D0D6; text-decoration:none; font-size:13.5px; font-weight:600;}
+.nav-links a:hover{color:#fff;}
+.nav .btn-wa{display:inline-flex; align-items:center; gap:7px; background:var(--whatsapp); color:#fff; padding:9px 16px; border-radius:999px; font-size:13px; font-weight:700; text-decoration:none; white-space:nowrap;}
+.nav .btn-wa:hover{background:var(--whatsapp-dark);}
+@media (max-width:720px){ .nav-links a:not(.btn-wa){display:none;} }
+
+/* ---- hero ---- */
+.hero{background:radial-gradient(circle at 20% 0%, #1B2530 0%, var(--ink) 55%); color:#fff; padding:64px 0 80px; position:relative; overflow:hidden;}
+.hero::after{content:""; position:absolute; left:0; right:0; bottom:0; height:5px; background:linear-gradient(90deg, var(--brand-1), var(--brand-2));}
+.hero .eyebrow{font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--brand-2); font-weight:700; margin-bottom:14px;}
+.hero h1{font-size:clamp(32px,5.2vw,54px); font-weight:800; max-width:16ch; margin-bottom:18px;}
+.hero p{font-size:16.5px; color:#B7C0C7; max-width:52ch; margin-bottom:30px;}
+.hero-ctas{display:flex; gap:14px; flex-wrap:wrap;}
+.btn{display:inline-flex; align-items:center; gap:9px; padding:14px 24px; border-radius:10px; font-weight:700; font-size:15px; text-decoration:none; border:1px solid transparent;}
+.btn-primary{background:var(--whatsapp); color:#fff;}
+.btn-primary:hover{background:var(--whatsapp-dark);}
+.btn-ghost{border-color:rgba(255,255,255,0.25); color:#fff;}
+.btn-ghost:hover{border-color:#fff;}
+.hero-trust{display:flex; gap:26px; flex-wrap:wrap; margin-top:40px; padding-top:26px; border-top:1px solid rgba(255,255,255,0.12);}
+.hero-trust div{font-size:12.5px; color:#9AA5AC;}
+.hero-trust strong{display:block; font-size:22px; color:#fff; font-family:'Barlow Semi Condensed',sans-serif;}
+
+/* ---- services ---- */
+.section{padding:70px 0;}
+.section-head{text-align:center; max-width:56ch; margin:0 auto 44px;}
+.section-head .eyebrow{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:700; margin-bottom:10px;}
+.section-head h2{font-size:clamp(24px,3.4vw,34px); font-weight:700; margin-bottom:10px;}
+.section-head p{color:var(--ink-faint); font-size:14.5px;}
+
+.services-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+@media (max-width:860px){.services-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.services-grid{grid-template-columns:1fr;}}
+.svc-card{background:var(--sheet); border:1px solid var(--line); border-radius:14px; padding:26px 22px; display:flex; flex-direction:column; gap:12px; position:relative; overflow:hidden;}
+.svc-card::before{content:""; position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg, var(--brand-1), var(--brand-2));}
+.svc-icon{width:50px; height:50px; border-radius:12px; background:var(--ink); display:flex; align-items:center; justify-content:center; font-size:24px;}
+.svc-card h3{font-size:19px; font-weight:600;}
+.svc-card p{font-size:13.5px; color:var(--ink-faint); flex:1; margin:0;}
+.svc-card a{font-size:13px; font-weight:700; color:var(--whatsapp-dark); text-decoration:none; display:inline-flex; align-items:center; gap:6px; margin-top:4px;}
+.svc-card a:hover{text-decoration:underline;}
+
+/* ---- why us ---- */
+.why{background:var(--sheet); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+.why-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:22px;}
+@media (max-width:860px){.why-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:520px){.why-grid{grid-template-columns:1fr;}}
+.why-item{text-align:center; padding:6px;}
+.why-item .n{width:46px; height:46px; margin:0 auto 12px; border-radius:50%; background:var(--paper); display:flex; align-items:center; justify-content:center; font-size:21px;}
+.why-item h3{font-size:15.5px; font-weight:700; margin-bottom:6px;}
+.why-item p{font-size:13px; color:var(--ink-faint); margin:0;}
+
+/* ---- cta band ---- */
+.cta-band{background:linear-gradient(120deg, #1E3A17, #141C24 60%); color:#fff; text-align:center; padding:64px 20px;}
+.cta-band h2{font-size:clamp(24px,3.6vw,32px); margin-bottom:14px;}
+.cta-band p{color:#B7C0C7; margin-bottom:26px; font-size:15px;}
+
+/* ---- footer ---- */
+footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5px;}
+.foot-grid{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px;}
+.foot-brand{display:flex; align-items:center; gap:10px;}
+.foot-brand img{height:26px;}
+.foot-brand span{color:#fff; font-weight:700; font-family:'Barlow Semi Condensed',sans-serif;}
+
+/* ---- floating whatsapp button ---- */
+.wa-float{position:fixed; right:18px; bottom:18px; z-index:80; background:var(--whatsapp); color:#fff; width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; box-shadow:0 8px 24px rgba(0,0,0,0.3); font-size:28px;}
+.wa-float:hover{background:var(--whatsapp-dark);}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="nav-brand">
+      <img src="logo.png" alt="DM Seguridad Digital">
+    </div>
+    <div class="nav-links">
+      <a href="#servicios">Servicios</a>
+      <a href="#porque">Por qué elegirnos</a>
+      <a class="btn-wa" id="waNav" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Cámaras · Alarmas · Cerco eléctrico · Control de acceso</div>
+    <h1>Seguridad profesional para tu hogar o negocio</h1>
+    <p>Instalamos y damos mantenimiento a sistemas de videovigilancia, alarmas, cerco eléctrico, control de acceso vehicular y videoporteros. Cotización gratis por WhatsApp, sin compromiso.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" id="waHero" href="#" target="_blank" rel="noopener">💬 Cotizar por WhatsApp</a>
+      <a class="btn btn-ghost" href="#servicios">Ver servicios</a>
+    </div>
+    <div class="hero-trust">
+      <div><strong>5</strong>líneas de servicio</div>
+      <div><strong>100%</strong>instalación profesional</div>
+      <div><strong>Rápida</strong>respuesta por WhatsApp</div>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="servicios">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Nuestros servicios</div>
+      <h2>Todo lo que necesitas para proteger tu propiedad</h2>
+      <p>Cada instalación se levanta a la medida del sitio — sin paquetes genéricos.</p>
+    </div>
+    <div class="services-grid">
+
+      <div class="svc-card">
+        <div class="svc-icon">📹</div>
+        <h3>Cámaras de seguridad (CCTV)</h3>
+        <p>Cámaras análogas o IP, interior y exterior, con grabación en DVR/NVR y acceso remoto desde tu celular.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un sistema de cámaras de seguridad (CCTV).">Cotizar este servicio →</a>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-icon">🚧</div>
+        <h3>Control de acceso vehicular</h3>
+        <p>Barreras vehiculares, control de acceso peatonal, RFID, lectores de placa y sistemas de cobro para condominios y parqueaderos.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un sistema de control de acceso vehicular.">Cotizar este servicio →</a>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-icon">🔔</div>
+        <h3>Sistemas de alarma</h3>
+        <p>Sensores alámbricos, inalámbricos o híbridos: contactos de puerta/ventana, movimiento, rotura de vidrio y sirenas.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un sistema de alarma.">Cotizar este servicio →</a>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-icon">⚡</div>
+        <h3>Cerco eléctrico</h3>
+        <p>Cercos perimetrales con energizador y sirena para reforzar la seguridad de muros y linderos.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un cerco eléctrico.">Cotizar este servicio →</a>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-icon">🚪</div>
+        <h3>Videoporteros</h3>
+        <p>Frentes de calle análogos o IP con una o varias pantallas, apertura remota de chapa y comunicación por audio y video.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un videoportero.">Cotizar este servicio →</a>
+      </div>
+
+      <div class="svc-card">
+        <div class="svc-icon">🛠️</div>
+        <h3>Mantenimiento y soporte</h3>
+        <p>Revisión, reparación y mantenimiento preventivo de sistemas ya instalados, sean o no de nuestra instalación original.</p>
+        <a class="wa-link" data-msg="Hola, necesito mantenimiento o soporte para un sistema de seguridad.">Cotizar este servicio →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section why" id="porque">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Por qué elegirnos</div>
+      <h2>Instalación seria, sin vueltas</h2>
+    </div>
+    <div class="why-grid">
+      <div class="why-item">
+        <div class="n">📝</div>
+        <h3>Levantamiento a la medida</h3>
+        <p>Visitamos el sitio y armamos una propuesta según tu terreno, no una plantilla genérica.</p>
+      </div>
+      <div class="why-item">
+        <div class="n">⚙️</div>
+        <h3>Equipos de calidad</h3>
+        <p>Trabajamos con marcas reconocidas y te asesoramos según tu presupuesto real.</p>
+      </div>
+      <div class="why-item">
+        <div class="n">💬</div>
+        <h3>Atención directa</h3>
+        <p>Hablas directo con quien te va a instalar, sin call centers ni intermediarios.</p>
+      </div>
+      <div class="why-item">
+        <div class="n">🔧</div>
+        <h3>Soporte post-venta</h3>
+        <p>Seguimos disponibles después de la instalación para mantenimiento y ajustes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <h2>¿Listo para asegurar tu propiedad?</h2>
+    <p>Escríbenos ahora y te respondemos con una cotización el mismo día.</p>
+    <a class="btn btn-primary" id="waBand" href="#" target="_blank" rel="noopener">💬 Escribir por WhatsApp</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img src="logo.png" alt="DM Seguridad Digital">
+      </div>
+      <div id="waFooterText"></div>
+    </div>
+    <div>© <span id="year"></span> DM Seguridad Digital. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">💬</a>
+
+<script>
+  const WHATSAPP_NUMBER = '593980781862';
+  const DEFAULT_MSG = 'Hola, quiero información sobre sus servicios de seguridad.';
+
+  function waLink(msg){
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  }
+
+  document.querySelectorAll('.wa-link').forEach(a=>{
+    a.href = waLink(a.dataset.msg || DEFAULT_MSG);
+    a.target = '_blank';
+    a.rel = 'noopener';
+  });
+  ['waNav','waHero','waBand','waFloat'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.href = waLink(DEFAULT_MSG);
+  });
+  document.getElementById('waFooterText').textContent = 'WhatsApp: +593 98 078 1862';
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
