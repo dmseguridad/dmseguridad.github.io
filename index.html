@@ -5,21 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DM Seguridad Digital — Cámaras, alarmas y control de acceso</title>
 <meta name="description" content="Instalación de cámaras de seguridad, alarmas, cerco eléctrico, control de acceso vehicular y videoporteros. Cotiza gratis por WhatsApp.">
-<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icon-dm-navy.png" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#141C24">
+<meta name="theme-color" content="#192D3D">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap">
 <style>
 :root{
-  --ink:#141C24;
+  --ink:#192D3D;
   --ink-soft:#4B5866;
   --ink-faint:#7C8894;
   --paper:#EEF0F2;
   --sheet:#FFFFFF;
   --line:#DDE1E4;
-  --brand-1:#33A825;
-  --brand-2:#CFE000;
-  --accent:#2F9425;
+  --brand-1:#0DCC30;
+  --brand-2:#FCFC00;
+  --accent:#0DCC30;
   --whatsapp:#25D366;
   --whatsapp-dark:#1DA851;
 }
@@ -42,7 +42,7 @@ img{max-width:100%; display:block;}
 .nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:12px 20px;}
 .nav-brand{display:flex; align-items:center; gap:10px;}
 .nav-brand img{height:30px; width:auto;}
-.nav-brand span{color:#fff; font-weight:700; font-size:15px; font-family:'Barlow Semi Condensed', sans-serif;}
+.nav-brand span{color:#fff; font-weight:700; font-size:15px; letter-spacing:.03em; font-family:'Barlow Semi Condensed', sans-serif;}
 .nav-links{display:flex; align-items:center; gap:22px;}
 .nav-links a{color:#C9D0D6; text-decoration:none; font-size:13.5px; font-weight:600;}
 .nav-links a:hover{color:#fff;}
@@ -51,7 +51,7 @@ img{max-width:100%; display:block;}
 @media (max-width:720px){ .nav-links a:not(.btn-wa){display:none;} }
 
 /* ---- hero ---- */
-.hero{background:radial-gradient(circle at 20% 0%, #1B2530 0%, var(--ink) 55%); color:#fff; padding:64px 0 80px; position:relative; overflow:hidden;}
+.hero{background:radial-gradient(circle at 20% 0%, #22394B 0%, var(--ink) 55%); color:#fff; padding:64px 0 80px; position:relative; overflow:hidden;}
 .hero::after{content:""; position:absolute; left:0; right:0; bottom:0; height:5px; background:linear-gradient(90deg, var(--brand-1), var(--brand-2));}
 .hero .eyebrow{font-size:12.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--brand-2); font-weight:700; margin-bottom:14px;}
 .hero h1{font-size:clamp(32px,5.2vw,54px); font-weight:800; max-width:16ch; margin-bottom:18px;}
@@ -84,6 +84,21 @@ img{max-width:100%; display:block;}
 .svc-card a{font-size:13px; font-weight:700; color:var(--whatsapp-dark); text-decoration:none; display:inline-flex; align-items:center; gap:6px; margin-top:4px;}
 .svc-card a:hover{text-decoration:underline;}
 
+/* ---- products ---- */
+.prod-filters{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:28px;}
+.prod-filter{border:1px solid var(--line-strong,var(--line)); background:var(--sheet); color:var(--ink-soft); padding:8px 16px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer;}
+.prod-filter.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+.prod-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+@media (max-width:860px){.prod-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.prod-grid{grid-template-columns:1fr;}}
+.prod-card{background:var(--sheet); border:1px solid var(--line); border-radius:14px; padding:20px; display:flex; flex-direction:column; gap:10px;}
+.prod-card .sku{align-self:flex-start; font-family:ui-monospace,'IBM Plex Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--accent); background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:3px 8px;}
+.prod-card .icon{width:44px; height:44px; border-radius:10px; background:var(--ink); display:flex; align-items:center; justify-content:center; font-size:21px;}
+.prod-card h3{font-size:16.5px; font-weight:600;}
+.prod-card p{font-size:13px; color:var(--ink-faint); flex:1; margin:0;}
+.prod-card a{font-size:12.5px; font-weight:700; color:var(--whatsapp-dark); text-decoration:none;}
+.prod-card a:hover{text-decoration:underline;}
+
 /* ---- gallery ---- */
 .gallery{background:var(--paper);}
 .gallery-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
@@ -92,7 +107,7 @@ img{max-width:100%; display:block;}
 .gallery-item{position:relative; border-radius:12px; overflow:hidden; aspect-ratio:4/3; background:var(--ink);}
 .gallery-item img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .3s ease;}
 .gallery-item:hover img{transform:scale(1.06);}
-.gallery-item .cap{position:absolute; left:0; right:0; bottom:0; background:linear-gradient(0deg, rgba(20,28,36,0.88), transparent); color:#fff; font-size:12px; font-weight:600; padding:20px 10px 8px;}
+.gallery-item .cap{position:absolute; left:0; right:0; bottom:0; background:linear-gradient(0deg, rgba(25,45,61,0.88), transparent); color:#fff; font-size:12px; font-weight:600; padding:20px 10px 8px;}
 
 /* ---- why us ---- */
 .why{background:var(--sheet); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
@@ -105,7 +120,7 @@ img{max-width:100%; display:block;}
 .why-item p{font-size:13px; color:var(--ink-faint); margin:0;}
 
 /* ---- cta band ---- */
-.cta-band{background:linear-gradient(120deg, #1E3A17, #141C24 60%); color:#fff; text-align:center; padding:64px 20px;}
+.cta-band{background:linear-gradient(120deg, #0B4A18, #192D3D 60%); color:#fff; text-align:center; padding:64px 20px;}
 .cta-band h2{font-size:clamp(24px,3.6vw,32px); margin-bottom:14px;}
 .cta-band p{color:#B7C0C7; margin-bottom:26px; font-size:15px;}
 
@@ -114,7 +129,7 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
 .foot-grid{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px;}
 .foot-brand{display:flex; align-items:center; gap:10px;}
 .foot-brand img{height:26px;}
-.foot-brand span{color:#fff; font-weight:700; font-family:'Barlow Semi Condensed',sans-serif;}
+.foot-brand span{color:#fff; font-weight:700; letter-spacing:.03em; font-family:'Barlow Semi Condensed',sans-serif;}
 
 /* ---- floating whatsapp button ---- */
 .wa-float{position:fixed; right:18px; bottom:18px; z-index:80; background:var(--whatsapp); color:#fff; width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; box-shadow:0 8px 24px rgba(0,0,0,0.3); font-size:28px;}
@@ -126,10 +141,12 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
 <nav class="nav">
   <div class="wrap">
     <div class="nav-brand">
-      <img src="logo.png" alt="DM Seguridad Digital">
+      <img src="monogram.png" alt="DM">
+      <span>SEGURIDAD DIGITAL</span>
     </div>
     <div class="nav-links">
       <a href="#servicios">Servicios</a>
+      <a href="#productos">Productos</a>
       <a href="#trabajos">Trabajos realizados</a>
       <a href="#porque">Por qué elegirnos</a>
       <a class="btn-wa" id="waNav" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
@@ -203,6 +220,169 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
         <h3>Mantenimiento y soporte</h3>
         <p>Revisión, reparación y mantenimiento preventivo de sistemas ya instalados, sean o no de nuestra instalación original.</p>
         <a class="wa-link" data-msg="Hola, necesito mantenimiento o soporte para un sistema de seguridad.">Cotizar este servicio →</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section" id="productos">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Catálogo</div>
+      <h2>Equipos que manejamos</h2>
+      <p>Una muestra de las marcas y equipos con los que trabajamos. Cada uno tiene su código interno para cotizar más rápido.</p>
+    </div>
+
+    <div class="prod-filters" id="prodFilters">
+      <button class="prod-filter active" data-cat="todos">Todos</button>
+      <button class="prod-filter" data-cat="cctv">CCTV</button>
+      <button class="prod-filter" data-cat="ezviz">Ezviz</button>
+      <button class="prod-filter" data-cat="videoporteros">Videoporteros</button>
+      <button class="prod-filter" data-cat="acceso">Control de Acceso</button>
+      <button class="prod-filter" data-cat="tplink">TP-Link</button>
+      <button class="prod-filter" data-cat="redes">Redes</button>
+    </div>
+
+    <div class="prod-grid" id="prodGrid">
+
+      <div class="prod-card" data-cat="cctv">
+        <div class="icon">📹</div>
+        <div class="sku">DMS-CCTV-001</div>
+        <h3>Cámara bala 2MP</h3>
+        <p>Cámara análoga para interior o exterior, visión nocturna, ideal para vigilancia perimetral básica.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar la cámara bala 2MP (DMS-CCTV-001).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="cctv">
+        <div class="icon">📹</div>
+        <div class="sku">DMS-CCTV-002</div>
+        <h3>Cámara domo 2MP</h3>
+        <p>Cámara análoga para interior, discreta, con visión nocturna infrarroja.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar la cámara domo 2MP (DMS-CCTV-002).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="cctv">
+        <div class="icon">📼</div>
+        <div class="sku">DMS-CCTV-003</div>
+        <h3>DVR 4 canales</h3>
+        <p>Grabador digital Turbo HD de 4 canales, compatible con cámaras análogas de hasta 2MP.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un DVR de 4 canales (DMS-CCTV-003).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="cctv">
+        <div class="icon">📼</div>
+        <div class="sku">DMS-CCTV-004</div>
+        <h3>DVR 8 canales</h3>
+        <p>Grabador digital Turbo HD de 8 canales, ideal para negocios pequeños o viviendas grandes.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un DVR de 8 canales (DMS-CCTV-004).">Cotizar →</a>
+      </div>
+
+      <div class="prod-card" data-cat="ezviz">
+        <div class="icon">📶</div>
+        <div class="sku">DMS-EZV-001</div>
+        <h3>Cámara Wi-Fi exterior EZVIZ</h3>
+        <p>Cámara IP inalámbrica para exterior, visión nocturna a color y notificaciones a tu celular.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar una cámara Wi-Fi exterior EZVIZ (DMS-EZV-001).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="ezviz">
+        <div class="icon">🔄</div>
+        <div class="sku">DMS-EZV-002</div>
+        <h3>Cámara PTZ Wi-Fi EZVIZ</h3>
+        <p>Cámara motorizada con giro de 360°, seguimiento de movimiento y audio bidireccional.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar una cámara PTZ Wi-Fi EZVIZ (DMS-EZV-002).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="ezviz">
+        <div class="icon">🔐</div>
+        <div class="sku">DMS-EZV-003</div>
+        <h3>Cerradura inteligente EZVIZ</h3>
+        <p>Apertura por huella, clave o tarjeta, con registro de accesos desde la app.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar una cerradura inteligente EZVIZ (DMS-EZV-003).">Cotizar →</a>
+      </div>
+
+      <div class="prod-card" data-cat="videoporteros">
+        <div class="icon">🚪</div>
+        <div class="sku">DMS-VDP-001</div>
+        <h3>Videoportero IP</h3>
+        <p>Frente de calle IP con una pantalla interior, apertura remota de chapa y audio/video en vivo.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un videoportero IP (DMS-VDP-001).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="videoporteros">
+        <div class="icon">🚪</div>
+        <div class="sku">DMS-VDP-002</div>
+        <h3>Videoportero análogo</h3>
+        <p>Frente de calle análogo con pantalla interior, opción económica para una sola vivienda.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un videoportero análogo (DMS-VDP-002).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="videoporteros">
+        <div class="icon">🖥️</div>
+        <div class="sku">DMS-VDP-003</div>
+        <h3>Pantalla adicional</h3>
+        <p>Monitor extra para videoportero, útil cuando se necesita responder desde varios puntos de la casa.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar una pantalla adicional para videoportero (DMS-VDP-003).">Cotizar →</a>
+      </div>
+
+      <div class="prod-card" data-cat="acceso">
+        <div class="icon">👆</div>
+        <div class="sku">DMS-ACC-001</div>
+        <h3>Lector biométrico</h3>
+        <p>Control de acceso por huella, tarjeta o clave, con registro de entradas y salidas.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un lector biométrico (DMS-ACC-001).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="acceso">
+        <div class="icon">🔒</div>
+        <div class="sku">DMS-ACC-002</div>
+        <h3>Cerradura electromagnética</h3>
+        <p>Chapa magnética de alta resistencia para puertas de acceso controlado.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar una cerradura electromagnética (DMS-ACC-002).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="acceso">
+        <div class="icon">🚧</div>
+        <div class="sku">DMS-ACC-003</div>
+        <h3>Barrera vehicular</h3>
+        <p>Barrera con brazo para control de acceso de vehículos en parqueaderos o condominios.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar una barrera vehicular (DMS-ACC-003).">Cotizar →</a>
+      </div>
+
+      <div class="prod-card" data-cat="tplink">
+        <div class="icon">📡</div>
+        <div class="sku">DMS-TPL-001</div>
+        <h3>Router Wi-Fi TP-Link</h3>
+        <p>Router para cobertura de internet en el hogar u oficina, fácil de configurar.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un router TP-Link (DMS-TPL-001).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="tplink">
+        <div class="icon">📡</div>
+        <div class="sku">DMS-TPL-002</div>
+        <h3>Access Point exterior TP-Link</h3>
+        <p>Punto de acceso Wi-Fi para exteriores, ideal para ampliar la señal en patios o bodegas.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un access point exterior TP-Link (DMS-TPL-002).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="tplink">
+        <div class="icon">🔌</div>
+        <div class="sku">DMS-TPL-003</div>
+        <h3>Switch PoE TP-Link</h3>
+        <p>Switch con alimentación por cable de red, útil para alimentar cámaras IP sin cableado eléctrico extra.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un switch PoE TP-Link (DMS-TPL-003).">Cotizar →</a>
+      </div>
+
+      <div class="prod-card" data-cat="redes">
+        <div class="icon">🔀</div>
+        <div class="sku">DMS-RED-001</div>
+        <h3>Switch de red</h3>
+        <p>Switch no administrado para distribuir la conexión de red a varios equipos.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un switch de red (DMS-RED-001).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="redes">
+        <div class="icon">🧵</div>
+        <div class="sku">DMS-RED-002</div>
+        <h3>Cable UTP Cat6</h3>
+        <p>Rollo de cable de red categoría 6, para instalaciones de cámaras, redes y videoporteros.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar cable UTP Cat6 (DMS-RED-002).">Cotizar →</a>
+      </div>
+      <div class="prod-card" data-cat="redes">
+        <div class="icon">🗄️</div>
+        <div class="sku">DMS-RED-003</div>
+        <h3>Patch panel</h3>
+        <p>Organizador de cableado de red para instalaciones prolijas en rack o gabinete.</p>
+        <a class="wa-link" data-msg="Hola, quiero cotizar un patch panel (DMS-RED-003).">Cotizar →</a>
       </div>
 
     </div>
@@ -296,7 +476,8 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
   <div class="wrap">
     <div class="foot-grid">
       <div class="foot-brand">
-        <img src="logo.png" alt="DM Seguridad Digital">
+        <img src="monogram.png" alt="DM">
+        <span>SEGURIDAD DIGITAL</span>
       </div>
       <div id="waFooterText"></div>
     </div>
@@ -325,6 +506,17 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
   });
   document.getElementById('waFooterText').textContent = 'WhatsApp: +593 98 078 1862';
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  document.querySelectorAll('.prod-filter').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.prod-filter').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.dataset.cat;
+      document.querySelectorAll('.prod-card').forEach(card=>{
+        card.style.display = (cat==='todos' || card.dataset.cat===cat) ? '' : 'none';
+      });
+    });
+  });
 </script>
 
 </body>
