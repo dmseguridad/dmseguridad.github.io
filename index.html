@@ -84,6 +84,16 @@ img{max-width:100%; display:block;}
 .svc-card a{font-size:13px; font-weight:700; color:var(--whatsapp-dark); text-decoration:none; display:inline-flex; align-items:center; gap:6px; margin-top:4px;}
 .svc-card a:hover{text-decoration:underline;}
 
+/* ---- gallery ---- */
+.gallery{background:var(--paper);}
+.gallery-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+@media (max-width:860px){.gallery-grid{grid-template-columns:repeat(3,1fr);}}
+@media (max-width:560px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
+.gallery-item{position:relative; border-radius:12px; overflow:hidden; aspect-ratio:4/3; background:var(--ink);}
+.gallery-item img{width:100%; height:100%; object-fit:cover; display:block; transition:transform .3s ease;}
+.gallery-item:hover img{transform:scale(1.06);}
+.gallery-item .cap{position:absolute; left:0; right:0; bottom:0; background:linear-gradient(0deg, rgba(20,28,36,0.88), transparent); color:#fff; font-size:12px; font-weight:600; padding:20px 10px 8px;}
+
 /* ---- why us ---- */
 .why{background:var(--sheet); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
 .why-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:22px;}
@@ -120,6 +130,7 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
     </div>
     <div class="nav-links">
       <a href="#servicios">Servicios</a>
+      <a href="#trabajos">Trabajos realizados</a>
       <a href="#porque">Por qué elegirnos</a>
       <a class="btn-wa" id="waNav" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
     </div>
@@ -194,6 +205,50 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
         <a class="wa-link" data-msg="Hola, necesito mantenimiento o soporte para un sistema de seguridad.">Cotizar este servicio →</a>
       </div>
 
+    </div>
+  </div>
+</section>
+
+<section class="section gallery" id="trabajos">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="eyebrow">Trabajos realizados</div>
+      <h2>Instalaciones reales, en campo</h2>
+      <p>Un vistazo a algunos de nuestros trabajos recientes.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item">
+        <img src="work/cctv-exterior-1.jpg" alt="Instalación de cámara exterior en vivienda">
+        <div class="cap">Instalación CCTV exterior</div>
+      </div>
+      <div class="gallery-item">
+        <img src="work/cerco-electrico-1.jpg" alt="Instalación de cerco eléctrico y cámara">
+        <div class="cap">Cerco eléctrico + CCTV</div>
+      </div>
+      <div class="gallery-item">
+        <img src="work/cctv-ptz-1.jpg" alt="Cámara PTZ instalada en azotea">
+        <div class="cap">Cámara PTZ en azotea</div>
+      </div>
+      <div class="gallery-item">
+        <img src="work/vehicular-1.jpg" alt="Configuración de barrera de control vehicular">
+        <div class="cap">Control de acceso vehicular</div>
+      </div>
+      <div class="gallery-item">
+        <img src="work/cctv-interior-1.jpg" alt="Cámara instalada en cielo raso">
+        <div class="cap">Instalación CCTV interior</div>
+      </div>
+      <div class="gallery-item">
+        <img src="work/cctv-exterior-2.jpg" alt="Cámara exterior con antena instalada">
+        <div class="cap">Instalación CCTV exterior</div>
+      </div>
+      <div class="gallery-item">
+        <img src="work/equipo-1.jpg" alt="Técnico de DM Seguridad Digital en sitio">
+        <div class="cap">Nuestro equipo en campo</div>
+      </div>
+      <div class="gallery-item">
+        <img src="work/equipo-2.jpg" alt="Técnico revisando instalación en azotea">
+        <div class="cap">Revisión en azotea</div>
+      </div>
     </div>
   </div>
 </section>
