@@ -125,6 +125,16 @@ img{max-width:100%; display:block;}
 .btn-outline{border-color:var(--line-strong,var(--line)); color:var(--ink);}
 .btn-outline:hover{border-color:var(--ink);}
 
+.reviews-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:26px; text-align:left;}
+@media (max-width:860px){.reviews-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.reviews-grid{grid-template-columns:1fr;}}
+.review-item{background:var(--sheet); border:1px solid var(--line); border-radius:12px; padding:18px;}
+.review-item .stars{color:var(--brand-2); font-size:13px; letter-spacing:2px; margin-bottom:8px;}
+.review-item .who{display:flex; align-items:center; gap:9px; margin-bottom:8px;}
+.review-item .avatar{width:32px; height:32px; border-radius:50%; background:var(--ink); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; font-family:'Barlow Semi Condensed',sans-serif; flex-shrink:0;}
+.review-item .name{font-size:13px; font-weight:700; color:var(--ink);}
+.review-item p{font-size:13px; color:var(--ink-soft); margin:0; line-height:1.5;}
+
 /* ---- cta band ---- */
 .cta-band{background:linear-gradient(120deg, #0B4A18, #192D3D 60%); color:#fff; text-align:center; padding:64px 20px;}
 .cta-band h2{font-size:clamp(24px,3.6vw,32px); margin-bottom:14px;}
@@ -328,6 +338,39 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
       <div class="reviews-actions">
         <a class="btn btn-google" href="https://maps.app.goo.gl/Vt5khz5d3b52gMjc8" target="_blank" rel="noopener">Ver reseñas en Google →</a>
         <a class="btn btn-outline" href="https://maps.app.goo.gl/Vt5khz5d3b52gMjc8" target="_blank" rel="noopener">Escribir una reseña</a>
+      </div>
+    </div>
+
+    <div class="reviews-grid">
+      <div class="review-item">
+        <div class="stars">★★★★★</div>
+        <div class="who"><div class="avatar">V</div><div class="name">Vanessa Platón</div></div>
+        <p>Excelente servicio, brindan asesoramiento personalizado a clientes y siempre con los mejores equipos.</p>
+      </div>
+      <div class="review-item">
+        <div class="stars">★★★★★</div>
+        <div class="who"><div class="avatar">R</div><div class="name">Raphael Matos</div></div>
+        <p>Excelente 5 estrellas</p>
+      </div>
+      <div class="review-item">
+        <div class="stars">★★★★★</div>
+        <div class="who"><div class="avatar">G</div><div class="name">Gabriel Vera</div></div>
+        <p>Excelente trabajo 🎉</p>
+      </div>
+      <div class="review-item">
+        <div class="stars">★★★★★</div>
+        <div class="who"><div class="avatar">Y</div><div class="name">Yoshua Alava</div></div>
+        <p>Muy buen servicio, recomendada al 100%</p>
+      </div>
+      <div class="review-item">
+        <div class="stars">★★★★★</div>
+        <div class="who"><div class="avatar">A</div><div class="name">Alex Zambrano</div></div>
+        <p>Recomendado, excelente servicio y calidad, brindan los mejores productos, calidad y precio.</p>
+      </div>
+      <div class="review-item">
+        <div class="stars">★★★★★</div>
+        <div class="who"><div class="avatar">G</div><div class="name">Gord N</div></div>
+        <p>Installation was neat and tidy on a complicated system. Work done by knowledgeable professional, honest, hard working people... Felt like working with friends to hire this family owned security company.</p>
       </div>
     </div>
   </div>
