@@ -85,8 +85,10 @@ img{max-width:100%; display:block;}
 .svc-card a:hover{text-decoration:underline;}
 
 /* ---- product teaser ---- */
-.prod-teaser{background:linear-gradient(120deg, var(--ink), #22394B); border-radius:18px; padding:44px 36px; text-align:center;}
-.prod-teaser-text{max-width:60ch; margin:0 auto;}
+.prod-teaser{background:linear-gradient(120deg, var(--ink), #22394B); border-radius:18px; padding:44px 36px; text-align:center; position:relative; overflow:hidden;}
+.prod-teaser-bg{position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none;}
+.prod-teaser-bg span{position:absolute; font-size:64px; opacity:.10; filter:grayscale(1) brightness(2);}
+.prod-teaser-text{position:relative; z-index:1; max-width:60ch; margin:0 auto;}
 .prod-teaser .eyebrow{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--brand-2); font-weight:700; margin-bottom:10px;}
 .prod-teaser h2{color:#fff; font-size:clamp(22px,3vw,30px); font-weight:700; margin-bottom:10px;}
 .prod-teaser p{color:#B7C0C7; font-size:14.5px; margin-bottom:22px;}
@@ -244,6 +246,14 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
 <section class="section" id="productos">
   <div class="wrap">
     <div class="prod-teaser">
+      <div class="prod-teaser-bg" aria-hidden="true">
+        <span style="top:-10px; left:2%; transform:rotate(-12deg);">📹</span>
+        <span style="top:60%; left:8%; transform:rotate(8deg); font-size:46px;">🔒</span>
+        <span style="top:-18px; right:6%; transform:rotate(15deg);">📡</span>
+        <span style="bottom:-22px; right:14%; transform:rotate(-10deg);">🗄️</span>
+        <span style="bottom:-14px; left:26%; transform:rotate(6deg); font-size:44px;">🚪</span>
+        <span style="top:20%; right:-10px; transform:rotate(-18deg);">🔀</span>
+      </div>
       <div class="prod-teaser-text">
         <div class="eyebrow">Catálogo</div>
         <h2>Equipos que manejamos</h2>
