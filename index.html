@@ -113,6 +113,18 @@ img{max-width:100%; display:block;}
 .why-item h3{font-size:15.5px; font-weight:700; margin-bottom:6px;}
 .why-item p{font-size:13px; color:var(--ink-faint); margin:0;}
 
+/* ---- reviews ---- */
+.reviews{background:var(--paper); text-align:center;}
+.reviews-card{max-width:480px; margin:0 auto; background:var(--sheet); border:1px solid var(--line); border-radius:16px; padding:36px 30px;}
+.reviews-stars{font-size:28px; letter-spacing:3px; color:var(--brand-2); text-shadow:0 1px 0 rgba(0,0,0,0.08);}
+.reviews-score{font-family:'Barlow Semi Condensed',sans-serif; font-size:48px; font-weight:800; margin:10px 0 2px;}
+.reviews-sub{color:var(--ink-faint); font-size:13.5px; margin-bottom:22px;}
+.reviews-actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
+.btn-google{background:var(--ink); color:#fff;}
+.btn-google:hover{filter:brightness(1.15);}
+.btn-outline{border-color:var(--line-strong,var(--line)); color:var(--ink);}
+.btn-outline:hover{border-color:var(--ink);}
+
 /* ---- cta band ---- */
 .cta-band{background:linear-gradient(120deg, #0B4A18, #192D3D 60%); color:#fff; text-align:center; padding:64px 20px;}
 .cta-band h2{font-size:clamp(24px,3.6vw,32px); margin-bottom:14px;}
@@ -302,6 +314,20 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
         <div class="n">🔧</div>
         <h3>Soporte post-venta</h3>
         <p>Seguimos disponibles después de la instalación para mantenimiento y ajustes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section reviews" id="resenas">
+  <div class="wrap">
+    <div class="reviews-card">
+      <div class="reviews-stars">★★★★★</div>
+      <div class="reviews-score">5.0</div>
+      <div class="reviews-sub">Calificación en Google · DM Seguridad Digital</div>
+      <div class="reviews-actions">
+        <a class="btn btn-google" href="https://maps.app.goo.gl/Vt5khz5d3b52gMjc8" target="_blank" rel="noopener">Ver reseñas en Google →</a>
+        <a class="btn btn-outline" href="https://maps.app.goo.gl/Vt5khz5d3b52gMjc8" target="_blank" rel="noopener">Escribir una reseña</a>
       </div>
     </div>
   </div>
