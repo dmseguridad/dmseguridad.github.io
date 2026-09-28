@@ -85,13 +85,35 @@ img{max-width:100%; display:block;}
 .svc-card a:hover{text-decoration:underline;}
 
 /* ---- product teaser ---- */
-.prod-teaser{background:linear-gradient(120deg, var(--ink), #22394B); border-radius:18px; padding:44px 36px; text-align:center; position:relative; overflow:hidden;}
+.prod-teaser{
+  background:
+    radial-gradient(520px 320px at 88% 8%, rgba(13,204,48,.20), transparent 60%),
+    radial-gradient(420px 300px at 6% 100%, rgba(252,252,0,.10), transparent 55%),
+    linear-gradient(150deg, #101B26, var(--ink) 55%, #0E1820);
+  border-radius:20px;
+  padding:56px 40px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.06);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 30px 60px -20px rgba(0,0,0,0.5);
+}
 .prod-teaser-bg{position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none;}
-.prod-teaser-bg span{position:absolute; font-size:64px; opacity:.10; filter:grayscale(1) brightness(2);}
+.prod-teaser-bg svg{position:absolute;}
+.prod-teaser-bg .grid{inset:0; width:100%; height:100%; opacity:.35;}
+.prod-teaser-bg .glyph{right:-70px; bottom:-60px; width:340px; height:340px; opacity:.9;}
+.prod-teaser-bg .ring{left:-90px; top:-90px; width:260px; height:260px; opacity:.5;}
 .prod-teaser-text{position:relative; z-index:1; max-width:60ch; margin:0 auto;}
-.prod-teaser .eyebrow{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--brand-2); font-weight:700; margin-bottom:10px;}
-.prod-teaser h2{color:#fff; font-size:clamp(22px,3vw,30px); font-weight:700; margin-bottom:10px;}
-.prod-teaser p{color:#B7C0C7; font-size:14.5px; margin-bottom:22px;}
+.prod-teaser .eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:11.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--brand-2); font-weight:700; margin-bottom:14px;}
+.prod-teaser .eyebrow::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--brand-2); box-shadow:0 0 10px 2px rgba(252,252,0,.6);}
+.prod-teaser h2{color:#fff; font-size:clamp(24px,3.4vw,34px); font-weight:800; margin-bottom:12px; letter-spacing:-.01em;}
+.prod-teaser p{color:#AEB9C2; font-size:14.5px; max-width:48ch; margin:0 auto 16px;}
+.prod-teaser-stats{display:flex; gap:22px; justify-content:center; flex-wrap:wrap; margin-bottom:26px;}
+.prod-teaser-stats div{font-size:12px; color:#8B97A1; display:flex; align-items:center; gap:6px;}
+.prod-teaser-stats strong{color:#fff; font-family:'Barlow Semi Condensed',sans-serif; font-size:15px;}
+.btn-catalog{position:relative; overflow:hidden;}
+.btn-catalog::after{content:""; position:absolute; inset:0; background:linear-gradient(90deg, transparent, rgba(13,204,48,.25), transparent); transform:translateX(-120%); transition:transform .5s ease;}
+.btn-catalog:hover::after{transform:translateX(120%);}
 .btn-catalog{background:#fff; color:var(--ink); display:inline-flex;}
 .btn-catalog:hover{background:var(--paper);}
 
@@ -247,17 +269,48 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
   <div class="wrap">
     <div class="prod-teaser">
       <div class="prod-teaser-bg" aria-hidden="true">
-        <span style="top:-10px; left:2%; transform:rotate(-12deg);">📹</span>
-        <span style="top:60%; left:8%; transform:rotate(8deg); font-size:46px;">🔒</span>
-        <span style="top:-18px; right:6%; transform:rotate(15deg);">📡</span>
-        <span style="bottom:-22px; right:14%; transform:rotate(-10deg);">🗄️</span>
-        <span style="bottom:-14px; left:26%; transform:rotate(6deg); font-size:44px;">🚪</span>
-        <span style="top:20%; right:-10px; transform:rotate(-18deg);">🔀</span>
+        <svg class="grid" viewBox="0 0 800 400" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="dotgrid" width="34" height="34" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="1.4" fill="#FCFC00" fill-opacity="0.35"/>
+            </pattern>
+            <linearGradient id="gridFade" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#fff" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#fff" stop-opacity="0"/>
+            </linearGradient>
+            <mask id="gridMask">
+              <rect width="800" height="400" fill="url(#gridFade)"/>
+            </mask>
+          </defs>
+          <rect width="800" height="400" fill="url(#dotgrid)" mask="url(#gridMask)"/>
+          <path d="M0 90 H180 L210 60 H430" stroke="#0DCC30" stroke-opacity="0.28" stroke-width="1.5" fill="none"/>
+          <path d="M800 340 H620 L590 370 H360" stroke="#0DCC30" stroke-opacity="0.22" stroke-width="1.5" fill="none"/>
+          <circle cx="210" cy="60" r="3" fill="#0DCC30" fill-opacity="0.5"/>
+          <circle cx="590" cy="370" r="3" fill="#0DCC30" fill-opacity="0.4"/>
+        </svg>
+        <svg class="ring" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="90" fill="none" stroke="#0DCC30" stroke-opacity="0.35" stroke-width="1.5"/>
+          <circle cx="100" cy="100" r="62" fill="none" stroke="#FCFC00" stroke-opacity="0.25" stroke-width="1.5"/>
+        </svg>
+        <svg class="glyph" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+          <g fill="none" stroke="#FFFFFF" stroke-opacity="0.07" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+            <rect x="30" y="70" width="120" height="80" rx="14"/>
+            <path d="M150 92 L196 70 V150 L150 128"/>
+            <circle cx="90" cy="110" r="26"/>
+            <circle cx="90" cy="110" r="10"/>
+            <rect x="66" y="56" width="20" height="14" rx="3"/>
+          </g>
+        </svg>
       </div>
       <div class="prod-teaser-text">
-        <div class="eyebrow">Catálogo</div>
-        <h2>Equipos que manejamos</h2>
-        <p>CCTV, Ezviz, videoporteros, control de acceso, TP-Link y redes — con foto real y código interno para cotizar más rápido.</p>
+        <div class="eyebrow">Catálogo en línea</div>
+        <h2>Explora los equipos que instalamos</h2>
+        <p>Cámaras, videoporteros, control de acceso, redes y más — con foto real de cada equipo y código interno para cotizar en segundos por WhatsApp.</p>
+        <div class="prod-teaser-stats">
+          <div>📷 <strong>30+</strong>&nbsp;equipos</div>
+          <div>🏷️ <strong>6</strong>&nbsp;categorías</div>
+          <div>⚡ <strong>Al instante</strong>&nbsp;por WhatsApp</div>
+        </div>
         <a class="btn btn-catalog" href="catalogo.html">Ver catálogo completo →</a>
       </div>
     </div>
