@@ -66,6 +66,29 @@ img{max-width:100%; display:block;}
 .hero-trust div{font-size:12.5px; color:#9AA5AC;}
 .hero-trust strong{display:block; font-size:22px; color:#fff; font-family:'Barlow Semi Condensed',sans-serif;}
 
+.hero-grid{display:grid; grid-template-columns:1.05fr 0.95fr; gap:36px; align-items:center;}
+.hero-visual{position:relative; height:440px; border-radius:22px; overflow:hidden; box-shadow:0 30px 70px -25px rgba(0,0,0,0.65);}
+.hero-visual .hv-bg{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:blur(4px) brightness(.5) saturate(1.15); transform:scale(1.08);}
+.hero-visual .hv-tint{position:absolute; inset:0; background:linear-gradient(160deg, rgba(9,15,20,.55), rgba(13,204,48,.12) 45%, rgba(25,45,61,.7)); mix-blend-mode:normal;}
+.hero-visual .hv-glow{position:absolute; border-radius:50%; filter:blur(38px); opacity:.65; pointer-events:none;}
+.hero-visual .hv-glow-1{width:220px; height:220px; top:8%; right:8%; background:radial-gradient(circle, rgba(13,204,48,.85), transparent 70%);}
+.hero-visual .hv-glow-2{width:180px; height:180px; bottom:10%; left:6%; background:radial-gradient(circle, rgba(252,252,0,.55), transparent 70%);}
+.hero-visual .hv-cam{position:absolute; filter:drop-shadow(0 18px 26px rgba(0,0,0,.55)); animation:hvFloat 5.5s ease-in-out infinite;}
+.hero-visual .hv-cam-1{width:230px; top:10%; right:6%; animation-delay:0s;}
+.hero-visual .hv-cam-2{width:165px; bottom:8%; left:8%; animation-delay:-2.7s;}
+.hero-visual .hv-chip{position:absolute; display:flex; align-items:center; gap:6px; background:rgba(9,15,20,.72); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.14); color:#fff; font-size:11.5px; font-weight:700; padding:6px 11px; border-radius:999px; white-space:nowrap;}
+.hero-visual .hv-chip i{width:6px; height:6px; border-radius:50%; background:var(--brand-1); display:inline-block; box-shadow:0 0 8px var(--brand-1);}
+.hero-visual .hv-chip-1{top:46%; right:2%;}
+.hero-visual .hv-chip-2{bottom:28%; left:2%;}
+@keyframes hvFloat{0%,100%{transform:translateY(0px);}50%{transform:translateY(-14px);}}
+@media (max-width:860px){
+  .hero-grid{grid-template-columns:1fr;}
+  .hero-visual{height:300px; order:-1;}
+  .hero-visual .hv-cam-1{width:170px;}
+  .hero-visual .hv-cam-2{width:120px;}
+  .hero-visual .hv-chip{display:none;}
+}
+
 /* ---- services ---- */
 .section{padding:70px 0;}
 .section-head{text-align:center; max-width:56ch; margin:0 auto 44px;}
@@ -195,17 +218,31 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">Cámaras · Alarmas · Cerco eléctrico · Control de acceso</div>
-    <h1>Seguridad profesional para tu hogar o negocio</h1>
-    <p>Instalamos y damos mantenimiento a sistemas de videovigilancia, alarmas, cerco eléctrico, control de acceso vehicular y videoporteros. Cotización gratis por WhatsApp, sin compromiso.</p>
-    <div class="hero-ctas">
-      <a class="btn btn-primary" id="waHero" href="#" target="_blank" rel="noopener">💬 Cotizar por WhatsApp</a>
-      <a class="btn btn-ghost" href="#servicios">Ver servicios</a>
-    </div>
-    <div class="hero-trust">
-      <div><strong>5</strong>líneas de servicio</div>
-      <div><strong>100%</strong>instalación profesional</div>
-      <div><strong>Rápida</strong>respuesta por WhatsApp</div>
+    <div class="hero-grid">
+      <div class="hero-text">
+        <div class="eyebrow">Cámaras · Alarmas · Cerco eléctrico · Control de acceso</div>
+        <h1>Seguridad profesional para tu hogar o negocio</h1>
+        <p>Instalamos y damos mantenimiento a sistemas de videovigilancia, alarmas, cerco eléctrico, control de acceso vehicular y videoporteros. Cotización gratis por WhatsApp, sin compromiso.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" id="waHero" href="#" target="_blank" rel="noopener">💬 Cotizar por WhatsApp</a>
+          <a class="btn btn-ghost" href="#servicios">Ver servicios</a>
+        </div>
+        <div class="hero-trust">
+          <div><strong>5</strong>líneas de servicio</div>
+          <div><strong>100%</strong>instalación profesional</div>
+          <div><strong>Rápida</strong>respuesta por WhatsApp</div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img class="hv-bg" src="hero/house-bg.jpg" alt="" loading="eager">
+        <div class="hv-tint"></div>
+        <div class="hv-glow hv-glow-1"></div>
+        <div class="hv-glow hv-glow-2"></div>
+        <img class="hv-cam hv-cam-1" src="hero/cam-1.png" alt="Cámara PTZ WiFi">
+        <img class="hv-cam hv-cam-2" src="hero/cam-2.png" alt="Cámara bullet">
+        <div class="hv-chip hv-chip-1"><i></i>Visión nocturna</div>
+        <div class="hv-chip hv-chip-2"><i></i>Monitoreo 24/7</div>
+      </div>
     </div>
   </div>
 </header>
