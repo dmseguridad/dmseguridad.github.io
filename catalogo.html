@@ -645,16 +645,43 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
   document.getElementById('waFooterText').textContent = 'WhatsApp: +593 98 078 1862';
   document.getElementById('year').textContent = new Date().getFullYear();
 
+  const FILTER_KEY = 'dmCatalogFilter';
+  const SCROLL_KEY = 'dmCatalogScroll';
+
+  function applyFilter(cat){
+    document.querySelectorAll('.prod-filter').forEach(b=>b.classList.toggle('active', b.dataset.cat===cat));
+    document.querySelectorAll('.prod-card').forEach(card=>{
+      card.style.display = (cat==='todos' || card.dataset.cat===cat) ? '' : 'none';
+    });
+  }
+
   document.querySelectorAll('.prod-filter').forEach(btn=>{
     btn.addEventListener('click', ()=>{
-      document.querySelectorAll('.prod-filter').forEach(b=>b.classList.remove('active'));
-      btn.classList.add('active');
       const cat = btn.dataset.cat;
-      document.querySelectorAll('.prod-card').forEach(card=>{
-        card.style.display = (cat==='todos' || card.dataset.cat===cat) ? '' : 'none';
-      });
+      applyFilter(cat);
+      sessionStorage.setItem(FILTER_KEY, cat);
     });
   });
+
+  document.querySelectorAll('#prodGrid a').forEach(a=>{
+    a.addEventListener('click', ()=>{
+      sessionStorage.setItem(SCROLL_KEY, window.scrollY);
+    });
+  });
+
+  const savedFilter = sessionStorage.getItem(FILTER_KEY);
+  if (savedFilter) {
+    applyFilter(savedFilter);
+  }
+
+  const savedScroll = sessionStorage.getItem(SCROLL_KEY);
+  if (savedScroll !== null) {
+    sessionStorage.removeItem(SCROLL_KEY);
+    window.addEventListener('load', ()=>{
+      window.scrollTo(0, parseInt(savedScroll, 10));
+      setTimeout(()=>window.scrollTo(0, parseInt(savedScroll, 10)), 60);
+    });
+  }
 </script>
 
 </body>
