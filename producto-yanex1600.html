@@ -92,7 +92,7 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
 
 <header class="page-head">
   <div class="wrap">
-    <a class="back-link" href="catalogo.html">← Volver al catálogo</a>
+    <a class="back-link" id="backLink" href="catalogo.html">← Volver al catálogo</a>
   </div>
 </header>
 
@@ -173,6 +173,16 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
   if(waFloat) waFloat.href = waLink(DEFAULT_MSG);
   document.getElementById('waFooterText').textContent = 'WhatsApp: +593 98 078 1862';
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  const backLink = document.getElementById('backLink');
+  if (backLink) {
+    backLink.addEventListener('click', function(e){
+      if (window.history.length > 1) {
+        e.preventDefault();
+        window.history.back();
+      }
+    });
+  }
 </script>
 
 </body>
