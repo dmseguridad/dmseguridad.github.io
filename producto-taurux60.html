@@ -35,8 +35,10 @@ img{max-width:100%; display:block;}
 .nav .btn-wa:hover{background:var(--whatsapp-dark);}
 @media (max-width:720px){ .nav-links a:not(.btn-wa){display:none;} }
 
-.page-head{background:radial-gradient(circle at 20% 0%, #22394B 0%, var(--ink) 55%); color:#fff; padding:40px 0 32px; position:relative;}
-.page-head::after{content:""; position:absolute; left:0; right:0; bottom:0; height:5px; background:linear-gradient(90deg, var(--brand-1), var(--brand-2));}
+.page-head{background:var(--ink); color:#fff; padding:60px 0 46px; position:relative; overflow:hidden;}
+.page-head::before{content:""; position:absolute; inset:-16px; background-image:linear-gradient(180deg, rgba(25,45,61,0.72), rgba(25,45,61,0.88)), url('hero/ganaderia-header-combo.jpg'); background-size:cover; background-position:center; filter:blur(5px); transform:scale(1.06); z-index:0;}
+.page-head::after{content:""; position:absolute; left:0; right:0; bottom:0; height:5px; background:linear-gradient(90deg, var(--brand-1), var(--brand-2)); z-index:2;}
+.page-head .wrap{position:relative; z-index:1;}
 .back-link{display:inline-block; font-size:13px; font-weight:600; color:#fff; text-decoration:none; opacity:.85;}
 .back-link:hover{opacity:1; text-decoration:underline;}
 
