@@ -68,6 +68,22 @@ img{max-width:100%; display:block;}
 .spec-table td:first-child{color:var(--ink-faint); font-weight:600; width:44%;}
 .spec-table td:last-child{color:var(--ink); font-weight:700;}
 
+.accessories{margin-top:56px;}
+.accessories h2{font-size:clamp(19px,2.6vw,24px); font-weight:700; margin-bottom:6px; padding-bottom:10px; border-bottom:2px solid var(--line);}
+.accessories .sub{color:var(--ink-faint); font-size:14px; margin:14px 0 24px;}
+.acc-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+@media (max-width:780px){.acc-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.acc-grid{grid-template-columns:1fr;}}
+.acc-card{background:var(--sheet); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column;}
+.acc-photo{aspect-ratio:4/3; background:#fff; display:flex; align-items:center; justify-content:center; overflow:hidden; border-bottom:1px solid var(--line);}
+.acc-photo img{width:100%; height:100%; object-fit:cover;}
+.acc-body{padding:16px 18px 18px; display:flex; flex-direction:column; gap:8px; flex:1;}
+.acc-card .sku{align-self:flex-start; font-family:ui-monospace,'IBM Plex Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--accent); background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:3px 8px;}
+.acc-card h3{font-size:15px; font-weight:600;}
+.acc-card p{font-size:12.5px; color:var(--ink-faint); flex:1; margin:0;}
+.acc-card a{font-size:12.5px; font-weight:700; color:var(--whatsapp-dark); text-decoration:none;}
+.acc-card a:hover{text-decoration:underline;}
+
 footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5px;}
 .foot-grid{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px;}
 .foot-brand img{height:30px;}
@@ -137,6 +153,44 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
         <tr><td>Dimensiones</td><td>300 × 210 × 100 mm</td></tr>
         <tr><td>Peso</td><td>2.15 kg</td></tr>
       </table>
+    </div>
+
+    <div class="accessories">
+      <h2>Accesorios recomendados</h2>
+      <div class="sub">Complementa tu energizador con panel solar para que funcione sin depender de la red eléctrica.</div>
+      <div class="acc-grid">
+
+        <div class="acc-card">
+          <div class="acc-photo"><img src="products/hg-tauruxsolar20k.png" alt="Energizador Solar Taurux HTX-S20"></div>
+          <div class="acc-body">
+            <div class="sku">DMS-SOL-001</div>
+            <h3>Energizador Solar Taurux HTX-S20</h3>
+            <p>Energizador portátil con panel solar integrado y batería de litio, hasta 20 km de cobertura.</p>
+            <a class="wa-link" data-msg="Hola, quiero cotizar el Energizador Solar Taurux HTX-S20 (DMS-SOL-001) junto con mi energizador.">Cotizar →</a>
+          </div>
+        </div>
+
+        <div class="acc-card">
+          <div class="acc-photo"><img src="products/hg-taurux-fdc.png" alt="Fuente DC y Controlador para Electrificador Taurux"></div>
+          <div class="acc-body">
+            <div class="sku">DMS-SOL-002</div>
+            <h3>Fuente DC y Controlador Taurux</h3>
+            <p>Convierte corriente alterna a continua para alimentar tu energizador y otros equipos de 12V.</p>
+            <a class="wa-link" data-msg="Hola, quiero cotizar la Fuente DC y Controlador Taurux (DMS-SOL-002) junto con mi energizador.">Cotizar →</a>
+          </div>
+        </div>
+
+        <div class="acc-card">
+          <div class="acc-photo"><img src="products/hg-pansol-soporte.png" alt="Soporte de Panel Solar con Brazos Regulables"></div>
+          <div class="acc-body">
+            <div class="sku">DMS-SOL-003</div>
+            <h3>Soporte de Panel Solar Regulable</h3>
+            <p>Soporte metálico con brazos ajustables para orientar tu panel solar, resistente a la intemperie.</p>
+            <a class="wa-link" data-msg="Hola, quiero cotizar el Soporte de Panel Solar Regulable (DMS-SOL-003) junto con mi energizador.">Cotizar →</a>
+          </div>
+        </div>
+
+      </div>
     </div>
 
   </div>
