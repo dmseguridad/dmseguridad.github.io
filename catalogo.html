@@ -65,8 +65,9 @@ img{max-width:100%; display:block;}
 @media (max-width:860px){.prod-grid{grid-template-columns:repeat(2,1fr);}}
 @media (max-width:560px){.prod-grid{grid-template-columns:1fr;}}
 .prod-card{background:var(--sheet); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column;}
-.prod-photo{aspect-ratio:4/3; background:#fff; display:flex; align-items:center; justify-content:center; overflow:hidden; border-bottom:1px solid var(--line);}
+.prod-photo{position:relative; aspect-ratio:4/3; background:#fff; display:flex; align-items:center; justify-content:center; overflow:hidden; border-bottom:1px solid var(--line);}
 .prod-photo img{width:100%; height:100%; object-fit:cover;}
+.badge-new{position:absolute; top:10px; left:10px; z-index:2; background:linear-gradient(90deg, var(--brand-1), var(--brand-2)); color:#0F1611; font-size:11px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; padding:5px 12px; border-radius:999px; box-shadow:0 3px 8px rgba(0,0,0,0.25);}
 .prod-body{padding:16px 18px 18px; display:flex; flex-direction:column; gap:8px; flex:1;}
 .prod-card .sku{align-self:flex-start; font-family:ui-monospace,'IBM Plex Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--accent); background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:3px 8px;}
 .prod-card h3{font-size:16px; font-weight:600;}
@@ -122,6 +123,7 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
       <button class="prod-filter" data-cat="redes">Redes</button>
       <button class="prod-filter" data-cat="almacenamiento">Discos Duros</button>
       <button class="prod-filter" data-cat="starlink">Starlink</button>
+      <button class="prod-filter" data-cat="cercos">Cercos Eléctricos</button>
     </div>
 
     <div class="prod-grid" id="prodGrid">
@@ -450,7 +452,10 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
 
       <div class="prod-card" data-cat="starlink">
         <a href="producto-starlink.html">
-          <div class="prod-photo"><img src="products/starlink-kit.jpg" alt="Antena Starlink con kit de instalación"></div>
+          <div class="prod-photo">
+            <span class="badge-new">Nuevo</span>
+            <img src="products/starlink-kit.jpg" alt="Antena Starlink con kit de instalación">
+          </div>
         </a>
         <div class="prod-body">
           <div class="sku">DMS-STK-001</div>
@@ -459,6 +464,96 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
           <p>Kit de internet satelital Starlink, incluye antena, cable y fuente. Instalación fija o vehicular con soporte de ventosas.</p>
           <a href="producto-starlink.html" style="font-size:12.5px; font-weight:700; color:var(--ink-soft); text-decoration:none;">Ver producto y accesorios →</a>
           <a class="wa-link" data-msg="Hola, quiero cotizar una antena Starlink (DMS-STK-001).">Cotizar →</a>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="cercos">
+        <div class="prod-photo"><img src="products/hg-zoe-wifi.png" alt="Sistema de Alarma Integral ZOE WIFI Hagroy"></div>
+        <div class="prod-body">
+          <div class="sku">DMS-CER-001</div>
+          <h3>Energizador ZOE WIFI</h3>
+          <p>Energizador inteligente Hagroy con monitoreo y videoverificación por app, hasta 3,500 m lineales.</p>
+          <a class="wa-link" data-msg="Hola, quiero cotizar el energizador ZOE WIFI Hagroy (DMS-CER-001).">Cotizar →</a>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="cercos">
+        <div class="prod-photo"><img src="products/hg-yanex1600.png" alt="Energizador YANEX 1600 Hagroy"></div>
+        <div class="prod-body">
+          <div class="sku">DMS-CER-002</div>
+          <h3>Energizador YANEX 1600</h3>
+          <p>Energiza hasta 1,600 m lineales, ideal para residencias y negocios. Gabinete hermético IP55.</p>
+          <a class="wa-link" data-msg="Hola, quiero cotizar el energizador YANEX 1600 Hagroy (DMS-CER-002).">Cotizar →</a>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="cercos">
+        <div class="prod-photo"><img src="products/hg-xpoweri8.png" alt="Energizador XPOWER i8 Hagroy"></div>
+        <div class="prod-body">
+          <div class="sku">DMS-CER-003</div>
+          <h3>Energizador XPOWER i8</h3>
+          <p>Energiza hasta 2,000 m, voltaje regulable y alarma residencial integrada con control RF.</p>
+          <a class="wa-link" data-msg="Hola, quiero cotizar el energizador XPOWER i8 Hagroy (DMS-CER-003).">Cotizar →</a>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="cercos">
+        <div class="prod-photo"><img src="products/hg-xpoweri12.png" alt="Energizador XPOWER i12 Hagroy"></div>
+        <div class="prod-body">
+          <div class="sku">DMS-CER-004</div>
+          <h3>Energizador XPOWER i12</h3>
+          <p>Energiza hasta 3,500 m con doble zona independiente de monitoreo y memoria de eventos.</p>
+          <a class="wa-link" data-msg="Hola, quiero cotizar el energizador XPOWER i12 Hagroy (DMS-CER-004).">Cotizar →</a>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="cercos">
+        <div class="prod-photo"><img src="products/hg-hr8000plus.png" alt="Energizador HR-8000 Plus Hagroy"></div>
+        <div class="prod-body">
+          <div class="sku">DMS-CER-005</div>
+          <h3>Energizador HR-8000 Plus</h3>
+          <p>Energiza hasta 10,000 m lineales, para perímetros grandes o instalaciones industriales.</p>
+          <a class="wa-link" data-msg="Hola, quiero cotizar el energizador HR-8000 Plus Hagroy (DMS-CER-005).">Cotizar →</a>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="cercos">
+        <div class="prod-photo"><img src="products/hg-ltp.png" alt="Letrero de advertencia para cerco eléctrico Hagroy"></div>
+        <div class="prod-body">
+          <div class="sku">DMS-CER-006</div>
+          <h3>Letrero de advertencia</h3>
+          <p>Letrero reglamentario de cerco eléctrico, plástico resistente a rayos UV, fácil instalación.</p>
+          <a class="wa-link" data-msg="Hola, quiero cotizar el letrero de advertencia para cerco eléctrico (DMS-CER-006).">Cotizar →</a>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="cercos">
+        <div class="prod-photo"><img src="products/hg-es200r.png" alt="Sirena doble tono ES200R Hagroy"></div>
+        <div class="prod-body">
+          <div class="sku">DMS-CER-007</div>
+          <h3>Sirena doble tono ES200R</h3>
+          <p>Alarma potente de 110 dB, sonido continuo e intermitente, carcasa resistente para exteriores.</p>
+          <a class="wa-link" data-msg="Hola, quiero cotizar la sirena doble tono ES200R (DMS-CER-007).">Cotizar →</a>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="cercos">
+        <div class="prod-photo"><img src="products/hg-h4kb200m.png" alt="Control inalámbrico de 4 teclas Hagroy"></div>
+        <div class="prod-body">
+          <div class="sku">DMS-CER-008</div>
+          <h3>Control inalámbrico de 4 teclas</h3>
+          <p>Control remoto de hasta 100 m para encendido, apagado y pánico del cerco eléctrico.</p>
+          <a class="wa-link" data-msg="Hola, quiero cotizar el control inalámbrico de 4 teclas para cerco eléctrico (DMS-CER-008).">Cotizar →</a>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="cercos">
+        <div class="prod-photo"><img src="products/hg-voltdig.png" alt="Voltímetro digital Hagroy"></div>
+        <div class="prod-body">
+          <div class="sku">DMS-CER-009</div>
+          <h3>Voltímetro digital</h3>
+          <p>Mide voltaje de 0.5 kV a 19 kV, pantalla digital clara, incluye indicador de batería baja.</p>
+          <a class="wa-link" data-msg="Hola, quiero cotizar el voltímetro digital para cerco eléctrico (DMS-CER-009).">Cotizar →</a>
         </div>
       </div>
 
