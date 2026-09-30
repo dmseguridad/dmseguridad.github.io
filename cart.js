@@ -45,7 +45,15 @@
   function removeItem(sku){ setQty(sku, 0); }
   function clearCart(){ setCart([]); }
 
+  // Listed prices are before VAT; IVA (15%) is added at checkout.
+  const IVA_RATE = 0.15;
   function cartTotal(cart){ return cart.reduce((s,i) => s + (i.price * i.qty), 0); }
+  function round2(n){ return Math.round(n * 100) / 100; }
+  function cartTotals(cart){
+    const subtotal = round2(cartTotal(cart));
+    const iva = round2(subtotal * IVA_RATE);
+    return { subtotal, iva, total: round2(subtotal + iva) };
+  }
   function cartCount(cart){ return cart.reduce((s,i) => s + i.qty, 0); }
   function analogCamCount(cart){
     return cart.filter(i => ANALOG_CAM_CATS.indexOf(i.cat) !== -1).reduce((s,i) => s + i.qty, 0);
@@ -100,6 +108,8 @@
   .dm-cart-sd{background:#EAFBEE; border:1px solid #0DCC30; border-radius:10px; padding:12px 14px; font-size:12.5px; color:#192D3D; margin-bottom:14px;}
   .dm-cart-sd strong{display:block; font-size:13px; margin-bottom:3px;}
   .dm-cart-foot{border-top:1px solid #DDE1E4; padding:16px 20px; background:#fff;}
+  .prod-card .price::after, .product-info .price::after, .acc-card .price::after{content:" + IVA"; font-size:0.55em; font-weight:600; color:#7C8894; letter-spacing:.02em;}
+  .dm-cart-line{display:flex; justify-content:space-between; font-size:13.5px; color:#4B5866; margin-bottom:4px;}
   .dm-cart-total{display:flex; justify-content:space-between; font-size:16px; font-weight:800; color:#192D3D; margin-bottom:12px; font-family:'Barlow Semi Condensed',system-ui,sans-serif;}
   .dm-cart-checkout{display:block; width:100%; background:#25D366; color:#fff; border:none; padding:14px; border-radius:10px; font-weight:700; font-size:14.5px; cursor:pointer; text-align:center;}
   .dm-cart-checkout:hover{background:#1DA851;}
@@ -194,7 +204,7 @@
           <div class="dm-cart-item-info">
             <div class="sku">${item.sku}</div>
             <h4>${item.name}</h4>
-            <div class="price-line">${money(item.price)} c/u · Subtotal: <strong>${money(item.price * item.qty)}</strong></div>
+            <div class="price-line">${money(item.price)} c/u + IVA · Subtotal: <strong>${money(item.price * item.qty)}</strong></div>
             <div class="dm-cart-qty">
               <button data-act="dec">−</button>
               <span>${item.qty}</span>
@@ -258,9 +268,11 @@
       el.querySelector('[data-act="remove"]').addEventListener('click', () => removeItem(sku));
     });
 
-    const total = cartTotal(cart);
+    const t = cartTotals(cart);
     foot.innerHTML = `
-      <div class="dm-cart-total"><span>Total estimado</span><span>${money(total)}</span></div>
+      <div class="dm-cart-line"><span>Subtotal</span><span>${money(t.subtotal)}</span></div>
+      <div class="dm-cart-line"><span>IVA 15%</span><span>${money(t.iva)}</span></div>
+      <div class="dm-cart-total"><span>Total estimado</span><span>${money(t.total)}</span></div>
       <button class="dm-cart-checkout" id="dmCartCheckout">📄 Finalizar y enviar por WhatsApp</button>
       <button class="dm-cart-clear" id="dmCartClear">Vaciar carrito</button>
     `;
@@ -390,10 +402,17 @@
     y += 10;
     doc.setDrawColor(220,220,220);
     doc.line(40, y, 555, y);
-    y += 22;
+    y += 20;
+    const t = cartTotals(cart);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+    doc.text('Subtotal:', 380, y); doc.text(money(t.subtotal), 555, y, { align: 'right' });
+    y += 16;
+    doc.text('IVA 15%:', 380, y); doc.text(money(t.iva), 555, y, { align: 'right' });
+    y += 20;
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(13);
-    doc.text('TOTAL ESTIMADO: ' + money(cartTotal(cart)), 350, y);
+    doc.text('TOTAL ESTIMADO:', 380, y); doc.text(money(t.total), 555, y, { align: 'right' });
 
     if (dvr){
       y += 34;
@@ -461,7 +480,10 @@
       cart.forEach(item => {
         msg += '• ' + item.qty + 'x ' + item.name + ' (' + item.sku + ') — ' + money(item.price * item.qty) + '\n';
       });
-      msg += '\nTotal estimado: ' + money(cartTotal(cart));
+      const t = cartTotals(cart);
+      msg += '\nSubtotal: ' + money(t.subtotal);
+      msg += '\nIVA 15%: ' + money(t.iva);
+      msg += '\n*Total estimado: ' + money(t.total) + '*';
       if (dvr && dvr.sku){
         msg += '\nGrabador recomendado: ' + dvr.name + ' (' + dvr.sku + ')';
       } else if (dvr){
