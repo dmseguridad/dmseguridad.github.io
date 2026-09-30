@@ -3,13 +3,16 @@
 
   const CART_KEY = 'dmCart';
   const WHATSAPP_NUMBER = '593980781862';
-  const CAMERA_CATS = ['cctv', 'ezviz'];
+  // Cámaras analógicas (HDTVI/AHD/CVI) necesitan DVR. Las EZVIZ son IP/WiFi y graban en microSD, no en DVR.
+  const ANALOG_CAM_CATS = ['cctv'];
+  const IP_CAM_CATS = ['ezviz'];
 
   const DVR_TABLE = [
     { max: 8,  sku: 'DMS-DVR-001', name: 'DVR HiLook 8CH + 4 IP, hasta 6MP' },
     { max: 16, sku: 'DMS-DVR-002', name: 'DVR HiLook 16 canales 720P-1080P Lite' },
     { max: Infinity, sku: null, name: null }
   ];
+  const SD_CARD = { sku: 'TF-C1-32G', name: 'MicroSD Hiksemi 32GB Clase 10' };
 
   function getCart(){
     try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
@@ -44,8 +47,11 @@
 
   function cartTotal(cart){ return cart.reduce((s,i) => s + (i.price * i.qty), 0); }
   function cartCount(cart){ return cart.reduce((s,i) => s + i.qty, 0); }
-  function cameraCount(cart){
-    return cart.filter(i => CAMERA_CATS.indexOf(i.cat) !== -1).reduce((s,i) => s + i.qty, 0);
+  function analogCamCount(cart){
+    return cart.filter(i => ANALOG_CAM_CATS.indexOf(i.cat) !== -1).reduce((s,i) => s + i.qty, 0);
+  }
+  function ipCamCount(cart){
+    return cart.filter(i => IP_CAM_CATS.indexOf(i.cat) !== -1).reduce((s,i) => s + i.qty, 0);
   }
   function recommendDVR(nCams){
     if (nCams <= 0) return null;
@@ -53,6 +59,10 @@
       if (nCams <= row.max) return row;
     }
     return null;
+  }
+  function recommendSD(nIpCams){
+    if (nIpCams <= 0) return null;
+    return Object.assign({ qty: nIpCams }, SD_CARD);
   }
   function money(n){ return '$' + n.toFixed(2); }
 
@@ -75,6 +85,7 @@
   .dm-cart-body{flex:1; overflow-y:auto; padding:16px 20px;}
   .dm-cart-empty{color:#7C8894; font-size:14px; text-align:center; padding:40px 10px;}
   .dm-cart-item{display:flex; gap:12px; background:#fff; border:1px solid #DDE1E4; border-radius:12px; padding:12px; margin-bottom:12px;}
+  .dm-cart-item img{width:64px; height:64px; object-fit:cover; border-radius:8px; background:#EEF0F2; flex-shrink:0; border:1px solid #DDE1E4;}
   .dm-cart-item-info{flex:1; min-width:0;}
   .dm-cart-item-info .sku{font-family:ui-monospace,monospace; font-size:10px; font-weight:700; color:#0DCC30; background:#EEF0F2; border:1px solid #DDE1E4; border-radius:5px; padding:2px 6px; display:inline-block; margin-bottom:4px;}
   .dm-cart-item-info h4{margin:0 0 4px; font-size:13.5px; font-weight:700; color:#192D3D; font-family:'Barlow Semi Condensed',system-ui,sans-serif;}
@@ -84,8 +95,10 @@
   .dm-cart-qty button:hover{background:#DDE1E4;}
   .dm-cart-qty span{font-weight:700; min-width:18px; text-align:center; font-size:13.5px;}
   .dm-cart-remove{background:none; border:none; color:#c0392b; font-size:12px; font-weight:700; cursor:pointer; padding:0; margin-top:8px;}
-  .dm-cart-dvr{background:#FFFBE0; border:1px solid #FCFC00; border-radius:10px; padding:12px 14px; font-size:12.5px; color:#192D3D; margin-bottom:14px;}
+  .dm-cart-dvr{background:#FFFBE0; border:1px solid #FCFC00; border-radius:10px; padding:12px 14px; font-size:12.5px; color:#192D3D; margin-bottom:12px;}
   .dm-cart-dvr strong{display:block; font-size:13px; margin-bottom:3px;}
+  .dm-cart-sd{background:#EAFBEE; border:1px solid #0DCC30; border-radius:10px; padding:12px 14px; font-size:12.5px; color:#192D3D; margin-bottom:14px;}
+  .dm-cart-sd strong{display:block; font-size:13px; margin-bottom:3px;}
   .dm-cart-foot{border-top:1px solid #DDE1E4; padding:16px 20px; background:#fff;}
   .dm-cart-total{display:flex; justify-content:space-between; font-size:16px; font-weight:800; color:#192D3D; margin-bottom:12px; font-family:'Barlow Semi Condensed',system-ui,sans-serif;}
   .dm-cart-checkout{display:block; width:100%; background:#25D366; color:#fff; border:none; padding:14px; border-radius:10px; font-weight:700; font-size:14.5px; cursor:pointer; text-align:center;}
@@ -148,19 +161,26 @@
     }
 
     let html = '';
-    const nCams = cameraCount(cart);
-    const dvr = recommendDVR(nCams);
+    const nAnalog = analogCamCount(cart);
+    const nIp = ipCamCount(cart);
+    const dvr = recommendDVR(nAnalog);
+    const sd = recommendSD(nIp);
     if (dvr){
       if (dvr.sku){
-        html += `<div class="dm-cart-dvr"><strong>📹 Recomendación de grabador</strong>Con ${nCams} cámara(s) te recomendamos el <strong>${dvr.name}</strong> (${dvr.sku}). Un asesor lo confirmará contigo.</div>`;
+        html += `<div class="dm-cart-dvr"><strong>📹 Recomendación de grabador (DVR)</strong>Con ${nAnalog} cámara(s) analógica(s) te recomendamos el <strong>${dvr.name}</strong> (${dvr.sku}). Un asesor lo confirmará contigo.</div>`;
       } else {
-        html += `<div class="dm-cart-dvr"><strong>📹 Recomendación de grabador</strong>Con ${nCams} cámaras, un asesor te recomendará el mejor grabador o si conviene más de uno.</div>`;
+        html += `<div class="dm-cart-dvr"><strong>📹 Recomendación de grabador (DVR)</strong>Con ${nAnalog} cámaras analógicas, un asesor te recomendará el mejor grabador o si conviene más de uno.</div>`;
       }
+    }
+    if (sd){
+      html += `<div class="dm-cart-sd"><strong>💾 Recomendación de almacenamiento</strong>Tus ${nIp} cámara(s) EZVIZ son IP y graban en microSD, no en DVR. Te recomendamos ${sd.qty} × <strong>${sd.name}</strong> (${sd.sku}), una por cámara.</div>`;
     }
 
     cart.forEach(item => {
+      const imgHtml = item.img ? `<img src="${item.img}" alt="${item.name}">` : '';
       html += `
         <div class="dm-cart-item" data-sku="${item.sku}">
+          ${imgHtml}
           <div class="dm-cart-item-info">
             <div class="sku">${item.sku}</div>
             <h4>${item.name}</h4>
@@ -205,7 +225,7 @@
     });
   }
 
-  async function generatePDF(cart, dvr){
+  async function generatePDF(cart, dvr, sd){
     if (!window.jspdf){
       await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
     }
@@ -269,7 +289,7 @@
       doc.rect(40, y - 16, 515, dvr.sku ? 40 : 50, 'F');
       doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
-      doc.text('Recomendación de grabador (DVR):', 50, y);
+      doc.text('Recomendación de grabador (DVR) para cámaras analógicas:', 50, y);
       doc.setFont('helvetica', 'normal');
       y += 16;
       if (dvr.sku){
@@ -277,6 +297,19 @@
       } else {
         doc.text('Más de 16 cámaras: un asesor recomendará el mejor grabador.', 50, y);
       }
+      y += 20;
+    }
+
+    if (sd){
+      y += 14;
+      doc.setFillColor(234, 251, 238);
+      doc.rect(40, y - 16, 515, 40, 'F');
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Recomendación de almacenamiento para cámaras EZVIZ (IP):', 50, y);
+      doc.setFont('helvetica', 'normal');
+      y += 16;
+      doc.text(sd.qty + ' x ' + sd.name + ' (' + sd.sku + ')', 50, y);
     }
 
     y += 50;
@@ -297,9 +330,11 @@
     btn.disabled = true;
     btn.textContent = 'Generando PDF…';
     try {
-      const nCams = cameraCount(cart);
-      const dvr = recommendDVR(nCams);
-      const filename = await generatePDF(cart, dvr);
+      const nAnalog = analogCamCount(cart);
+      const nIp = ipCamCount(cart);
+      const dvr = recommendDVR(nAnalog);
+      const sd = recommendSD(nIp);
+      const filename = await generatePDF(cart, dvr, sd);
 
       let msg = 'Hola, arme este pedido en su catálogo y descargué el PDF (' + filename + '). Adjunto el PDF a este chat.\n\n';
       cart.forEach(item => {
@@ -309,7 +344,10 @@
       if (dvr && dvr.sku){
         msg += '\nGrabador recomendado: ' + dvr.name + ' (' + dvr.sku + ')';
       } else if (dvr){
-        msg += '\nTengo ' + nCams + ' cámaras, ¿qué grabador me recomiendan?';
+        msg += '\nTengo ' + nAnalog + ' cámaras analógicas, ¿qué grabador me recomiendan?';
+      }
+      if (sd){
+        msg += '\nAlmacenamiento recomendado: ' + sd.qty + 'x ' + sd.name + ' (' + sd.sku + ')';
       }
       msg += '\n\n¿Está bien lo que escogí o me recomiendan algún cambio?';
 
@@ -342,6 +380,8 @@
       const price = parseFloat(priceEl.textContent.replace(/[^0-9.]/g, ''));
       if (isNaN(price)) return;
       const cat = card.dataset.cat || '';
+      const imgEl = card.querySelector('.prod-photo img, .acc-photo img');
+      const img = imgEl ? imgEl.getAttribute('src') : '';
 
       const btn = document.createElement('button');
       btn.className = 'dm-add-btn';
@@ -349,7 +389,7 @@
       btn.textContent = '🛒 Agregar al carrito';
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        addToCart({ sku, name, price, cat });
+        addToCart({ sku, name, price, cat, img });
         btn.textContent = '✓ Agregado';
         btn.classList.add('dm-add-ok');
         setTimeout(() => { btn.textContent = '🛒 Agregar al carrito'; btn.classList.remove('dm-add-ok'); }, 1400);
@@ -366,6 +406,8 @@
       const sku = heroSku.textContent.trim();
       const name = heroName.textContent.trim();
       const price = parseFloat(heroPrice.textContent.replace(/[^0-9.]/g, ''));
+      const heroImgEl = document.querySelector('.product-photo img');
+      const img = heroImgEl ? heroImgEl.getAttribute('src') : '';
       if (!isNaN(price)){
         const wrap = document.createElement('div');
         wrap.style.display = 'flex';
@@ -377,7 +419,7 @@
         addBtn.type = 'button';
         addBtn.textContent = '🛒 Agregar al carrito';
         addBtn.addEventListener('click', () => {
-          addToCart({ sku, name, price, cat: (window.DM_PRODUCT_CAT || '') });
+          addToCart({ sku, name, price, cat: (window.DM_PRODUCT_CAT || ''), img });
           addBtn.textContent = '✓ Agregado al carrito';
           addBtn.classList.add('dm-add-ok');
           setTimeout(() => { addBtn.textContent = '🛒 Agregar al carrito'; addBtn.classList.remove('dm-add-ok'); }, 1400);
