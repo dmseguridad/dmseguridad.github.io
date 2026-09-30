@@ -105,6 +105,16 @@
   .dm-cart-checkout:hover{background:#1DA851;}
   .dm-cart-checkout:disabled{background:#B7C0C7; cursor:not-allowed;}
   .dm-cart-clear{display:block; width:100%; background:none; border:none; color:#7C8894; font-size:12px; text-align:center; margin-top:10px; cursor:pointer; text-decoration:underline;}
+  .dm-cart-form{background:#fff; border:1px solid #DDE1E4; border-radius:12px; padding:14px; margin-top:6px;}
+  .dm-cart-form h3{margin:0 0 4px; font-size:14.5px; color:#192D3D; font-family:'Barlow Semi Condensed',system-ui,sans-serif;}
+  .dm-cart-form .hint{font-size:11.5px; color:#7C8894; margin:0 0 10px;}
+  .dm-cart-form label{display:block; font-size:12px; font-weight:700; color:#4B5866; margin:10px 0 4px;}
+  .dm-cart-form label small{font-weight:400; color:#7C8894;}
+  .dm-cart-form input{width:100%; box-sizing:border-box; padding:10px 11px; border:1px solid #C9D0D6; border-radius:8px; font-size:14px; font-family:inherit; color:#192D3D; background:#fff;}
+  .dm-cart-form input:focus{outline:none; border-color:#0DCC30; box-shadow:0 0 0 3px rgba(13,204,48,0.15);}
+  .dm-cart-form input.bad{border-color:#c0392b;}
+  .dm-cart-form .err{display:none; font-size:11.5px; color:#c0392b; margin-top:3px;}
+  .dm-cart-form .err.show{display:block;}
   .dm-add-btn{display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:#fff; background:#192D3D; border:none; padding:9px 14px; border-radius:8px; cursor:pointer; text-decoration:none;}
   .dm-add-btn:hover{background:#0DCC30;}
   .dm-add-btn.big{padding:14px 26px; border-radius:10px; font-size:15px;}
@@ -194,7 +204,34 @@
           </div>
         </div>`;
     });
+    const c = getCustomer();
+    html += `
+      <div class="dm-cart-form" id="dmCartForm">
+        <h3>Tus datos</h3>
+        <p class="hint">Los necesitamos para preparar tu cotización y poder contactarte.</p>
+        <label for="dmCedula">Cédula o RUC</label>
+        <input id="dmCedula" inputmode="numeric" maxlength="13" autocomplete="off" value="${esc(c.cedula)}">
+        <div class="err" data-for="dmCedula">Ingresa una cédula (10 dígitos) o RUC (13 dígitos) válido.</div>
+        <label for="dmNombre">Nombres y apellidos</label>
+        <input id="dmNombre" autocomplete="name" value="${esc(c.nombre)}">
+        <div class="err" data-for="dmNombre">Ingresa tus nombres y apellidos.</div>
+        <label for="dmWhatsapp">Número de WhatsApp</label>
+        <input id="dmWhatsapp" type="tel" inputmode="tel" autocomplete="tel" placeholder="09XXXXXXXX" value="${esc(c.whatsapp)}">
+        <div class="err" data-for="dmWhatsapp">Ingresa un número válido (ej. 0991234567).</div>
+        <label for="dmLlamadas">Número para llamadas <small>(solo si es diferente al de WhatsApp)</small></label>
+        <input id="dmLlamadas" type="tel" inputmode="tel" placeholder="Opcional" value="${esc(c.llamadas)}">
+        <div class="err" data-for="dmLlamadas">Ingresa un número válido o deja el campo vacío.</div>
+      </div>`;
     body.innerHTML = html;
+
+    ['dmCedula','dmNombre','dmWhatsapp','dmLlamadas'].forEach(id => {
+      const input = document.getElementById(id);
+      input.addEventListener('input', () => {
+        input.classList.remove('bad');
+        body.querySelector(`.err[data-for="${id}"]`).classList.remove('show');
+        saveCustomer(readCustomerForm());
+      });
+    });
 
     body.querySelectorAll('.dm-cart-item').forEach(el => {
       const sku = el.dataset.sku;
@@ -216,6 +253,44 @@
     });
   }
 
+  // ---------- Customer data (required before checkout) ----------
+  const CUSTOMER_KEY = 'dm_cart_customer';
+  function esc(s){ return String(s || '').replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch])); }
+  function getCustomer(){
+    try { return JSON.parse(localStorage.getItem(CUSTOMER_KEY)) || {}; } catch(e){ return {}; }
+  }
+  function saveCustomer(c){
+    try { localStorage.setItem(CUSTOMER_KEY, JSON.stringify(c)); } catch(e){}
+  }
+  function readCustomerForm(){
+    const v = id => (document.getElementById(id)?.value || '').trim();
+    return { cedula: v('dmCedula'), nombre: v('dmNombre'), whatsapp: v('dmWhatsapp'), llamadas: v('dmLlamadas') };
+  }
+  // Ecuadorian cédula (módulo 10); a RUC is a valid cédula + 001, or 13 digits for companies.
+  function validCedula(id){
+    if (/^\d{13}$/.test(id)) return id.endsWith('001') && (validCedula(id.slice(0,10)) || /^\d{2}[69]/.test(id));
+    if (!/^\d{10}$/.test(id)) return false;
+    const prov = +id.slice(0,2);
+    if (!((prov >= 1 && prov <= 24) || prov === 30) || +id[2] > 5) return false;
+    let sum = 0;
+    for (let i = 0; i < 9; i++){ let d = +id[i] * (i % 2 === 0 ? 2 : 1); if (d > 9) d -= 9; sum += d; }
+    return (10 - sum % 10) % 10 === +id[9];
+  }
+  function validPhone(p){ const d = p.replace(/[^\d]/g, ''); return d.length >= 9 && d.length <= 13; }
+  function validateCustomer(c){
+    const bad = [];
+    if (!validCedula(c.cedula.replace(/\D/g, ''))) bad.push('dmCedula');
+    if (c.nombre.split(/\s+/).filter(Boolean).length < 2) bad.push('dmNombre');
+    if (!validPhone(c.whatsapp)) bad.push('dmWhatsapp');
+    if (c.llamadas && !validPhone(c.llamadas)) bad.push('dmLlamadas');
+    bad.forEach(id => {
+      document.getElementById(id)?.classList.add('bad');
+      document.querySelector(`.err[data-for="${id}"]`)?.classList.add('show');
+    });
+    if (bad.length) document.getElementById(bad[0])?.focus();
+    return bad.length === 0;
+  }
+
   // ---------- Checkout: PDF + WhatsApp handoff ----------
   function loadScript(src){
     return new Promise((resolve, reject) => {
@@ -225,7 +300,7 @@
     });
   }
 
-  async function generatePDF(cart, dvr, sd){
+  async function generatePDF(cart, dvr, sd, customer){
     if (!window.jspdf){
       await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
     }
@@ -250,7 +325,22 @@
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(13);
     doc.text('Fecha: ' + new Date().toLocaleDateString('es-EC'), 40, y);
-    y += 30;
+    y += 22;
+
+    doc.setFillColor(238, 240, 242);
+    doc.rect(40, y - 14, 515, customer.llamadas ? 76 : 62, 'F');
+    doc.setFontSize(11);
+    doc.text('DATOS DEL CLIENTE', 50, y);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10.5);
+    y += 16;
+    doc.text('Nombres: ' + customer.nombre, 50, y);
+    doc.text('Cédula / RUC: ' + customer.cedula, 330, y);
+    y += 14;
+    doc.text('WhatsApp: ' + customer.whatsapp, 50, y);
+    if (customer.llamadas){ y += 14; doc.text('Número para llamadas: ' + customer.llamadas, 50, y); }
+    doc.setFont('helvetica', 'bold');
+    y += 36;
 
     doc.setFontSize(10.5);
     doc.text('CÓDIGO', 40, y);
@@ -326,6 +416,9 @@
   async function checkout(){
     const cart = getCart();
     if (cart.length === 0) return;
+    const customer = readCustomerForm();
+    if (!validateCustomer(customer)) return;
+    saveCustomer(customer);
     const btn = document.getElementById('dmCartCheckout');
     btn.disabled = true;
     btn.textContent = 'Generando PDF…';
@@ -334,9 +427,15 @@
       const nIp = ipCamCount(cart);
       const dvr = recommendDVR(nAnalog);
       const sd = recommendSD(nIp);
-      const filename = await generatePDF(cart, dvr, sd);
+      const filename = await generatePDF(cart, dvr, sd, customer);
 
       let msg = 'Hola, arme este pedido en su catálogo y descargué el PDF (' + filename + '). Adjunto el PDF a este chat.\n\n';
+      msg += '*Mis datos*\n';
+      msg += 'Nombres: ' + customer.nombre + '\n';
+      msg += 'Cédula/RUC: ' + customer.cedula + '\n';
+      msg += 'WhatsApp: ' + customer.whatsapp + '\n';
+      if (customer.llamadas) msg += 'Número para llamadas: ' + customer.llamadas + '\n';
+      msg += '\n*Mi pedido*\n';
       cart.forEach(item => {
         msg += '• ' + item.qty + 'x ' + item.name + ' (' + item.sku + ') — ' + money(item.price * item.qty) + '\n';
       });
