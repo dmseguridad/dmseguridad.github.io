@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EZVIZ H6c — DM Seguridad Digital</title>
+<meta name="description" content="Cámara EZVIZ H6c Wi-Fi 1080p con paneo e inclinación, seguimiento automático y audio bidireccional. Ficha técnica y cotización por WhatsApp.">
+<link rel="icon" href="icon-dm-navy.png" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#192D3D">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ink:#192D3D; --ink-soft:#4B5866; --ink-faint:#7C8894;
+  --paper:#EEF0F2; --sheet:#FFFFFF; --line:#DDE1E4;
+  --brand-1:#0DCC30; --brand-2:#FCFC00; --accent:#0DCC30;
+  --whatsapp:#25D366; --whatsapp-dark:#1DA851;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0; background:var(--paper); color:var(--ink); font-family:'Public Sans', system-ui, -apple-system, Arial, sans-serif; line-height:1.55;}
+h1,h2,h3{font-family:'Barlow Semi Condensed', system-ui, sans-serif; text-wrap:balance; margin:0;}
+a{color:inherit;}
+.wrap{max-width:1080px; margin:0 auto; padding:0 20px;}
+img{max-width:100%; display:block;}
+
+.nav{position:sticky; top:0; z-index:50; background:rgba(20,28,36,0.92); backdrop-filter:blur(6px); border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:12px 20px;}
+.nav-brand{display:flex; align-items:center; gap:10px;}
+.nav-brand img{height:34px; width:auto;}
+.nav-links{display:flex; align-items:center; gap:22px;}
+.nav-links a{color:#C9D0D6; text-decoration:none; font-size:13.5px; font-weight:600;}
+.nav-links a:hover{color:#fff;}
+.nav .btn-wa{display:inline-flex; align-items:center; gap:7px; background:var(--whatsapp); color:#fff; padding:9px 16px; border-radius:999px; font-size:13px; font-weight:700; text-decoration:none; white-space:nowrap;}
+.nav .btn-wa:hover{background:var(--whatsapp-dark);}
+@media (max-width:720px){ .nav-links a:not(.btn-wa){display:none;} }
+
+.page-head{background:radial-gradient(circle at 20% 0%, #22394B 0%, var(--ink) 55%); color:#fff; padding:40px 0 32px; position:relative;}
+.page-head::after{content:""; position:absolute; left:0; right:0; bottom:0; height:5px; background:linear-gradient(90deg, var(--brand-1), var(--brand-2));}
+.back-link{display:inline-block; font-size:13px; font-weight:600; color:#fff; text-decoration:none; opacity:.85;}
+.back-link:hover{opacity:1; text-decoration:underline;}
+
+.section{padding:44px 0 70px;}
+
+.product-hero{display:grid; grid-template-columns:1.05fr 0.95fr; gap:36px; align-items:start;}
+@media (max-width:780px){.product-hero{grid-template-columns:1fr;}}
+.product-photo{background:#fff; border:1px solid var(--line); border-radius:16px; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+.product-photo img{width:100%; height:100%; object-fit:cover;}
+.product-info .sku{display:inline-block; font-family:ui-monospace,'IBM Plex Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.04em; color:var(--accent); background:var(--sheet); border:1px solid var(--line); border-radius:6px; padding:4px 9px; margin-bottom:12px;}
+.product-info h1{font-size:clamp(24px,3.4vw,32px); font-weight:700; margin-bottom:10px;}
+.product-info .price{font-size:30px; font-weight:800; color:var(--ink); margin-bottom:14px;}
+.product-info .tag{color:var(--ink-soft); font-size:15px; margin-bottom:22px;}
+.btn-cotizar{display:inline-flex; align-items:center; gap:9px; background:var(--whatsapp); color:#fff; padding:14px 26px; border-radius:10px; font-weight:700; font-size:15px; text-decoration:none;}
+.btn-cotizar:hover{background:var(--whatsapp-dark);}
+
+.spec-section{margin-top:56px;}
+.spec-section h2{font-size:clamp(19px,2.6vw,24px); font-weight:700; margin-bottom:18px; padding-bottom:10px; border-bottom:2px solid var(--line);}
+.spec-features{display:grid; grid-template-columns:1fr 1fr; gap:6px 28px; list-style:none; margin:0 0 8px; padding:0;}
+@media (max-width:640px){.spec-features{grid-template-columns:1fr;}}
+.spec-features li{font-size:14px; color:var(--ink-soft); padding:8px 0 8px 20px; position:relative; border-bottom:1px dashed var(--line);}
+.spec-features li::before{content:"●"; color:var(--accent); position:absolute; left:0; top:9px; font-size:8px;}
+
+.feature-demo{margin-top:24px; border-radius:14px; overflow:hidden; box-shadow:0 12px 30px -14px rgba(0,0,0,0.3);}
+.feature-demo img{width:100%; height:auto; display:block;}
+
+.accessories{margin-top:56px;}
+.accessories h2{font-size:clamp(19px,2.6vw,24px); font-weight:700; margin-bottom:6px; padding-bottom:10px; border-bottom:2px solid var(--line);}
+.accessories .sub{color:var(--ink-faint); font-size:14px; margin:14px 0 24px;}
+.acc-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; max-width:700px;}
+@media (max-width:560px){.acc-grid{grid-template-columns:1fr;}}
+.acc-card{background:var(--sheet); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column;}
+.acc-photo{aspect-ratio:4/3; background:var(--paper); display:flex; align-items:center; justify-content:center; overflow:hidden; border-bottom:1px solid var(--line); color:var(--ink-faint);}
+.acc-body{padding:16px 18px 18px; display:flex; flex-direction:column; gap:8px; flex:1;}
+.acc-card .sku{align-self:flex-start; font-family:ui-monospace,'IBM Plex Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--accent); background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:3px 8px;}
+.acc-card h3{font-size:15px; font-weight:600;}
+.acc-card .price{font-size:16px; font-weight:800; color:var(--ink);}
+.acc-card p{font-size:12.5px; color:var(--ink-faint); flex:1; margin:0;}
+.acc-card a{font-size:12.5px; font-weight:700; color:var(--whatsapp-dark); text-decoration:none;}
+.acc-card a:hover{text-decoration:underline;}
+
+footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5px;}
+.foot-grid{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px;}
+.foot-brand img{height:30px;}
+
+.wa-float{position:fixed; right:18px; bottom:18px; z-index:80; background:var(--whatsapp); color:#fff; width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; box-shadow:0 8px 24px rgba(0,0,0,0.3); font-size:28px;}
+.wa-float:hover{background:var(--whatsapp-dark);}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="nav-brand">
+      <a href="index.html"><img src="logo-dark.png" alt="DM Seguridad Digital"></a>
+    </div>
+    <div class="nav-links">
+      <a href="index.html#servicios">Servicios</a>
+      <a href="index.html#trabajos">Trabajos realizados</a>
+      <a href="index.html">Inicio</a>
+      <a class="btn-wa" id="waNav" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <a class="back-link" id="backLink" href="catalogo.html">← Volver al catálogo</a>
+  </div>
+</header>
+
+<section class="section">
+  <div class="wrap">
+
+    <div class="product-hero">
+      <div class="product-photo" style="aspect-ratio:1015/511;">
+        <img src="products/ez-h6c-hero.webp" alt="Cámara EZVIZ H6c con paneo e inclinación sobre una mesa">
+      </div>
+      <div class="product-info">
+        <div class="sku">DMS-EZV-015</div>
+        <h1>EZVIZ H6c</h1>
+        <div class="tag">Cámara Wi-Fi 1080p para el hogar con paneo e inclinación. Gira para ver toda la habitación y sigue el movimiento de forma inteligente: ideal para cuidar bebés, mascotas o reforzar la seguridad de tu casa.</div>
+        <a class="btn-cotizar wa-link" data-msg="Hola, quiero cotizar la cámara EZVIZ H6c (DMS-EZV-015).">💬 Cotizar por WhatsApp</a>
+      </div>
+    </div>
+
+    <div class="spec-section">
+      <h2>Características</h2>
+      <ul class="spec-features">
+        <li>Resolución 1080p Full HD.</li>
+        <li>Visión panorámica: 340° horizontal y 55° vertical.</li>
+        <li>Visión nocturna infrarroja hasta 10 m.</li>
+        <li>Detección de movimiento.</li>
+        <li>Seguimiento automático.</li>
+        <li>Comunicación bidireccional.</li>
+        <li>Modo suspensión para proteger tu privacidad.</li>
+        <li>Mírala desde cualquier lugar con la app EZVIZ.</li>
+        <li>Admite tarjetas microSD (hasta 256 GB) y almacenamiento en la nube EZVIZ CloudPlay.</li>
+      </ul>
+      <div class="feature-demo">
+        <img src="products/ez-h6c-360.webp" alt="EZVIZ H6c: rotación horizontal de 340° y vertical de 55°">
+      </div>
+      <div class="feature-demo">
+        <img src="products/ez-h6c-nocturna.png" alt="EZVIZ H6c: imágenes nocturnas hasta 10 metros, menos sobreexposición y detalles más claros">
+      </div>
+      <div class="feature-demo">
+        <img src="products/ez-h6c-funciones.png" alt="Funciones de la EZVIZ H6c: visión panorámica, 1080p, visión nocturna, detección de movimiento, seguimiento automático, audio bidireccional, modo suspensión, acceso remoto y microSD">
+      </div>
+    </div>
+
+    <div class="accessories">
+      <h2>Accesorios recomendados</h2>
+      <div class="sub">Para grabar en la cámara necesitas una tarjeta microSD compatible.</div>
+      <div class="acc-grid">
+
+        <div class="acc-card">
+          <div class="acc-photo">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round">
+              <path d="M7 2h8l4 4v14a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/>
+              <path d="M15 2v4h4"/>
+              <path d="M8.5 8v4M11 8v4M13.5 8v4"/>
+              <rect x="8" y="14" width="8" height="5" rx="0.6"/>
+            </svg>
+          </div>
+          <div class="acc-body">
+            <div class="sku">TF-C1-32G</div>
+            <h3>MicroSD Hiksemi 32GB Clase 10</h3>
+            <div class="price">$13.78</div>
+            <p>Tarjeta microSD 32GB Clase 10, ideal para grabación continua en cámaras de seguridad.</p>
+            <a class="wa-link" data-msg="Hola, quiero cotizar la microSD Hiksemi 32GB (TF-C1-32G) junto con mi cámara.">Cotizar →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img src="logo-dark.png" alt="DM Seguridad Digital">
+      </div>
+      <div id="waFooterText"></div>
+    </div>
+    <div>© <span id="year"></span> DM Seguridad Digital. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">💬</a>
+
+<script>
+  const WHATSAPP_NUMBER = '593980781862';
+  const DEFAULT_MSG = 'Hola, quiero información sobre sus equipos.';
+
+  function waLink(msg){
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  }
+
+  document.querySelectorAll('.wa-link').forEach(a=>{
+    a.href = waLink(a.dataset.msg || DEFAULT_MSG);
+    a.target = '_blank';
+    a.rel = 'noopener';
+  });
+  const waNav = document.getElementById('waNav');
+  if(waNav) waNav.href = waLink(DEFAULT_MSG);
+  const waFloat = document.getElementById('waFloat');
+  if(waFloat) waFloat.href = waLink(DEFAULT_MSG);
+  document.getElementById('waFooterText').textContent = 'WhatsApp: +593 98 078 1862';
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const backLink = document.getElementById('backLink');
+  if (backLink) {
+    backLink.addEventListener('click', function(e){
+      if (window.history.length > 1) {
+        e.preventDefault();
+        window.history.back();
+      }
+    });
+  }
+</script>
+
+<script>window.DM_PRODUCT_CAT = "ezviz";</script>
+<script src="cart.js"></script>
+
+</body>
+</html>
