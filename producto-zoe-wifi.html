@@ -8,7 +8,15 @@
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'G-64CVRGZPPK');
+  // Owner's devices: open the site once with ?interno=1 (undo with ?interno=0)
+  // so their visits are tagged internal and filtered out of the reports.
+  var dmInterno = false;
+  try {
+    if (/[?&]interno=1\b/.test(location.search)) localStorage.setItem('dmInterno', '1');
+    if (/[?&]interno=0\b/.test(location.search)) localStorage.removeItem('dmInterno');
+    dmInterno = localStorage.getItem('dmInterno') === '1';
+  } catch(e){}
+  gtag('config', 'G-64CVRGZPPK', dmInterno ? { traffic_type: 'internal' } : {});
 
   // Count every tap on a WhatsApp button as a contact
   document.addEventListener('click', function(e){
