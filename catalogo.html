@@ -87,6 +87,30 @@ img{max-width:100%; display:block;}
 .prod-card h3{font-size:16px; font-weight:600;}
 .prod-card p{font-size:13px; color:var(--ink-faint); flex:1; margin:0;}
 .prod-card a{font-size:12.5px; font-weight:700; color:var(--whatsapp-dark); text-decoration:none;}
+
+/* ---- Starlink plan gift cards ---- */
+.gc-wrap{aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; padding:18px; background:var(--paper); border-bottom:1px solid var(--line);}
+.gc{position:relative; width:100%; aspect-ratio:1.586; border-radius:14px; padding:16px 18px; color:#fff; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; box-shadow:0 14px 28px -12px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.12);}
+.gc-100{background:radial-gradient(120% 140% at 100% 0%, #2E4D63 0%, #0E1820 55%, #05090C 100%);}
+.gc-unl{background:radial-gradient(120% 140% at 100% 0%, #1F6B3A 0%, #0C2A18 50%, #040C07 100%);}
+.gc::before{content:""; position:absolute; inset:0; background:repeating-radial-gradient(circle at 115% -20%, rgba(255,255,255,.07) 0 1px, transparent 1px 16px); pointer-events:none;}
+.gc::after{content:""; position:absolute; left:0; right:0; bottom:0; height:4px; background:linear-gradient(90deg, var(--brand-1), var(--brand-2));}
+.gc-top{display:flex; justify-content:space-between; align-items:flex-start; position:relative;}
+.gc-brand{font-family:'Barlow Semi Condensed',sans-serif; font-weight:700; font-size:15px; letter-spacing:.32em;}
+.gc-tag{font-size:9.5px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.22); padding:3px 8px; border-radius:999px;}
+.gc-chip{width:34px; height:25px; border-radius:5px; background:linear-gradient(135deg,#E9D9A6,#B8995A); position:relative; margin-top:4px;}
+.gc-chip::before{content:""; position:absolute; inset:6px 8px; border:1px solid rgba(80,60,20,.45); border-radius:3px;}
+.gc-plan{position:relative; font-family:'Barlow Semi Condensed',sans-serif; font-weight:700; font-size:21px; line-height:1.1;}
+.gc-plan small{display:block; font-family:'Public Sans',sans-serif; font-weight:500; font-size:11px; color:rgba(255,255,255,.7); letter-spacing:.02em; margin-top:3px;}
+.gc-bottom{display:flex; justify-content:space-between; align-items:flex-end; position:relative;}
+.gc-amount{font-family:'Barlow Semi Condensed',sans-serif; font-weight:800; font-size:30px; line-height:1;}
+.gc-amount span{font-size:13px; font-weight:600; color:rgba(255,255,255,.75);}
+.gc-by{font-size:9.5px; text-align:right; color:rgba(255,255,255,.7); line-height:1.3;}
+.gc-by b{display:block; color:#fff; font-size:11px; letter-spacing:.04em;}
+.gc-price{font-family:'Barlow Semi Condensed',sans-serif; font-size:17px; font-weight:800; color:var(--ink);}
+.gc-price span{font-size:12px; font-weight:600; color:var(--ink-faint);}
+.gc-feats{margin:0; padding-left:18px; font-size:12.5px; color:var(--ink-soft); display:flex; flex-direction:column; gap:3px;}
+.gc-note{font-size:11.5px !important; color:var(--ink-faint);}
 .prod-card a:hover{text-decoration:underline;}
 .prod-card .price{font-size:17px; font-weight:800; color:var(--ink); font-family:'Barlow Semi Condensed',sans-serif;}
 
@@ -1157,6 +1181,54 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
           <p>Kit de internet satelital Starlink, incluye antena, cable y fuente. Instalación fija o vehicular con soporte de ventosas.</p>
           <a href="producto-starlink.html" style="font-size:12.5px; font-weight:700; color:var(--ink-soft); text-decoration:none;">Ver producto y accesorios →</a>
           <a class="wa-link" data-msg="Hola, quiero cotizar una antena Starlink (DMS-STK-001).">Cotizar →</a>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="starlink">
+        <div class="gc-wrap">
+          <div class="gc gc-100" role="img" aria-label="Tarjeta plan Starlink Itinerante 100 GB, 55 dólares al mes">
+            <div class="gc-top"><div class="gc-brand">STARLINK</div><div class="gc-tag">Plan móvil</div></div>
+            <div class="gc-chip"></div>
+            <div class="gc-plan">Itinerante 100 GB<small>Internet satelital en todo Ecuador</small></div>
+            <div class="gc-bottom"><div class="gc-amount">$55<span>/mes</span></div><div class="gc-by">Gestionado por<b>DM SEGURIDAD</b></div></div>
+          </div>
+        </div>
+        <div class="prod-body">
+          <div class="sku">DMS-STK-P01</div>
+          <h3>Plan Starlink Itinerante 100 GB</h3>
+          <div class="gc-price">$55.00 <span>/mes</span></div>
+          <ul class="gc-feats">
+            <li>Hasta 300 Mbps, rinde aprox. 1 semana de uso típico</li>
+            <li>Datos ilimitados a baja velocidad al terminar los 100 GB</li>
+            <li>Ideal para viajes, campamentos y fincas</li>
+            <li>Pausa y reactiva el plan cuando quieras</li>
+          </ul>
+          <p class="gc-note">Incluye plan Starlink (USD 50) + USD 5 de gestión: activación, pagos y soporte con nosotros. Requiere antena Starlink.</p>
+          <a class="wa-link" data-msg="Hola, quiero activar el plan Starlink Itinerante 100 GB de $55/mes (DMS-STK-P01).">Activar plan por WhatsApp →</a>
+        </div>
+      </div>
+
+      <div class="prod-card" data-cat="starlink">
+        <div class="gc-wrap">
+          <div class="gc gc-unl" role="img" aria-label="Tarjeta plan Starlink Itinerante Ilimitado, 105 dólares al mes">
+            <div class="gc-top"><div class="gc-brand">STARLINK</div><div class="gc-tag">Plan móvil</div></div>
+            <div class="gc-chip"></div>
+            <div class="gc-plan">Itinerante Ilimitado<small>Ecuador y más de 160 países</small></div>
+            <div class="gc-bottom"><div class="gc-amount">$105<span>/mes</span></div><div class="gc-by">Gestionado por<b>DM SEGURIDAD</b></div></div>
+          </div>
+        </div>
+        <div class="prod-body">
+          <div class="sku">DMS-STK-P02</div>
+          <h3>Plan Starlink Itinerante Ilimitado</h3>
+          <div class="gc-price">$105.00 <span>/mes</span></div>
+          <ul class="gc-feats">
+            <li>Hasta 300+ Mbps con datos de alta velocidad ilimitados</li>
+            <li>Funciona en viajes internacionales, en más de 160 países</li>
+            <li>Uso en movimiento y en botes en aguas costeras</li>
+            <li>Pausa y reactiva el plan cuando quieras</li>
+          </ul>
+          <p class="gc-note">Incluye plan Starlink (USD 100) + USD 5 de gestión: activación, pagos y soporte con nosotros. Requiere antena Starlink.</p>
+          <a class="wa-link" data-msg="Hola, quiero activar el plan Starlink Itinerante Ilimitado de $105/mes (DMS-STK-P02).">Activar plan por WhatsApp →</a>
         </div>
       </div>
 
