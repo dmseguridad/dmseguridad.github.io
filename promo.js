@@ -33,12 +33,12 @@
     try { if (typeof window.gtag === 'function') window.gtag('event', name, params); } catch(e){}
   }
 
-  if (!active() || promo.shown) return;
+  if (!active()) return;
 
   const css = `
   .dm-promo-overlay{position:fixed; inset:0; background:rgba(9,15,20,.55); z-index:300; display:flex; align-items:center; justify-content:center; padding:16px; opacity:0; transition:opacity .25s ease;}
   .dm-promo-overlay.open{opacity:1;}
-  .dm-promo{position:relative; width:100%; max-width:380px; max-height:calc(100vh - 32px); overflow-y:auto; background:#fff; border-radius:18px; overflow:hidden; box-shadow:0 30px 60px -20px rgba(0,0,0,.6); font-family:'Public Sans',system-ui,Arial,sans-serif; color:#192D3D; transform:translateY(12px); transition:transform .25s ease;}
+  .dm-promo{position:relative; width:100%; max-width:380px; max-height:calc(100vh - 32px); overflow-y:auto; background:#fff; border-radius:18px; box-shadow:0 30px 60px -20px rgba(0,0,0,.6); font-family:'Public Sans',system-ui,Arial,sans-serif; color:#192D3D; transform:translateY(12px); transition:transform .25s ease;}
   .dm-promo-overlay.open .dm-promo{transform:none;}
   .dm-promo-top{background:radial-gradient(120% 140% at 100% 0%, #22394B 0%, #192D3D 55%, #0E1820 100%); color:#fff; padding:26px 24px 22px; text-align:center; position:relative;}
   .dm-promo-top::after{content:""; position:absolute; left:0; right:0; bottom:0; height:4px; background:linear-gradient(90deg,#0DCC30,#FCFC00);}
@@ -53,13 +53,42 @@
   .dm-promo-cta:hover{background:#1DA851;}
   .dm-promo-close{position:absolute; top:10px; right:12px; background:none; border:none; color:#fff; font-size:20px; cursor:pointer; opacity:.8;}
   .dm-promo-close:hover{opacity:1;}
+  .dm-promo-badge{position:fixed; left:50%; bottom:22px; transform:translate(-50%, 20px); opacity:0; z-index:75; display:inline-flex; align-items:center; gap:7px; max-width:calc(100vw - 170px); background:#192D3D; color:#fff; border:1px solid rgba(252,252,0,.55); border-radius:999px; padding:9px 15px; font-family:'Public Sans',system-ui,Arial,sans-serif; font-size:13px; font-weight:700; white-space:nowrap; cursor:pointer; box-shadow:0 8px 22px rgba(0,0,0,.3); transition:opacity .3s ease, transform .3s ease;}
+  .dm-promo-badge.on{opacity:1; transform:translate(-50%, 0);}
+  .dm-promo-badge:hover{border-color:#FCFC00;}
+  .dm-promo-badge b{color:#FCFC00;}
+  .dm-promo-badge span{font-weight:500; color:#C9D0D6; overflow:hidden; text-overflow:ellipsis;}
   `;
+  const style = document.createElement('style');
+  style.textContent = css;
+  document.head.appendChild(style);
+
+  // Small reminder pill at the bottom while the coupon is active; tapping it reopens the popup.
+  let badge = null;
+  function badgeText(){
+    const h = hoursLeft();
+    return `🎁 <b>5% OFF</b><span>· quedan ${h > 1 ? h + ' h' : 'minutos'}</span>`;
+  }
+  function showBadge(){
+    if (!active()) return;
+    if (!badge){
+      badge = document.createElement('button');
+      badge.type = 'button';
+      badge.className = 'dm-promo-badge';
+      badge.setAttribute('aria-label', 'Ver cupón de 5% de descuento');
+      badge.addEventListener('click', () => { hideBadge(); show(); track('ver_cupon_etiqueta', { coupon: CODE }); });
+      document.body.appendChild(badge);
+      setInterval(() => {
+        if (!active()){ hideBadge(); return; }
+        badge.innerHTML = badgeText();
+      }, 60000);
+    }
+    badge.innerHTML = badgeText();
+    requestAnimationFrame(() => badge.classList.add('on'));
+  }
+  function hideBadge(){ if (badge) badge.classList.remove('on'); }
 
   function show(){
-    const style = document.createElement('style');
-    style.textContent = css;
-    document.head.appendChild(style);
-
     const onCatalog = /catalogo\.html$/.test(location.pathname);
     const overlay = document.createElement('div');
     overlay.className = 'dm-promo-overlay';
@@ -82,13 +111,15 @@
     document.body.appendChild(overlay);
     requestAnimationFrame(() => overlay.classList.add('open'));
 
-    promo.shown = true;
-    save(promo);
-    track('ver_cupon', { coupon: CODE });
+    if (!promo.shown){
+      promo.shown = true;
+      save(promo);
+      track('ver_cupon', { coupon: CODE });
+    }
 
     function close(){
       overlay.classList.remove('open');
-      setTimeout(() => overlay.remove(), 250);
+      setTimeout(() => { overlay.remove(); showBadge(); }, 250);
     }
     overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
     overlay.querySelector('.dm-promo-close').addEventListener('click', close);
@@ -99,5 +130,7 @@
     });
   }
 
-  setTimeout(show, 6000);
+  // First visit: big popup after 6 s. Afterwards: only the small pill.
+  if (promo.shown) showBadge();
+  else setTimeout(show, 6000);
 })();
