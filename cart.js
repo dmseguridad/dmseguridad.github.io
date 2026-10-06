@@ -46,13 +46,16 @@
   function clearCart(){ setCart([]); }
 
   // Listed prices are before VAT; IVA (15%) is added at checkout.
+  // Items flagged iva0 (Starlink service plans) are taxed at 0%.
   const IVA_RATE = 0.15;
   function cartTotal(cart){ return cart.reduce((s,i) => s + (i.price * i.qty), 0); }
   function round2(n){ return Math.round(n * 100) / 100; }
   function cartTotals(cart){
     const subtotal = round2(cartTotal(cart));
-    const iva = round2(subtotal * IVA_RATE);
-    return { subtotal, iva, total: round2(subtotal + iva) };
+    const base0 = round2(cartTotal(cart.filter(i => i.iva0)));
+    const base15 = round2(subtotal - base0);
+    const iva = round2(base15 * IVA_RATE);
+    return { subtotal, base0, base15, iva, total: round2(subtotal + iva) };
   }
   function cartCount(cart){ return cart.reduce((s,i) => s + i.qty, 0); }
   function analogCamCount(cart){
@@ -204,7 +207,7 @@
           <div class="dm-cart-item-info">
             <div class="sku">${item.sku}</div>
             <h4>${item.name}</h4>
-            <div class="price-line">${money(item.price)} c/u + IVA · Subtotal: <strong>${money(item.price * item.qty)}</strong></div>
+            <div class="price-line">${money(item.price)} c/u ${item.iva0 ? '· IVA 0%' : '+ IVA'} · Subtotal: <strong>${money(item.price * item.qty)}</strong></div>
             <div class="dm-cart-qty">
               <button data-act="dec">−</button>
               <span>${item.qty}</span>
@@ -269,8 +272,12 @@
     });
 
     const t = cartTotals(cart);
+    const subLines = t.base0 > 0
+      ? `<div class="dm-cart-line"><span>Subtotal IVA 15%</span><span>${money(t.base15)}</span></div>
+      <div class="dm-cart-line"><span>Subtotal IVA 0%</span><span>${money(t.base0)}</span></div>`
+      : `<div class="dm-cart-line"><span>Subtotal</span><span>${money(t.subtotal)}</span></div>`;
     foot.innerHTML = `
-      <div class="dm-cart-line"><span>Subtotal</span><span>${money(t.subtotal)}</span></div>
+      ${subLines}
       <div class="dm-cart-line"><span>IVA 15%</span><span>${money(t.iva)}</span></div>
       <div class="dm-cart-total"><span>Total estimado</span><span>${money(t.total)}</span></div>
       <button class="dm-cart-checkout" id="dmCartCheckout">📄 Finalizar y enviar por WhatsApp</button>
@@ -389,7 +396,7 @@
 
     doc.setFont('helvetica', 'normal');
     cart.forEach(item => {
-      const lines = doc.splitTextToSize(item.name, 240);
+      const lines = doc.splitTextToSize(item.name + (item.iva0 ? ' (IVA 0%)' : ''), 240);
       doc.text(item.sku, 40, y);
       doc.text(lines, 130, y);
       doc.text(String(item.qty), 385, y);
@@ -406,7 +413,13 @@
     const t = cartTotals(cart);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.text('Subtotal:', 380, y); doc.text(money(t.subtotal), 555, y, { align: 'right' });
+    if (t.base0 > 0){
+      doc.text('Subtotal IVA 15%:', 380, y); doc.text(money(t.base15), 555, y, { align: 'right' });
+      y += 16;
+      doc.text('Subtotal IVA 0%:', 380, y); doc.text(money(t.base0), 555, y, { align: 'right' });
+    } else {
+      doc.text('Subtotal:', 380, y); doc.text(money(t.subtotal), 555, y, { align: 'right' });
+    }
     y += 16;
     doc.text('IVA 15%:', 380, y); doc.text(money(t.iva), 555, y, { align: 'right' });
     y += 20;
@@ -478,10 +491,15 @@
       if (customer.llamadas) msg += 'Número para llamadas: ' + customer.llamadas + '\n';
       msg += '\n*Mi pedido*\n';
       cart.forEach(item => {
-        msg += '• ' + item.qty + 'x ' + item.name + ' (' + item.sku + ') — ' + money(item.price * item.qty) + '\n';
+        msg += '• ' + item.qty + 'x ' + item.name + ' (' + item.sku + ') — ' + money(item.price * item.qty) + (item.iva0 ? ' (IVA 0%)' : '') + '\n';
       });
       const t = cartTotals(cart);
-      msg += '\nSubtotal: ' + money(t.subtotal);
+      if (t.base0 > 0){
+        msg += '\nSubtotal IVA 15%: ' + money(t.base15);
+        msg += '\nSubtotal IVA 0%: ' + money(t.base0);
+      } else {
+        msg += '\nSubtotal: ' + money(t.subtotal);
+      }
       msg += '\nIVA 15%: ' + money(t.iva);
       msg += '\n*Total estimado: ' + money(t.total) + '*';
       if (dvr && dvr.sku){
@@ -511,8 +529,9 @@
   // ---------- Auto-convert "Cotizar" buttons on priced products ----------
   function enhanceProductCards(){
     document.querySelectorAll('.prod-card, .acc-card').forEach(card => {
-      const priceEl = card.querySelector('.price');
+      const priceEl = card.querySelector('.price, .gc-price');
       const waLinkEl = card.querySelector('a.wa-link');
+      const iva0 = card.dataset.iva === '0';
       if (!priceEl || !waLinkEl) return;
       const skuEl = card.querySelector('.sku');
       const nameEl = card.querySelector('h3');
@@ -532,7 +551,7 @@
       btn.textContent = '🛒 Agregar al carrito';
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        addToCart({ sku, name, price, cat, img });
+        addToCart(iva0 ? { sku, name, price, cat, img, iva0 } : { sku, name, price, cat, img });
         btn.textContent = '✓ Agregado';
         btn.classList.add('dm-add-ok');
         setTimeout(() => { btn.textContent = '🛒 Agregar al carrito'; btn.classList.remove('dm-add-ok'); }, 1400);
