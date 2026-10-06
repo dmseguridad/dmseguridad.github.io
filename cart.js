@@ -56,12 +56,25 @@
   const IVA_RATE = 0.15;
   function cartTotal(cart){ return cart.reduce((s,i) => s + (i.price * i.qty), 0); }
   function round2(n){ return Math.round(n * 100) / 100; }
+  // Welcome coupon from promo.js: applies to equipment only (no kits, no IVA-0 plans).
+  function promoInfo(cart){
+    const P = window.DMPromo;
+    if (!P || !P.active()) return null;
+    const eligible = round2(cartTotal(cart.filter(i => !i.iva0 && i.cat !== 'kits' && !/^DMS-KIT/.test(i.sku))));
+    const ok = eligible >= P.min;
+    return { code: P.code, rate: P.rate, min: P.min, eligible, ok,
+             discount: ok ? round2(eligible * P.rate) : 0,
+             missing: ok ? 0 : round2(P.min - eligible),
+             hoursLeft: P.hoursLeft() };
+  }
   function cartTotals(cart){
     const subtotal = round2(cartTotal(cart));
     const base0 = round2(cartTotal(cart.filter(i => i.iva0)));
     const base15 = round2(subtotal - base0);
-    const iva = round2(base15 * IVA_RATE);
-    return { subtotal, base0, base15, iva, total: round2(subtotal + iva) };
+    const promo = promoInfo(cart);
+    const discount = promo ? promo.discount : 0;
+    const iva = round2((base15 - discount) * IVA_RATE);
+    return { subtotal, base0, base15, discount, promo, iva, total: round2(subtotal - discount + iva) };
   }
   function cartCount(cart){ return cart.reduce((s,i) => s + i.qty, 0); }
   function analogCamCount(cart){
@@ -119,6 +132,8 @@
   .dm-cart-foot{border-top:1px solid #DDE1E4; padding:16px 20px; background:#fff;}
   .prod-card .price::after, .product-info .price::after, .acc-card .price::after{content:" + IVA"; font-size:0.55em; font-weight:600; color:#7C8894; letter-spacing:.02em;}
   .dm-cart-line{display:flex; justify-content:space-between; font-size:13.5px; color:#4B5866; margin-bottom:4px;}
+  .dm-cart-disc{color:#1DA851; font-weight:700;}
+  .dm-cart-promo-hint{background:#EAFBEE; border:1px dashed #0DCC30; border-radius:8px; padding:8px 10px; font-size:12px; color:#192D3D; margin:6px 0 8px; line-height:1.4;}
   .dm-cart-total{display:flex; justify-content:space-between; font-size:16px; font-weight:800; color:#192D3D; margin-bottom:12px; font-family:'Barlow Semi Condensed',system-ui,sans-serif;}
   .dm-cart-checkout{display:block; width:100%; background:#25D366; color:#fff; border:none; padding:14px; border-radius:10px; font-weight:700; font-size:14.5px; cursor:pointer; text-align:center;}
   .dm-cart-checkout:hover{background:#1DA851;}
@@ -282,8 +297,15 @@
       ? `<div class="dm-cart-line"><span>Subtotal IVA 15%</span><span>${money(t.base15)}</span></div>
       <div class="dm-cart-line"><span>Subtotal IVA 0%</span><span>${money(t.base0)}</span></div>`
       : `<div class="dm-cart-line"><span>Subtotal</span><span>${money(t.subtotal)}</span></div>`;
+    let promoLines = '';
+    if (t.promo && t.promo.ok){
+      promoLines = `<div class="dm-cart-line dm-cart-disc"><span>🎁 Cupón ${t.promo.code} (5% en equipos)</span><span>−${money(t.discount)}</span></div>`;
+    } else if (t.promo){
+      promoLines = `<div class="dm-cart-promo-hint">🎁 Agrega <strong>${money(t.promo.missing)}</strong> más en equipos y obtén <strong>5% de descuento</strong> con el cupón ${t.promo.code}. Te quedan ${t.promo.hoursLeft} h.</div>`;
+    }
     foot.innerHTML = `
       ${subLines}
+      ${promoLines}
       <div class="dm-cart-line"><span>IVA 15%</span><span>${money(t.iva)}</span></div>
       <div class="dm-cart-total"><span>Total estimado</span><span>${money(t.total)}</span></div>
       <button class="dm-cart-checkout" id="dmCartCheckout">📄 Finalizar y enviar por WhatsApp</button>
@@ -427,6 +449,10 @@
       doc.text('Subtotal:', 380, y); doc.text(money(t.subtotal), 555, y, { align: 'right' });
     }
     y += 16;
+    if (t.discount > 0){
+      doc.text('Cupón ' + t.promo.code + ' (5%):', 380, y); doc.text('-' + money(t.discount), 555, y, { align: 'right' });
+      y += 16;
+    }
     doc.text('IVA 15%:', 380, y); doc.text(money(t.iva), 555, y, { align: 'right' });
     y += 20;
     doc.setFont('helvetica', 'bold');
@@ -506,6 +532,9 @@
       } else {
         msg += '\nSubtotal: ' + money(t.subtotal);
       }
+      if (t.discount > 0){
+        msg += '\nCupón ' + t.promo.code + ' (5% en equipos): -' + money(t.discount);
+      }
       msg += '\nIVA 15%: ' + money(t.iva);
       msg += '\n*Total estimado: ' + money(t.total) + '*';
       if (dvr && dvr.sku){
@@ -518,7 +547,7 @@
       }
       msg += '\n\n¿Está bien lo que escogí o me recomiendan algún cambio?';
 
-      track('generate_lead', { currency: 'USD', value: t.total, items: cart.map(i => ({ item_id: i.sku, item_name: i.name, price: i.price, quantity: i.qty })) });
+      track('generate_lead', { currency: 'USD', value: t.total, coupon: t.discount > 0 ? t.promo.code : undefined, items: cart.map(i => ({ item_id: i.sku, item_name: i.name, price: i.price, quantity: i.qty })) });
       btn.textContent = '📎 Abriendo WhatsApp…';
       setTimeout(() => {
         window.open(waLink(msg), '_blank');
