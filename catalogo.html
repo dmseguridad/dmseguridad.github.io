@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-64CVRGZPPK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-64CVRGZPPK');
+
+  // Count every tap on a WhatsApp button as a contact
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href*="wa.me"]');
+    if (a) gtag('event', 'contacto_whatsapp', { page_location: location.href });
+  });
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Catálogo de equipos — DM Seguridad Digital</title>
@@ -2107,7 +2122,7 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
     });
   }
 </script>
-<script src="cart.js?v=20261006"></script>
+<script src="cart.js?v=2026100602"></script>
 
 </body>
 </html>

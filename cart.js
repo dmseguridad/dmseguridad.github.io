@@ -24,7 +24,13 @@
   }
   function findItem(cart, sku){ return cart.find(i => i.sku === sku); }
 
+  // Google Analytics events (no-op if the tag is blocked or missing)
+  function track(name, params){
+    try { if (typeof window.gtag === 'function') window.gtag('event', name, params); } catch(e){}
+  }
+
   function addToCart(item){
+    track('add_to_cart', { currency: 'USD', value: item.price, items: [{ item_id: item.sku, item_name: item.name, price: item.price, quantity: 1 }] });
     const cart = getCart();
     const existing = findItem(cart, item.sku);
     if (existing) existing.qty += 1;
@@ -512,6 +518,7 @@
       }
       msg += '\n\n¿Está bien lo que escogí o me recomiendan algún cambio?';
 
+      track('generate_lead', { currency: 'USD', value: t.total, items: cart.map(i => ({ item_id: i.sku, item_name: i.name, price: i.price, quantity: i.qty })) });
       btn.textContent = '📎 Abriendo WhatsApp…';
       setTimeout(() => {
         window.open(waLink(msg), '_blank');
