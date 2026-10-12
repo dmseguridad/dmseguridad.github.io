@@ -97,11 +97,37 @@ img{max-width:100%; display:block;}
 
 .section{padding:44px 0 70px;}
 
-.prod-filters{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:32px;}
-.prod-filter{border:1px solid var(--line); background:var(--sheet); color:var(--ink-soft); padding:8px 16px; border-radius:999px; font-size:13px; font-weight:600; cursor:pointer;}
-.prod-filter.active{background:var(--ink); color:#fff; border-color:var(--ink);}
+/* ---- category sidebar ---- */
+.cat-wrap{max-width:1240px;}
+.cat-layout{display:grid; grid-template-columns:250px 1fr; gap:26px; align-items:start;}
+.cat-side{position:sticky; top:76px; max-height:calc(100vh - 92px); overflow-y:auto; background:var(--sheet); border:1px solid var(--line); border-radius:14px; padding:14px 12px;}
+.cat-title{font-family:'Barlow Semi Condensed',sans-serif; font-size:18px; font-weight:700; color:var(--ink); padding:2px 8px 10px; border-bottom:1px solid var(--line); margin-bottom:8px;}
+.cat-toggle{display:none;}
+.prod-filter{display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%; text-align:left; border:none; background:none; color:var(--ink-soft); padding:8px 10px; border-radius:8px; font-size:13.5px; font-weight:600; font-family:inherit; cursor:pointer;}
+.prod-filter:hover{background:var(--paper); color:var(--ink);}
+.prod-filter.active{background:var(--ink); color:#fff;}
+.prod-filter .cnt{font-size:11.5px; font-weight:700; color:var(--ink-faint); background:var(--paper); border-radius:999px; padding:1px 8px; min-width:26px; text-align:center;}
+.prod-filter.active .cnt{background:rgba(255,255,255,0.18); color:#fff;}
+.cat-group{margin-top:4px;}
+.cat-group summary{list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:9px 10px 5px; font-size:11.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--accent);}
+.cat-group summary::-webkit-details-marker{display:none;}
+.cat-group summary::after{content:"▾"; font-size:13px; color:var(--ink-faint); transition:transform .2s ease;}
+.cat-group:not([open]) summary::after{transform:rotate(-90deg);}
+.cat-group .prod-filter{padding-left:16px;}
+.cat-main{min-width:0;}
 .prod-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
-@media (max-width:860px){.prod-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:1100px){.prod-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:900px){
+  .cat-layout{grid-template-columns:1fr; gap:18px;}
+  .cat-side{position:static; max-height:none; overflow:visible; padding:0; border:none; background:none;}
+  .cat-toggle{display:flex; align-items:center; gap:8px; width:100%; background:var(--ink); color:#fff; border:none; border-radius:12px; padding:13px 16px; font-size:14.5px; font-weight:600; font-family:inherit; cursor:pointer; text-align:left;}
+  .cat-toggle strong{color:var(--brand-2); font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .cat-chev{margin-left:auto; transition:transform .2s ease;}
+  .cat-toggle[aria-expanded="true"] .cat-chev{transform:rotate(180deg);}
+  .cat-panel{display:none; margin-top:8px; background:var(--sheet); border:1px solid var(--line); border-radius:12px; padding:10px; box-shadow:0 12px 28px -12px rgba(0,0,0,.25);}
+  .cat-panel.open{display:block;}
+  .cat-title{display:none;}
+}
 @media (max-width:560px){.prod-grid{grid-template-columns:1fr;}}
 .prod-card{background:var(--sheet); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column;}
 .prod-photo{position:relative; aspect-ratio:4/3; background:#fff; display:flex; align-items:center; justify-content:center; overflow:hidden; border-bottom:1px solid var(--line);}
@@ -176,29 +202,53 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
 </header>
 
 <section class="section">
-  <div class="wrap">
+  <div class="wrap cat-wrap">
 
-    <div class="prod-filters" id="prodFilters">
-      <button class="prod-filter active" data-cat="todos">Todos</button>
-      <button class="prod-filter" data-cat="kits">Kits</button>
-      <button class="prod-filter" data-cat="cctv">CCTV</button>
-      <button class="prod-filter" data-cat="grabadores">Grabadores</button>
-      <button class="prod-filter" data-cat="accesorios">Accesorios CCTV</button>
-      <button class="prod-filter" data-cat="ezviz">Ezviz</button>
-      <button class="prod-filter" data-cat="videoporteros">Videoporteros</button>
-      <button class="prod-filter" data-cat="acceso">Control de Acceso</button>
-      <button class="prod-filter" data-cat="tplink">TP-Link</button>
-      <button class="prod-filter" data-cat="redes">Redes</button>
-      <button class="prod-filter" data-cat="almacenamiento">Discos Duros</button>
-      <button class="prod-filter" data-cat="starlink">Starlink</button>
-<button class="prod-filter" data-cat="energia">Estaciones de Energía</button>
-<button class="prod-filter" data-cat="vehiculares">Cámaras Vehiculares</button>
-      <button class="prod-filter" data-cat="cercos">Cercos Eléctricos</button>
-      <button class="prod-filter" data-cat="ganaderia">Cercos Eléctricos Ganadería</button>
-      <button class="prod-filter" data-cat="alarmas">Alarmas Comunitarias</button>
-      <button class="prod-filter" data-cat="incendio">Alarmas contra Incendio</button>
-      <button class="prod-filter" data-cat="cerraduras">Cerraduras Inteligentes</button>
-    </div>
+    <div class="cat-layout">
+      <aside class="cat-side">
+        <button class="cat-toggle" id="catToggle" type="button" aria-expanded="false" aria-controls="catPanel"><span class="cat-toggle-ico" aria-hidden="true">☰</span> Categorías: <strong id="catCurrent">Todos los productos</strong><span class="cat-chev" aria-hidden="true">▾</span></button>
+        <nav class="cat-panel" id="catPanel" aria-label="Categorías de productos">
+          <div class="cat-title">Categorías</div>
+          <button class="prod-filter active" data-cat="todos">Todos los productos<span class="cnt"></span></button>
+          <details class="cat-group" open>
+            <summary>Videovigilancia</summary>
+            <button class="prod-filter" data-cat="kits">Kits de cámaras<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="cctv">Cámaras CCTV<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="ezviz">Cámaras Ezviz (Wi-Fi)<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="grabadores">Grabadores DVR/NVR<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="almacenamiento">Discos duros<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="accesorios">Accesorios CCTV<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="vehiculares">Cámaras vehiculares<span class="cnt"></span></button>
+          </details>
+          <details class="cat-group" open>
+            <summary>Hogar y accesos</summary>
+            <button class="prod-filter" data-cat="videoporteros">Videoporteros<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="cerraduras">Cerraduras inteligentes<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="acceso">Control de acceso<span class="cnt"></span></button>
+          </details>
+          <details class="cat-group" open>
+            <summary>Internet y redes</summary>
+            <button class="prod-filter" data-cat="starlink">Starlink<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="tplink">TP-Link<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="redes">Redes y cableado<span class="cnt"></span></button>
+          </details>
+          <details class="cat-group" open>
+            <summary>Energía</summary>
+            <button class="prod-filter" data-cat="energia">Estaciones de energía<span class="cnt"></span></button>
+          </details>
+          <details class="cat-group" open>
+            <summary>Cercos eléctricos</summary>
+            <button class="prod-filter" data-cat="cercos">Cercos eléctricos<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="ganaderia">Cercos para ganadería<span class="cnt"></span></button>
+          </details>
+          <details class="cat-group" open>
+            <summary>Alarmas</summary>
+            <button class="prod-filter" data-cat="alarmas">Alarmas comunitarias<span class="cnt"></span></button>
+            <button class="prod-filter" data-cat="incendio">Alarmas contra incendio<span class="cnt"></span></button>
+          </details>
+        </nav>
+      </aside>
+      <div class="cat-main">
 
     <div class="prod-grid" id="prodGrid">
 
@@ -2265,6 +2315,8 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
       </div>
 
     </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -2311,18 +2363,46 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
   const FILTER_KEY = 'dmCatalogFilter';
   const SCROLL_KEY = 'dmCatalogScroll';
 
+  const catToggle = document.getElementById('catToggle');
+  const catPanel = document.getElementById('catPanel');
+  const catCurrent = document.getElementById('catCurrent');
+  const mobileMenu = window.matchMedia('(max-width:900px)');
+
+  // Product count next to each category
+  const cards = [...document.querySelectorAll('.prod-card')];
+  document.querySelectorAll('.prod-filter').forEach(b=>{
+    const n = b.dataset.cat==='todos' ? cards.length : cards.filter(c=>c.dataset.cat===b.dataset.cat).length;
+    const cnt = b.querySelector('.cnt'); if (cnt) cnt.textContent = n;
+  });
+
   function applyFilter(cat){
-    document.querySelectorAll('.prod-filter').forEach(b=>b.classList.toggle('active', b.dataset.cat===cat));
-    document.querySelectorAll('.prod-card').forEach(card=>{
+    let label = 'Todos los productos';
+    document.querySelectorAll('.prod-filter').forEach(b=>{
+      const on = b.dataset.cat===cat;
+      b.classList.toggle('active', on);
+      if (on) label = b.firstChild.textContent.trim();
+    });
+    cards.forEach(card=>{
       card.style.display = (cat==='todos' || card.dataset.cat===cat) ? '' : 'none';
     });
+    if (catCurrent) catCurrent.textContent = label;
   }
+
+  function setPanel(open){
+    catPanel.classList.toggle('open', open);
+    catToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  catToggle.addEventListener('click', ()=> setPanel(!catPanel.classList.contains('open')));
 
   document.querySelectorAll('.prod-filter').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const cat = btn.dataset.cat;
       applyFilter(cat);
       sessionStorage.setItem(FILTER_KEY, cat);
+      if (mobileMenu.matches) setPanel(false);
+      // bring the first product of the chosen category into view
+      const top = document.getElementById('prodGrid').getBoundingClientRect().top + window.scrollY - (mobileMenu.matches ? 150 : 90);
+      if (window.scrollY > top || mobileMenu.matches) window.scrollTo({ top, behavior:'smooth' });
     });
   });
 
@@ -2332,9 +2412,16 @@ footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5
     });
   });
 
+  // A fresh visit always shows every product; the last category is only
+  // restored when the visitor comes back from a product page (Back button).
+  const navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+  const cameBack = navEntry && navEntry.type === 'back_forward';
   const savedFilter = sessionStorage.getItem(FILTER_KEY);
-  if (savedFilter) {
+  if (cameBack && savedFilter) {
     applyFilter(savedFilter);
+  } else {
+    sessionStorage.removeItem(FILTER_KEY);
+    applyFilter('todos');
   }
 
   const savedScroll = sessionStorage.getItem(SCROLL_KEY);
