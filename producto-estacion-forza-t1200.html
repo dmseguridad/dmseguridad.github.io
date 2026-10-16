@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-64CVRGZPPK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  // Owner's devices: open the site once with ?interno=1 (undo with ?interno=0)
+  // so their visits are tagged internal and filtered out of the reports.
+  var dmInterno = false;
+  try {
+    if (/[?&]interno=1\b/.test(location.search)) localStorage.setItem('dmInterno', '1');
+    if (/[?&]interno=0\b/.test(location.search)) localStorage.removeItem('dmInterno');
+    dmInterno = localStorage.getItem('dmInterno') === '1';
+  } catch(e){}
+  gtag('config', 'G-64CVRGZPPK', dmInterno ? { traffic_type: 'internal' } : {});
+
+  // Count every tap on a WhatsApp button as a contact
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href*="wa.me"]');
+    if (a) gtag('event', 'contacto_whatsapp', { page_location: location.href });
+  });
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estación de energía Forza Titan FPP-T1200 para CCTV | DM Seguridad</title>
+<meta name="description" content="Forza Titan FPP-T1200: 1200 W y 1102 Wh, respaldo para cámaras, DVR, router, Starlink y cerco eléctrico. Ficha técnica, equipos compatibles y autonomía.">
+<link rel="canonical" href="https://dmseguridaddigital.com/producto-estacion-forza-t1200.html">
+<meta property="og:type" content="product">
+<meta property="og:site_name" content="DM Seguridad Digital">
+<meta property="og:locale" content="es_EC">
+<meta property="og:title" content="Estación de energía Forza Titan FPP-T1200 para CCTV | DM Seguridad">
+<meta property="og:description" content="Forza Titan FPP-T1200: 1200 W y 1102 Wh, respaldo para cámaras, DVR, router, Starlink y cerco eléctrico. Ficha técnica, equipos compatibles y autonomía.">
+<meta property="og:url" content="https://dmseguridaddigital.com/producto-estacion-forza-t1200.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon-48.png" type="image/png" sizes="48x48">
+<link rel="icon" href="favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#192D3D">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ink:#192D3D; --ink-soft:#4B5866; --ink-faint:#7C8894;
+  --paper:#EEF0F2; --sheet:#FFFFFF; --line:#DDE1E4;
+  --brand-1:#0DCC30; --brand-2:#FCFC00; --accent:#0DCC30;
+  --whatsapp:#25D366; --whatsapp-dark:#1DA851;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{margin:0; background:var(--paper); color:var(--ink); font-family:'Public Sans', system-ui, -apple-system, Arial, sans-serif; line-height:1.55;}
+h1,h2,h3{font-family:'Barlow Semi Condensed', system-ui, sans-serif; text-wrap:balance; margin:0;}
+a{color:inherit;}
+.wrap{max-width:1080px; margin:0 auto; padding:0 20px;}
+img{max-width:100%; display:block;}
+
+.nav{position:sticky; top:0; z-index:50; background:rgba(20,28,36,0.92); backdrop-filter:blur(6px); border-bottom:1px solid rgba(255,255,255,0.08);}
+.nav .wrap{display:flex; align-items:center; justify-content:space-between; padding:12px 20px;}
+.nav-brand{display:flex; align-items:center; gap:10px;}
+.nav-brand img{height:34px; width:auto;}
+.nav-links{display:flex; align-items:center; gap:22px;}
+.nav-links a{color:#C9D0D6; text-decoration:none; font-size:13.5px; font-weight:600;}
+.nav-links a:hover{color:#fff;}
+.nav .btn-wa{display:inline-flex; align-items:center; gap:7px; background:var(--whatsapp); color:#fff; padding:9px 16px; border-radius:999px; font-size:13px; font-weight:700; text-decoration:none; white-space:nowrap;}
+.nav .btn-wa:hover{background:var(--whatsapp-dark);}
+@media (max-width:720px){ .nav-links a:not(.btn-wa){display:none;} }
+
+.page-head{background:var(--ink); color:#fff; padding:60px 0 46px; position:relative; overflow:hidden;}
+.page-head::before{content:""; position:absolute; inset:-16px; background-image:linear-gradient(180deg, rgba(25,45,61,0.72), rgba(25,45,61,0.88)), url('hero/catalogo-header.jpg'); background-size:cover; background-position:center; filter:blur(5px); transform:scale(1.06); z-index:0;}
+.page-head::after{content:""; position:absolute; left:0; right:0; bottom:0; height:5px; background:linear-gradient(90deg, var(--brand-1), var(--brand-2)); z-index:2;}
+.page-head .wrap{position:relative; z-index:1;}
+.back-link{display:inline-block; font-size:13px; font-weight:600; color:#fff; text-decoration:none; opacity:.85;}
+.back-link:hover{opacity:1; text-decoration:underline;}
+
+.section{padding:44px 0 70px;}
+
+.product-hero{display:grid; grid-template-columns:0.85fr 1.15fr; gap:36px; align-items:start;}
+@media (max-width:780px){.product-hero{grid-template-columns:1fr;}}
+.product-photo{background:#fff; border:1px solid var(--line); border-radius:16px; aspect-ratio:4/3; display:flex; align-items:center; justify-content:center; overflow:hidden;}
+.product-photo img{width:100%; height:100%; object-fit:contain; padding:20px;}
+.product-info .sku{display:inline-block; font-family:ui-monospace,'IBM Plex Mono',monospace; font-size:11px; font-weight:700; letter-spacing:.04em; color:var(--accent); background:var(--sheet); border:1px solid var(--line); border-radius:6px; padding:4px 9px; margin-bottom:12px;}
+.product-info h1{font-size:clamp(24px,3.4vw,32px); font-weight:700; margin-bottom:10px;}
+.product-info .tag{color:var(--ink-faint); font-size:14.5px; margin-bottom:22px;}
+.btn-cotizar{display:inline-flex; align-items:center; gap:9px; background:var(--whatsapp); color:#fff; padding:14px 26px; border-radius:10px; font-weight:700; font-size:15px; text-decoration:none;}
+.btn-cotizar:hover{background:var(--whatsapp-dark);}
+
+.qr-box{background:var(--sheet); border:1px solid var(--line); border-radius:14px; padding:18px; display:flex; gap:16px; align-items:center; margin-top:24px; max-width:420px;}
+.qr-box img{width:88px; height:88px; border-radius:8px; flex-shrink:0;}
+.qr-box .qr-text{font-size:12.5px; color:var(--ink-soft);}
+.qr-box .qr-text strong{display:block; color:var(--ink); font-size:14px; margin-bottom:4px;}
+
+.spec-section{margin-top:56px;}
+.spec-section h2{font-size:clamp(19px,2.6vw,24px); font-weight:700; margin-bottom:18px; padding-bottom:10px; border-bottom:2px solid var(--line);}
+.spec-features{display:grid; grid-template-columns:1fr 1fr; gap:6px 28px; list-style:none; margin:0 0 8px; padding:0;}
+@media (max-width:640px){.spec-features{grid-template-columns:1fr;}}
+.spec-features li{font-size:14px; color:var(--ink-soft); padding:8px 0 8px 20px; position:relative; border-bottom:1px dashed var(--line);}
+.spec-features li::before{content:"●"; color:var(--accent); position:absolute; left:0; top:9px; font-size:8px;}
+
+.spec-table{width:100%; border-collapse:collapse; margin-top:8px;}
+.spec-table td{padding:11px 14px; font-size:13.5px; border-bottom:1px solid var(--line);}
+.spec-table tr:nth-child(odd){background:var(--sheet);}
+.spec-table tr:nth-child(even){background:var(--paper);}
+.spec-table td:first-child{color:var(--ink-faint); font-weight:600; width:44%;}
+.spec-table td:last-child{color:var(--ink); font-weight:700;}
+
+.accessories{margin-top:56px;}
+.accessories h2{font-size:clamp(19px,2.6vw,24px); font-weight:700; margin-bottom:6px; padding-bottom:10px; border-bottom:2px solid var(--line);}
+.accessories .sub{color:var(--ink-faint); font-size:14px; margin:14px 0 24px;}
+.acc-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+@media (max-width:780px){.acc-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.acc-grid{grid-template-columns:1fr;}}
+.acc-card{background:var(--sheet); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column;}
+.acc-photo{aspect-ratio:4/3; background:#fff; display:flex; align-items:center; justify-content:center; overflow:hidden; border-bottom:1px solid var(--line);}
+.acc-photo img{width:100%; height:100%; object-fit:cover;}
+.acc-body{padding:16px 18px 18px; display:flex; flex-direction:column; gap:8px; flex:1;}
+.acc-card .sku{align-self:flex-start; font-family:ui-monospace,'IBM Plex Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--accent); background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:3px 8px;}
+.acc-card h3{font-size:15px; font-weight:600;}
+.acc-card p{font-size:12.5px; color:var(--ink-faint); flex:1; margin:0;}
+.acc-card a{font-size:12.5px; font-weight:700; color:var(--whatsapp-dark); text-decoration:none;}
+.acc-card a:hover{text-decoration:underline;}
+
+footer{background:var(--ink); color:#9AA5AC; padding:36px 0 28px; font-size:12.5px;}
+.foot-grid{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:16px;}
+.foot-brand img{height:30px;}
+
+.wa-float{position:fixed; right:18px; bottom:18px; z-index:80; background:var(--whatsapp); color:#fff; width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; box-shadow:0 8px 24px rgba(0,0,0,0.3); font-size:28px;}
+.wa-float:hover{background:var(--whatsapp-dark);}
+.compat-intro{color:var(--ink-soft); font-size:14.5px; margin:0 0 18px;}
+.compat-table{width:100%; border-collapse:collapse; margin-top:8px;}
+.compat-table th{background:var(--ink); color:#fff; font-size:12.5px; font-weight:700; text-align:left; padding:10px 14px;}
+.compat-table td{padding:11px 14px; font-size:13.5px; border-bottom:1px solid var(--line); vertical-align:top;}
+.compat-table tr:nth-child(odd) td{background:var(--sheet);}
+.compat-table tr:nth-child(even) td{background:var(--paper);}
+.compat-table td:first-child{font-weight:700; color:var(--ink);}
+.compat-table td.num{white-space:nowrap; font-weight:700;}
+.table-scroll{overflow-x:auto;}
+.note-box{background:#FFFBE0; border:1px solid #EAD97A; border-radius:12px; padding:14px 18px; font-size:13.5px; color:#4B4A2A; margin-top:16px;}
+.note-box.green{background:#EAF8EE; border-color:#B7E2C2; color:#1F4A2B;}
+.note-box strong{color:inherit;}
+.prod-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
+@media (max-width:860px){.prod-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.prod-grid{grid-template-columns:1fr;}}
+.prod-card .price{font-size:17px; font-weight:800; color:var(--ink); font-family:'Barlow Semi Condensed',sans-serif;}
+.prod-card{background:var(--sheet); border:1px solid var(--line); border-radius:14px; overflow:hidden; display:flex; flex-direction:column;}
+.prod-photo{aspect-ratio:4/3; background:#fff; display:flex; align-items:center; justify-content:center; overflow:hidden; border-bottom:1px solid var(--line);}
+.prod-photo img{width:100%; height:100%; object-fit:contain;}
+.prod-body{padding:16px 18px 18px; display:flex; flex-direction:column; gap:8px; flex:1;}
+.prod-card .sku{align-self:flex-start; font-family:ui-monospace,'IBM Plex Mono',monospace; font-size:10.5px; font-weight:700; letter-spacing:.04em; color:var(--accent); background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:3px 8px;}
+.prod-card h3{font-size:15.5px; font-weight:600;}
+.prod-card p{font-size:12.5px; color:var(--ink-faint); flex:1; margin:0;}
+.prod-card a{font-size:12.5px; font-weight:700; color:var(--whatsapp-dark); text-decoration:none;}
+.prod-card a:hover{text-decoration:underline;}
+.product-info .price{font-size:30px; font-weight:800; color:var(--ink); margin-bottom:14px;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <div class="nav-brand">
+      <a href="index.html"><img src="logo-dark.png" alt="DM Seguridad Digital"></a>
+    </div>
+    <div class="nav-links">
+      <a href="index.html#servicios">Servicios</a>
+      <a href="index.html#trabajos">Trabajos realizados</a>
+      <a href="index.html">Inicio</a>
+      <a class="btn-wa" id="waNav" href="#" target="_blank" rel="noopener">💬 WhatsApp</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-head">
+  <div class="wrap">
+    <a class="back-link" id="backLink" href="catalogo.html">← Volver al catálogo</a>
+  </div>
+</header>
+
+<section class="section">
+  <div class="wrap">
+
+    <div class="product-hero">
+      <div class="product-photo">
+        <img src="products/forza-titan-fpp-t1200.jpg" alt="Estación de energía portátil Forza Titan FPP-T1200">
+      </div>
+      <div class="product-info">
+        <div class="sku">DMS-ENE-006</div>
+        <h1>Estación de energía Forza Titan FPP-T1200</h1>
+        <div class="price">$1365.61</div>
+        <div class="tag">Respaldo portátil de 1102 Wh y 1200 W para cámaras, DVR, router, Starlink y cerco eléctrico.</div>
+        <a class="btn-cotizar wa-link" data-msg="Hola, quiero cotizar la estación de energía Forza Titan FPP-T1200 (DMS-ENE-006).">💬 Cotizar por WhatsApp</a>
+      </div>
+    </div>
+
+    <div class="spec-section">
+      <h2>Características</h2>
+      <ul class="spec-features">
+        <li>Batería LMFP de 1102 Wh con hasta 3000 ciclos de carga.</li>
+        <li>Salida AC de 120 V: 1200 W continuos y hasta 2400 W de pico (TurboPower).</li>
+        <li>3 tomas AC para DVR, router, switch PoE, monitor, fuentes de cámaras y energizador de cerco eléctrico.</li>
+        <li>2 USB-A de 18 W, USB-C de 18 W y USB-C de hasta 100 W.</li>
+        <li>2 salidas DC de 12 V (120 W cada una) y una salida tipo auto de 12 V a 10 A.</li>
+        <li>Carga completa en unos 90 minutos con la red eléctrica (entrada 110-120 V).</li>
+        <li>Controlador MPPT para recargarla con paneles solares portátiles.</li>
+      </ul>
+    </div>
+
+    <div class="spec-section">
+      <h2>Especificaciones técnicas</h2>
+      <table class="spec-table">
+        <tr><td>Capacidad de batería</td><td>1102 Wh (3.75 V, 294 Ah)</td></tr>
+        <tr><td>Tipo de batería</td><td>LMFP, hasta 3000 ciclos</td></tr>
+        <tr><td>Salida AC</td><td>3 tomas de 120 V, 50/60 Hz, 1200 W (pico 2400 W)</td></tr>
+        <tr><td>Salidas USB</td><td>2 × USB-A 18 W, USB-C 18 W, USB-C 100 W</td></tr>
+        <tr><td>Salidas DC</td><td>2 × 12 V 10 A (120 W) y 1 salida tipo auto 12 V 10 A (120 W)</td></tr>
+        <tr><td>Entrada AC</td><td>110-120 V, 50/60 Hz</td></tr>
+        <tr><td>Tiempo de carga</td><td>Aprox. 1.5 horas (0 a 100 %)</td></tr>
+        <tr><td>Carga solar</td><td>Controlador MPPT</td></tr>
+        <tr><td>Peso</td><td>13.6 kg</td></tr>
+        <tr><td>Dimensiones</td><td>316 × 240 × 300 mm</td></tr>
+      </table>
+    </div>
+
+    <div class="spec-section">
+      <h2>¿Qué equipos puedes conectar? Cámaras y cercos eléctricos</h2>
+      <p class="compat-intro">Con una estación de energía tu sistema de cámaras sigue grabando y enviando imágenes al celular, y tu cerco eléctrico sigue protegiendo, cuando se va la luz. Estos son los equipos más comunes y lo que consumen (valores típicos aproximados; el consumo real depende de la marca y del modelo).</p>
+      <div class="table-scroll"><table class="compat-table">
+          <tr><th>Equipo</th><th>Consumo típico</th><th>Cómo se conecta</th></tr>
+          <tr><td>Cámara análoga 1080p (12 V)</td><td class="num">4 W</td><td>Fuente de 12 V conectada a la toma AC de la estación (ej. DMS-ACV-007 para 4 cámaras).</td></tr>
+          <tr><td>Cámara IP Wi-Fi o PoE</td><td class="num">5 – 8 W</td><td>Wi-Fi: con su fuente en la toma AC. PoE: por medio de un switch PoE conectado a la toma AC.</td></tr>
+          <tr><td>DVR o NVR de 4 a 8 canales con 1 disco</td><td class="num">15 – 25 W</td><td>Toma AC con su fuente original.</td></tr>
+          <tr><td>Switch PoE pequeño (sin contar las cámaras)</td><td class="num">5 – 10 W</td><td>Toma AC. Las cámaras PoE consumen aparte.</td></tr>
+          <tr><td>Router o módem de internet</td><td class="num">8 – 12 W</td><td>Toma AC, para mantener la conexión a la app aunque se vaya la luz.</td></tr>
+          <tr><td>Monitor de 19 a 22 pulgadas</td><td class="num">15 – 25 W</td><td>Toma AC. Puedes apagarlo y ver las cámaras desde el celular para ahorrar batería.</td></tr>
+          <tr><td>Antena Starlink (kit estándar)</td><td class="num">50 – 75 W</td><td>Toma AC con su fuente original. Consume bastante: calcula la autonomía aparte.</td></tr>
+          <tr><td>Energizador de cerco eléctrico residencial (YANEX 1600, XPOWER i8 e i12, ZOE WIFI)</td><td class="num">1.3 – 9.5 W</td><td>Toma AC (110/220 V). Así el cerco eléctrico sigue protegiendo y su alarma sigue activa cuando se va la luz.</td></tr>
+          <tr><td>Energizador de cerco eléctrico industrial (HR-8000 Plus)</td><td class="num">6.6 – 9.1 W</td><td>Toma AC (110/220 V).</td></tr>
+          <tr><td>Energizador ganadero Taurux 20, 40, 60 y 80</td><td class="num">5.5 – 8.6 W</td><td>Con su fuente DC de 12 V en la toma AC, o con la salida de 12 V de la estación y el adaptador del energizador.</td></tr>
+        </table></div>
+      <div class="note-box green"><strong>Función de respaldo (UPS):</strong> la ficha del fabricante no indica un tiempo de conmutación tipo UPS. Para equipos que no pueden apagarse ni un instante, como el DVR o el NVR, conviene respaldarlos con un UPS (mira la categoría UPS del catálogo) o probar la conexión al instalar la estación.</div>
+    </div>
+
+    <div class="spec-section">
+      <h2>Autonomía estimada con cámaras y cercos eléctricos</h2>
+      <p class="compat-intro">Cálculo aproximado con el 85 % de la capacidad de la batería (1102 Wh), que es lo que realmente se aprovecha. Tu autonomía real puede variar según los equipos que conectes.</p>
+      <div class="table-scroll"><table class="compat-table">
+          <tr><th>Sistema de ejemplo</th><th>Consumo total</th><th>Autonomía estimada</th></tr>
+          <tr><td>Casa pequeña: 2 cámaras Wi-Fi + router</td><td class="num">≈ 22 W</td><td class="num">42.6 h (≈ 1.8 días)</td></tr>
+          <tr><td>Kit de 4 cámaras análogas + DVR + router</td><td class="num">≈ 46 W</td><td class="num">20.4 h</td></tr>
+          <tr><td>Kit de 8 cámaras análogas + DVR + router</td><td class="num">≈ 62 W</td><td class="num">15.1 h</td></tr>
+          <tr><td>4 cámaras IP PoE + NVR + switch PoE + router</td><td class="num">≈ 62 W</td><td class="num">15.1 h</td></tr>
+          <tr><td>Kit de 4 cámaras + DVR + router + Starlink</td><td class="num">≈ 106 W</td><td class="num">8.8 h</td></tr>
+          <tr><td>Cerco eléctrico residencial solo (energizador ZOE WIFI)</td><td class="num">≈ 10 W</td><td class="num">93.7 h (≈ 3.9 días)</td></tr>
+          <tr><td>Cerco eléctrico residencial + 4 cámaras + DVR + router</td><td class="num">≈ 56 W</td><td class="num">16.7 h</td></tr>
+          <tr><td>Finca: cerco ganadero Taurux 80 + 2 cámaras Wi-Fi + router</td><td class="num">≈ 31 W</td><td class="num">30.2 h (≈ 1.3 días)</td></tr>
+        </table></div>
+      <div class="note-box"><strong>Para ganar horas:</strong> apaga el monitor y mira las cámaras desde el celular, y no conectes equipos que no sean necesarios durante el apagón. Esta estación también se recarga con paneles solares mediante su controlador MPPT; pregúntanos por la compatibilidad antes de comprar el panel.</div>
+
+    </div>
+
+    <div class="accessories">
+      <h2>Accesorios recomendados</h2>
+      <div class="sub">Para conectar cámaras de 12 V a la estación desde sus tomas AC.</div>
+      <div class="prod-grid">
+
+        <div class="prod-card">
+          <div class="prod-photo"><img src="products/teclam-ht1000-d.png" alt="Fuente de poder TECLAM 12V 1A" style="object-fit:contain;"></div>
+          <div class="prod-body">
+            <div class="sku">DMS-ACV-002</div>
+            <h3>Fuente de poder 12V 1A TECLAM</h3>
+            <div class="price">$3.49</div>
+            <p>Alimenta una cámara de 12 V desde la toma AC de la estación.</p>
+            <a class="wa-link" data-msg="Hola, quiero cotizar la fuente de poder 12V 1A TECLAM (DMS-ACV-002) junto con mi estación de energía.">Cotizar →</a>
+          </div>
+        </div>
+
+        <div class="prod-card">
+          <div class="prod-photo"><svg width="104" height="104" viewBox="0 0 24 24" fill="none" stroke="#7C8894" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round" aria-label="Fuente de poder de 4 salidas"><rect x="3" y="6" width="18" height="10" rx="1.5"/><path d="M6 16v3M10 16v3M14 16v3M18 16v3"/><path d="M12.5 8.5l-2 3h3l-2 3"/></svg></div>
+          <div class="prod-body">
+            <div class="sku">DMS-ACV-007</div>
+            <h3>Fuente de poder 12V 5A con 4 salidas TECLAM</h3>
+            <div class="price">$15.90</div>
+            <p>Alimenta hasta 4 cámaras desde un solo punto conectado a la estación.</p>
+            <a class="wa-link" data-msg="Hola, quiero cotizar la fuente de poder 12V 5A de 4 salidas TECLAM (DMS-ACV-007) junto con mi estación de energía.">Cotizar →</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <img src="logo-dark.png" alt="DM Seguridad Digital">
+      </div>
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+        <div id="waFooterText"></div>
+        <div style="display:flex; gap:10px;">
+          <a href="https://www.facebook.com/dmtechnology05/" target="_blank" rel="noopener" aria-label="Facebook de DM Seguridad Digital" title="Facebook" style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; color:#fff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8v3h2.5V21h3z"/></svg></a>
+          <a href="https://www.instagram.com/dmseguridaddigital/" target="_blank" rel="noopener" aria-label="Instagram de DM Seguridad Digital" title="Instagram" style="width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; color:#fff;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div>© <span id="year"></span> DM Seguridad Digital. Todos los derechos reservados.</div>
+  </div>
+</footer>
+
+<a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">💬</a>
+
+<script>
+  const WHATSAPP_NUMBER = '593980781862';
+  const DEFAULT_MSG = 'Hola, quiero información sobre sus equipos.';
+
+  function waLink(msg){
+    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+  }
+
+  document.querySelectorAll('.wa-link').forEach(a=>{
+    a.href = waLink(a.dataset.msg || DEFAULT_MSG);
+    a.target = '_blank';
+    a.rel = 'noopener';
+  });
+  const waNav = document.getElementById('waNav');
+  if(waNav) waNav.href = waLink(DEFAULT_MSG);
+  const waFloat = document.getElementById('waFloat');
+  if(waFloat) waFloat.href = waLink(DEFAULT_MSG);
+  document.getElementById('waFooterText').textContent = 'WhatsApp: +593 98 078 1862';
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const backLink = document.getElementById('backLink');
+  if (backLink) {
+    backLink.addEventListener('click', function(e){
+      if (window.history.length > 1) {
+        e.preventDefault();
+        window.history.back();
+      }
+    });
+  }
+</script>
+
+<script src="promo.js?v=2"></script>
+<script>window.DM_PRODUCT_CAT = "energia";</script>
+<script src="cart.js?v=2026100603"></script>
+
+</body>
+</html>
