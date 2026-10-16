@@ -38,12 +38,12 @@
     icon(name, size = 20) {
       return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
     },
-    toast(msg, type = 'ok') {
+    toast(msg, type = 'ok', ms = 3000) {
       document.querySelectorAll('.toast').forEach(t => t.remove());
       const t = document.createElement('div');
       t.className = 'toast ' + type; t.setAttribute('role', 'status'); t.textContent = msg;
       document.body.appendChild(t);
-      setTimeout(() => t.remove(), 3000);
+      setTimeout(() => t.remove(), ms);
     },
     modal(html, onMount) {
       UI.closeModal();

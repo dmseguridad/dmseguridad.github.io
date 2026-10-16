@@ -384,7 +384,17 @@
     render(); window.scrollTo(0, 0);
   });
   // Si el salón confirma o cambia algo (otra pestaña), se actualiza la vista
-  window.addEventListener('salondb-change', () => { if (!UI.isModalOpen()) render(); });
+  window.addEventListener('salondb-change', e => {
+    const d = e.detail || {};
+    if (!UI.isModalOpen()) render();
+    // Avisa al cliente cuando el salón responde sobre su cita o su pago
+    const c = me();
+    if (!c || !d.remote || d.replay) return;
+    const a = d.id && d.t === 'status' ? SalonDB.appointment(d.id) : null;
+    if (a && a.clientId === c.id && d.status === 'confirmada') UI.toast(`✅ ¡${SalonDB.settings.salonName} confirmó tu cita del ${U.fmtDate(a.date)}!`, 'ok', 6000);
+    const it = d.t === 'payStatus' ? (d.kind === 'appt' ? SalonDB.appointment(d.id) : SalonDB.orders().find(o => o.id === d.id)) : null;
+    if (it && it.clientId === c.id) UI.toast(d.status === 'verificado' ? '✅ Tu pago fue verificado' : '⚠️ Tu comprobante fue rechazado, sube uno nuevo', d.status === 'verificado' ? 'ok' : 'warn', 6000);
+  });
 
   render();
 })();

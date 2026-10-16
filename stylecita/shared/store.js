@@ -170,6 +170,10 @@
 
   /* ---------- Almacenamiento ---------- */
   let db;
+  // Envía cada cambio a los demás aparatos (lo conecta shared/sync.js); sin él, no hace nada
+  let publish = () => {};
+  // Las fotos de comprobantes viajan aparte como archivo, no dentro del mensaje
+  const lite = p => p && p.receipt && p.receipt.startsWith('data:') ? { ...p, receipt: null } : p;
   function load() {
     try { db = JSON.parse(localStorage.getItem(KEY)); } catch (e) { db = null; }
     if (!db || db.version !== VERSION) { db = seed(); save(); }
@@ -244,6 +248,48 @@
     reload: load,
     reset() { localStorage.removeItem(KEY); load(); },
 
+    /* ---------- Sincronización en vivo (demo) ---------- */
+    setPublisher(fn) { publish = fn; },
+    /* Aplica un cambio que llegó de otro aparato. Se puede aplicar dos veces sin duplicar nada. */
+    applyRemote(e, fileUrl) {
+      // El cliente puede existir aquí con otro id: se reconoce por su celular
+      const clientId = c => {
+        if (!c) return null;
+        let local = byId(db.clients, c.id) || db.clients.find(x => U.phone(x.phone) === U.phone(c.phone));
+        if (!local) { local = { ...c }; db.clients.push(local); }
+        return local.id;
+      };
+      const itemOf = (kind, id) => byId(kind === 'appt' ? db.appointments : db.orders, id);
+      if (e.t === 'appt') {
+        const a = { ...e.appt, clientId: clientId(e.client) || e.appt.clientId };
+        const prev = byId(db.appointments, a.id);
+        // Si ya teníamos la foto del comprobante, no se pierde
+        if (prev && prev.payment && prev.payment.receipt && a.payment && !a.payment.receipt) a.payment = { ...a.payment, receipt: prev.payment.receipt };
+        if (prev) Object.assign(prev, a); else db.appointments.push(a);
+      } else if (e.t === 'status') {
+        const a = byId(db.appointments, e.id);
+        if (a) a.status = e.status;
+      } else if (e.t === 'order') {
+        if (!byId(db.orders, e.order.id)) {
+          db.orders.push({ ...e.order, clientId: clientId(e.client) || e.order.clientId });
+          e.order.items.forEach(i => { const p = byId(db.products, i.productId); if (p) p.stock = Math.max(0, p.stock - i.qty); });
+        }
+      } else if (e.t === 'orderStatus') {
+        const o = byId(db.orders, e.id);
+        if (o) {
+          if (e.status === 'cancelado' && o.status !== 'cancelado') o.items.forEach(i => { const p = byId(db.products, i.productId); if (p) p.stock += i.qty; });
+          o.status = e.status;
+        }
+      } else if (e.t === 'pay') {
+        const it = itemOf(e.kind, e.id);
+        if (it) it.payment = { ...e.payment, receipt: fileUrl || (it.payment && it.payment.receipt) || null };
+      } else if (e.t === 'payStatus') {
+        const it = itemOf(e.kind, e.id);
+        if (it && it.payment) it.payment.status = e.status;
+      } else return;
+      save();
+    },
+
     // Servicios
     services: (all = false) => db.services.filter(s => all || s.active),
     service: id => byId(db.services, id),
@@ -299,9 +345,11 @@
       } else if (!isFree(st, date, t, dur, id)) throw new Error('Ese horario ya no está libre. Elige otro.');
       const prev = id ? byId(db.appointments, id) : null;
       const status = prev && prev.status !== 'cancelada' ? prev.status : (source === 'salon' || db.settings.autoConfirm ? 'confirmada' : 'pendiente');
-      return upsert(db.appointments, { id, clientId, staffId: st, serviceIds, date, start, end: U.fromMin(t + dur), price: price(serviceIds), status, source: prev ? prev.source : source, notes, createdAt: prev ? prev.createdAt : U.today(), payment: prev && prev.payment ? prev.payment : newPayment(payMethod) });
+      const saved = upsert(db.appointments, { id, clientId, staffId: st, serviceIds, date, start, end: U.fromMin(t + dur), price: price(serviceIds), status, source: prev ? prev.source : source, notes, createdAt: prev ? prev.createdAt : U.today(), payment: prev && prev.payment ? prev.payment : newPayment(payMethod) });
+      publish({ t: 'appt', isNew: !prev, appt: { ...saved, payment: lite(saved.payment) }, client: byId(db.clients, clientId) });
+      return saved;
     },
-    setStatus(id, status) { const a = byId(db.appointments, id); if (a) { a.status = status; save(); } return a; },
+    setStatus(id, status) { const a = byId(db.appointments, id); if (a) { a.status = status; save(); publish({ t: 'status', id, status }); } return a; },
     // El cliente puede cancelar solo con la anticipación que fija el salón
     canCancel(a) {
       if (!['pendiente', 'confirmada'].includes(a.status)) return false;
@@ -334,13 +382,15 @@
       }
       if (!items.length) throw new Error('Tu bolsa está vacía');
       items.forEach(i => { byId(db.products, i.productId).stock -= i.qty; });
-      return upsert(db.orders, { id: 'o' + U.uid(), clientId, items, total: items.reduce((t, i) => t + i.price * i.qty, 0), status: 'pendiente', createdAt: U.today(), payment: newPayment(payMethod) });
+      const order = upsert(db.orders, { id: 'o' + U.uid(), clientId, items, total: items.reduce((t, i) => t + i.price * i.qty, 0), status: 'pendiente', createdAt: U.today(), payment: newPayment(payMethod) });
+      publish({ t: 'order', order, client: byId(db.clients, clientId) });
+      return order;
     },
     setOrderStatus(id, status) {
       const o = byId(db.orders, id);
       if (!o) return;
       if (status === 'cancelado' && o.status !== 'cancelado') o.items.forEach(i => { const p = byId(db.products, i.productId); if (p) p.stock += i.qty; });
-      o.status = status; save(); return o;
+      o.status = status; save(); publish({ t: 'orderStatus', id, status }); return o;
     },
 
     // Pagos por transferencia
@@ -357,13 +407,13 @@
       const item = byId(kind === 'appt' ? db.appointments : db.orders, id);
       if (!item) return;
       item.payment = { method: 'transferencia', status: 'en_revision', receipt: image, uploadedAt: U.today() };
-      save(); return item;
+      save(); publish({ t: 'pay', kind, id, payment: lite(item.payment) }, image); return item;
     },
     reviewPayment(kind, id, ok) {
       const item = byId(kind === 'appt' ? db.appointments : db.orders, id);
       if (!item || !item.payment) return;
       item.payment.status = ok ? 'verificado' : 'rechazado';
-      save(); return item;
+      save(); publish({ t: 'payStatus', kind, id, status: item.payment.status }); return item;
     },
 
     // Resumen

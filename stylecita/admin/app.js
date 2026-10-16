@@ -624,14 +624,44 @@
   document.addEventListener('input', e => { if (e.target.id === 'q') { state.q = e.target.value; document.getElementById('clientRows').innerHTML = clientRows(); } });
   window.addEventListener('hashchange', () => { UI.closeModal(); render(); });
 
-  // Reservas nuevas desde la app del cliente (otra pestaña o dispositivo)
-  let lastPending = SalonDB.dashboard().pending.length;
-  window.addEventListener('salondb-change', () => {
-    const n = SalonDB.dashboard().pending.length;
-    if (!UI.isModalOpen()) render();
-    if (n > lastPending) UI.toast('📅 Nueva reserva desde la app');
-    lastPending = n;
+  /* ---------- En vivo: avisos con sonido (pensado también para una TV) ---------- */
+  let audio = null;
+  // El navegador solo deja sonar después de un toque (por ejemplo, al entrar con el PIN)
+  document.addEventListener('pointerdown', () => {
+    try { audio = audio || new (window.AudioContext || window.webkitAudioContext)(); audio.resume(); } catch (e) { /* sin sonido */ }
   });
+  function chime() {
+    if (!audio) return;
+    [880, 1320].forEach((f, i) => {
+      const o = audio.createOscillator(), g = audio.createGain(), t = audio.currentTime + i * 0.18;
+      o.frequency.value = f; o.connect(g); g.connect(audio.destination);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.25, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+      o.start(t); o.stop(t + 0.4);
+    });
+  }
+  // Texto del aviso para un cambio que llegó de otro aparato
+  function remoteMsg(d) {
+    const name = c => U.first(clientName(c));
+    if (d.t === 'appt' && d.isNew && d.appt.source === 'app') return `📅 Nueva reserva: ${name(d.appt.clientId)} · ${U.fmtDate(d.appt.date, { weekday: 'short', day: 'numeric' })} ${U.fmtTime(d.appt.start)}`;
+    if (d.t === 'status' && d.status === 'cancelada') { const a = SalonDB.appointment(d.id); return a ? `❌ ${name(a.clientId)} canceló su cita de las ${U.fmtTime(a.start)}` : ''; }
+    if (d.t === 'pay') return '🧾 Llegó un comprobante de pago';
+    if (d.t === 'order') return '🛍️ Nuevo pedido en la tienda';
+    return '';
+  }
+  let lastPending = SalonDB.dashboard().pending.length;
+  window.addEventListener('salondb-change', e => {
+    const d = e.detail || {};
+    if (!UI.isModalOpen()) render();
+    const n = SalonDB.dashboard().pending.length;
+    // Con detalle: llegó por internet. Sin detalle: otra pestaña de este mismo navegador
+    const msg = d.t ? (d.remote && !d.replay ? remoteMsg(d) : '') : (n > lastPending ? '📅 Nueva reserva desde la app' : '');
+    lastPending = n;
+    if (msg) { UI.toast(msg, 'ok big', 8000); chime(); }
+  });
+  // La agenda y el resumen se refrescan solos cada minuto (la línea de la hora avanza en la TV)
+  setInterval(() => {
+    if (sessionStorage.getItem(SESSION) === '1' && !UI.isModalOpen() && ['agenda', 'inicio'].includes(route())) render();
+  }, 60000);
 
   render();
 })();

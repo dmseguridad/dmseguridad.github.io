@@ -203,3 +203,10 @@ svg text { font-family: inherit; }
 .pay-opt { display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; background: var(--surface); border: 2px solid var(--border); color: var(--text); border-radius: 14px; padding: 12px 14px; font: inherit; cursor: pointer; }
 .pay-opt + .pay-opt { margin-top: 8px; }
 .pay-opt.active { border-color: var(--accent); background: rgba(29, 78, 216, .06); }
+/* Indicador de conexión en vivo (panel) */
+.live-badge { position: fixed; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); z-index: 40; display: flex; align-items: center; gap: 7px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px 6px 10px; font-size: .78rem; font-weight: 700; color: var(--muted); box-shadow: var(--shadow); }
+.live-badge::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+.live-badge.on { color: var(--ok); }
+.live-badge.on::before { background: var(--ok); box-shadow: 0 0 0 0 rgba(14, 159, 110, .5); animation: pulse 1.8s infinite; }
+@keyframes pulse { 70% { box-shadow: 0 0 0 9px rgba(14, 159, 110, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 159, 110, 0); } }
+.toast.big { font-size: 1.15rem; padding: 16px 22px; border-left-width: 6px; }
