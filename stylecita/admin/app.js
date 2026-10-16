@@ -274,41 +274,8 @@
         </div>`;
     },
 
-    suscripcion() {
-      const sub = mySub(), C = Central;
-      const pays = C.payments({ salonId: C.DEMO_SALON });
-      const waiting = pays.find(p => p.status === 'en_revision');
-      const iva = Math.round(C.PRICE * C.IVA * 100) / 100;
-      const untilTxt = sub.until ? `Pagado hasta el ${U.fmtDate(sub.until, { day: 'numeric', month: 'long', year: 'numeric' })}` : `Prueba gratis hasta el ${U.fmtDate(sub.access, { day: 'numeric', month: 'long' })}`;
-      return `<div class="page-head"><div><h1>Mi suscripción</h1><div class="muted">Plan Style App para tu salón</div></div></div>
-      <div class="grid g2">
-        <div class="stack">
-          <div class="card"><div class="row between"><h2>Plan Style App</h2>${UI.badge(C.STATUS[sub.status])}</div>
-            <div class="muted">${untilTxt}</div>
-            <div class="list-item mt"><span class="grow">Suscripción mensual</span><span>${U.money(C.PRICE)}</span></div>
-            <div class="list-item"><span class="grow">IVA ${Math.round(C.IVA * 100)}%</span><span>${U.money(iva)}</span></div>
-            <div class="list-item"><strong class="grow">Total al mes</strong><strong style="font-size:1.2rem">${U.money(C.TOTAL)}</strong></div>
-            <p class="muted small mt">Incluye panel del salón, app para tus clientes, agenda en vivo, finanzas, asistente por voz y tienda.</p>
-          </div>
-          <div class="card"><h2>Historial de pagos</h2>
-            ${pays.length ? pays.map(p => `<div class="list-item"><span class="prod-thumb">${p.receipt ? `<img src="${p.receipt}" alt="">` : '🧾'}</span><div class="grow"><strong>${U.money(p.amount)}</strong> · ${p.months} ${p.months > 1 ? 'meses' : 'mes'}<div class="muted small">Reportado el ${U.fmtDate(p.createdAt)}</div></div>${UI.badge(C.PAY_STATUS[p.status])}</div>`).join('') : '<div class="empty">Aún no hay pagos</div>'}
-          </div>
-        </div>
-        <div class="stack">
-          <div class="card stack"><h2>Pagar por transferencia</h2>
-            ${waiting ? `<div class="alert ok">Recibimos tu comprobante de ${U.money(waiting.amount)}. Lo revisamos pronto y te avisamos.</div>` : ''}
-            <div class="field"><label for="subMonths">¿Cuántos meses pagas?</label>
-              <select id="subMonths">${[1, 3, 6, 12].map(n => `<option value="${n}">${n} ${n > 1 ? 'meses' : 'mes'} · ${U.money(C.TOTAL * n)}</option>`).join('')}</select></div>
-            ${C.settings.accounts.map(a => `<div class="acc"><strong>${esc(a.bank)}</strong>
-              <div class="acc-row"><div><div class="k">Cuenta de ${esc(a.type.toLowerCase())}</div><div class="v">${esc(a.number)}</div></div>${copyBtn(a.number)}</div>
-              <div class="acc-row"><div><div class="k">Titular</div><div class="v">${esc(a.holder)}</div></div>${copyBtn(a.holder)}</div>
-              <div class="acc-row"><div><div class="k">Cédula / RUC</div><div class="v">${esc(a.idNumber)}</div></div>${copyBtn(a.idNumber)}</div></div>`).join('')}
-            <button class="btn btn-primary btn-lg btn-block" data-action="sub-report">📎 Ya transferí, subir comprobante</button>
-            <a class="btn btn-wa btn-block" target="_blank" rel="noopener" href="${U.waLink(C.settings.whatsapp, `Hola Style App 👋, soy de ${SalonDB.settings.salonName}. Tengo una consulta sobre mi suscripción.`)}">${UI.icon('whatsapp', 18)} Soporte por WhatsApp</a>
-          </div>
-        </div>
-      </div>`;
-    },
+    // Pagar la suscripción (tarjeta con cobro automático o transferencia): pantalla común en shared/billing.js
+    suscripcion: () => Billing.subPage(SUB_ID),
 
     ajustes() {
       const s = SalonDB.settings;
@@ -392,28 +359,11 @@
   }
 
   /* ---------- Suscripción del salón a Style App ---------- */
-  function mySub() {
-    const s = Central.salon(Central.DEMO_SALON);
-    return { salon: s, status: Central.statusOf(s), until: s.paidUntil, access: Central.accessUntil(s) };
-  }
-  // Aviso arriba del panel cuando el pago está por vencer o vencido
-  const longDay = d => d ? U.fmtDate(d, { day: 'numeric', month: 'long' }) : '—';
-  function subBanner(sub, page) {
-    if (page === 'suscripcion') return '';
-    const txt = {
-      por_vencer: `Tu suscripción vence el ${longDay(sub.until)}.`,
-      vencido: `Tu suscripción venció el ${longDay(sub.until)}. Tienes hasta el ${longDay(sub.access)} para pagar antes de que se pause.`,
-      prueba: `Estás en el período de prueba gratis hasta el ${longDay(sub.access)}.`,
-    }[sub.status];
-    return txt ? `<div class="alert ${sub.status === 'vencido' ? 'bad' : 'warn'} row between wrap" style="margin-bottom:16px"><span>${txt}</span><a class="btn btn-sm btn-primary" href="#/suscripcion">Pagar ahora</a></div>` : '';
-  }
-  function blockedPage() {
-    return `<div class="card stack" style="max-width:560px;margin:40px auto;text-align:center">
-      <div style="font-size:2.6rem">⏸️</div><h1>Tu suscripción está pausada</h1>
-      <p class="muted">Tus datos están guardados y tus clientes no pierden sus citas. Reporta tu pago y, apenas lo aprobemos, el panel vuelve a funcionar.</p>
-      <a class="btn btn-primary btn-lg" href="#/suscripcion">Reportar mi pago</a></div>`;
-  }
-  const copyBtn = v => `<button type="button" class="copy" data-action="copy" data-v="${esc(v)}">Copiar</button>`;
+  const SUB_ID = Billing.DEMO.salon; // este salón en el sistema de cobros
+  const mySub = () => ({ status: Billing.statusOf(Billing.client(SUB_ID)) });
+  // Aviso arriba del panel cuando el pago está por vencer, vencido o se cobrará solo
+  const subBanner = (sub, page) => page === 'suscripcion' ? '' : Billing.banner(SUB_ID);
+  const blockedPage = () => Billing.blockedPage();
 
   function clientRows() {
     const q = state.q.trim().toLowerCase();
@@ -683,15 +633,6 @@
       if (navigator.clipboard) navigator.clipboard.writeText(v).then(done, () => UI.toast(v, 'warn'));
       else UI.toast(v, 'warn');
     },
-    async 'sub-report'() {
-      const months = Number((document.getElementById('subMonths') || {}).value || 1);
-      try {
-        const img = await UI.pickImage({ max: 1000, quality: 0.72 });
-        if (!img) return;
-        Central.reportPayment(Central.DEMO_SALON, months, img);
-        render(); UI.toast('Comprobante enviado a Style App. Te avisamos al aprobarlo.');
-      } catch (e) { UI.toast(e.message, 'bad'); }
-    },
     'copy-link'() {
       const v = document.getElementById('clientLink').value;
       (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => UI.toast('Enlace copiado'), () => { document.getElementById('clientLink').select(); UI.toast('Selecciona y copia el enlace', 'warn'); });
@@ -826,11 +767,12 @@
     if (msg) { UI.toast(msg, 'ok big', 8000); chime(); }
   });
   // Style App aprueba, rechaza o pausa la suscripción desde su panel central
-  window.addEventListener('central-change', e => {
+  window.addEventListener('billing-change', e => {
     const d = e.detail || {};
     if (!UI.isModalOpen()) render();
-    if (!d.remote || d.replay) return;
-    if (d.t === 'subreview' && d.salonId === Central.DEMO_SALON) UI.toast(d.status === 'aprobado' ? '✅ Style App aprobó tu pago. ¡Gracias!' : '⚠️ Tu comprobante fue rechazado. Revisa y súbelo de nuevo.', d.status === 'aprobado' ? 'ok big' : 'warn big', 8000);
+    if (!d.remote || d.replay || !d.payment || d.payment.clientId !== SUB_ID) return;
+    if (d.payment.status === 'aprobado') UI.toast(`✅ Pago de tu suscripción aprobado (${U.money(d.payment.amount)}). ¡Gracias!`, 'ok big', 8000);
+    if (d.payment.status === 'rechazado') UI.toast('⚠️ Tu comprobante fue rechazado. Revisa y súbelo de nuevo.', 'warn big', 8000);
   });
   // La agenda y el resumen se refrescan solos cada minuto (la línea de la hora avanza en la TV)
   setInterval(() => {

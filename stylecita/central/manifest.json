@@ -1,6 +1,6 @@
 {
-  "name": "Style App · Central",
-  "short_name": "Style App Central",
+  "name": "Panel del dueño",
+  "short_name": "Panel dueño",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

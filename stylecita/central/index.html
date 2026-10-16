@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Central · Style App</title>
-<meta name="description" content="Control de las peluquerías suscritas a Style App y sus pagos.">
+<title>Panel del dueño · KadaMeta y Style App</title>
+<meta name="description" content="Control de gimnasios (KadaMeta) y peluquerías (Style App): pagos, tarjetas y cobros automáticos.">
 <meta name="robots" content="noindex">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="../shared/icon.svg" type="image/svg+xml">
@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#0b0b0c">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Style App Central">
+<meta name="apple-mobile-web-app-title" content="Panel del dueño">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap">
 <link rel="stylesheet" href="../shared/styles.css">
@@ -32,8 +32,13 @@
   .actions { white-space: nowrap; text-align: right; }
   .toolbar { gap: 12px; margin-bottom: 8px; }
   .toolbar input { max-width: 340px; }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; background: rgba(255, 255, 255, .05); border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin: 0 4px 16px; }
+  .seg button { border: 0; background: none; color: var(--muted); font: inherit; font-size: .8rem; font-weight: 700; padding: 8px 4px; border-radius: 9px; cursor: pointer; }
+  .seg button.on { background: var(--accent); color: var(--on-accent); }
+  .prod-tag { display: inline-block; font-size: .7rem; font-weight: 800; padding: 2px 8px; border-radius: 999px; color: var(--c); background: color-mix(in srgb, var(--c) 16%, transparent); border: 1px solid color-mix(in srgb, var(--c) 40%, transparent); vertical-align: middle; }
   .receipt-big { display: block; max-width: 100%; max-height: 360px; margin: 0 auto; border-radius: 12px; border: 1px solid var(--border); background: #fff; }
   @media (max-width: 900px) {
+    .seg { margin: 0 0 10px; }
     .layout { grid-template-columns: minmax(0, 1fr); }
     .toolbar input { max-width: none; }
     .sidebar { height: auto; position: sticky; top: 0; z-index: 20; padding: 10px 12px; }
@@ -51,7 +56,7 @@
 <div id="app"></div>
 <script src="../shared/store.js"></script>
 <script src="../shared/ui.js"></script>
-<script src="../shared/central.js"></script>
+<script src="../shared/billing.js"></script>
 <script src="app.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
