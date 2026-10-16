@@ -753,7 +753,7 @@
   }, 60000);
 
   // Para el asistente de voz (admin/assistant.js)
-  window.AdminUI = { apptForm, openAppt, go: page => { location.hash = '#/' + page; } };
+  window.AdminUI = { apptForm, openAppt, render, go: page => { location.hash = '#/' + page; } };
 
   render();
 })();

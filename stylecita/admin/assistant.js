@@ -1,6 +1,7 @@
 /* Asistente del panel, por voz o por texto (demo).
-   Entiende las preguntas más comunes del dueño y responde con los datos del salón; también
-   prepara citas dichas en voz alta ("agenda a María mañana a las 3 para corte").
+   Entiende las preguntas más comunes del dueño y responde con los datos del salón. Sobre todo
+   mueve, adelanta, cancela y agenda citas dichas en voz alta, siempre pidiendo confirmación
+   ("mueve la cita de María a las 5" → "¿La muevo?" → "sí") y ofreciendo avisar al cliente.
    El micrófono usa el reconocimiento de voz del navegador y la respuesta se lee en voz alta.
    Funciona por reglas: la versión con IA real (Claude) necesita un servidor propio. */
 (function () {
@@ -38,9 +39,10 @@
     }
     return null;
   }
-  function parseTime(t) {
-    const s = t.replace(/\b(a las|a la|las) (una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce)\b/g, (x, p, w) => `${p} ${NUMS[w]}`);
-    const m = s.match(/\b(?:a las|a la|las|tipo)\s+(\d{1,2})(?:[: ](\d{2})| y media| y cuarto)?\s*(de la manana|de la tarde|de la noche|am|pm)?/);
+  // prefix: qué palabras van antes de la hora ("a las 5" es la hora nueva; "de las 3", la hora actual)
+  function parseTime(t, prefix = '(?:a las|a la|las|tipo)') {
+    const s = t.replace(/\b(las|la) (una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce)\b/g, (x, p, w) => `${p} ${NUMS[w]}`);
+    const m = s.match(new RegExp(`\\b${prefix}\\s+(\\d{1,2})(?:[: ](\\d{2})| y media| y cuarto)?\\s*(de la manana|de la tarde|de la noche|am|pm)?`));
     if (!m) return null;
     let h = +m[1];
     const min = m[2] ? +m[2] : / y media/.test(m[0]) ? 30 : / y cuarto/.test(m[0]) ? 15 : 0;
@@ -89,10 +91,178 @@
     return w.map(x => U.cap(rawWords.find(r => norm(r) === x) || x)).join(' ');
   }
 
+  /* ---------- Mover, adelantar y cancelar citas ---------- */
+  const DAY_WORDS = 'pasado manana|manana|hoy|lunes|martes|miercoles|jueves|viernes|sabado|domingo';
+  const isActive = a => a.status === 'pendiente' || a.status === 'confirmada';
+  const durOf = a => U.toMin(a.end) - U.toMin(a.start);
+  const svcTxt = a => a.serviceIds.map(id => (SalonDB.service(id) || {}).name || '').join(' y ').toLowerCase();
+  const when = (date, start) => `${dayLabel(date)} a las ${U.fmtTime(start)}`;
+  const ctx = { apptId: null }; // última cita de la que se habló ("pásala a las 5")
+
+  // Día nuevo: "al lunes", "para mañana"; día actual de la cita: "la de hoy", "del lunes"
+  function targetDate(t) {
+    const m = t.match(new RegExp(`\\b(?:al|para el|para|a|pasala al|pasala para)\\s+(${DAY_WORDS}|\\d{1,2})\\b`));
+    if (!m) return null;
+    return /^\d/.test(m[1]) ? parseDate('el ' + m[1], true) : parseDate(m[1], true);
+  }
+  function sourceDate(t) {
+    const m = t.match(new RegExp(`\\b(?:de|del|la de)\\s+(${DAY_WORDS})\\b`));
+    return m ? parseDate(m[1], true) : null;
+  }
+  // "media hora", "una hora", "20 minutos"
+  function relMinutes(t) {
+    if (/\bmedia hora\b/.test(t)) return 30;
+    if (/\bun cuarto de hora\b/.test(t)) return 15;
+    const m = t.match(/\b(\d+|una|un|dos)\s*(horas?|minutos?|min)\b/);
+    if (!m) return 0;
+    const n = m[1] === 'una' || m[1] === 'un' ? 1 : m[1] === 'dos' ? 2 : +m[1];
+    return /hora/.test(m[2]) ? n * 60 : n;
+  }
+  const upcomingOf = c => SalonDB.appointments({ clientId: c.id, from: U.today() })
+    .filter(a => isActive(a) && !(a.date === U.today() && U.toMin(a.end) <= U.nowMin()));
+  // Horas libres de un estilista ese día (en minutos), las más cercanas a la hora pedida primero
+  function freeStarts(staffId, date, dur, ignoreId) {
+    const w = SalonDB.windowFor(staffId, date);
+    if (!w) return [];
+    const from = date === U.today() ? Math.max(w[0], Math.ceil(U.nowMin() / 30) * 30) : w[0];
+    const out = [];
+    for (let m = Math.ceil(from / 30) * 30; m + dur <= w[1]; m += 30) if (SalonDB.isFree(staffId, date, m, dur, ignoreId)) out.push(m);
+    return out;
+  }
+  const nearest = (list, around, n = 3) => [...list].sort((a, b) => Math.abs(a - around) - Math.abs(b - around)).slice(0, n).sort((a, b) => a - b);
+
+  function waBtn(a, kind) {
+    const c = SalonDB.client(a.clientId), st = SalonDB.staffMember(a.staffId), salon = SalonDB.settings.salonName;
+    const msg = kind === 'cancel'
+      ? `Hola ${first(c.name)} 👋, te escribimos de ${salon}: tu cita de ${svcTxt(a)} del ${U.fmtLong(a.date)} a las ${U.fmtTime(a.start)} quedó cancelada. Cuando quieras, reserva de nuevo desde la app 💇‍♀️`
+      : kind === 'confirm'
+        ? `Hola ${first(c.name)} 👋, tu cita en ${salon} está confirmada: ${svcTxt(a)} el ${U.fmtLong(a.date)} a las ${U.fmtTime(a.start)} con ${first(st.name)}. ¡Te esperamos!`
+        : `Hola ${first(c.name)} 👋, te escribimos de ${salon}: tu cita de ${svcTxt(a)} quedó para el ${U.fmtLong(a.date)} a las ${U.fmtTime(a.start)} con ${first(st.name)}. ¿Te queda bien? 🙏`;
+    return { label: `📲 Avisar a ${first(c.name)}`, href: U.waLink(c.phone, msg) };
+  }
+
+  function doMove(a, date, start, staffId) {
+    const before = when(a.date, a.start);
+    try {
+      a = SalonDB.book({ id: a.id, clientId: a.clientId, serviceIds: a.serviceIds, staffId, date, start, source: 'salon', notes: a.notes || '' });
+    } catch (e) { return { text: e.message }; }
+    window.AdminUI.render();
+    ctx.apptId = a.id;
+    const c = SalonDB.client(a.clientId);
+    return { text: `Listo. La cita de ${c.name} pasó de ${before} a ${when(a.date, a.start)} con ${first(SalonDB.staffMember(a.staffId).name)}. Avísale para que llegue a tiempo.`, buttons: [waBtn(a, 'move')] };
+  }
+
+  /* Busca una cita posterior que quepa en un espacio libre, para adelantarla */
+  function fillSuggestion(date, staffId = null, fromMin = null) {
+    const staff = staffId ? [SalonDB.staffMember(staffId)] : SalonDB.staff();
+    let best = null;
+    staff.forEach(st => {
+      const later = SalonDB.appointments({ date, staffId: st.id }).filter(isActive);
+      freeStarts(st.id, date, 30).filter(m => fromMin == null || m >= fromMin).forEach(m => {
+        if (best && best.m <= m) return;
+        const b = later.find(x => U.toMin(x.start) > m && SalonDB.isFree(st.id, date, m, durOf(x), x.id));
+        if (b) best = { m, b, st };
+      });
+    });
+    if (!best) return null;
+    const c = SalonDB.client(best.b.clientId), start = U.fromMin(best.m);
+    return {
+      text: `Puedo adelantar a ${c.name} (${svcTxt(best.b)}) de las ${U.fmtTime(best.b.start)} a las ${U.fmtTime(start)} con ${first(best.st.name)}. ¿Lo adelanto?`,
+      confirm: { label: 'adelantar', run: () => doMove(best.b, date, start, best.st.id) },
+    };
+  }
+
+  // Encuentra la cita de la que se habla: por cliente (y día/hora si los dice) o la última mencionada
+  function pickAppt(t, c) {
+    if (!c) {
+      const prev = ctx.apptId && SalonDB.appointment(ctx.apptId);
+      return prev && isActive(prev) ? prev : null;
+    }
+    const sd = sourceDate(t), st = parseTime(t, '(?:de las|de la)');
+    const list = upcomingOf(c);
+    return list.find(a => (!sd || a.date === sd) && (!st || a.start === st)) || list[0] || null;
+  }
+
+  function moveAppt(t, a) {
+    const c = SalonDB.client(a.clientId);
+    ctx.apptId = a.id;
+    const staff = findStaff(t, true) || SalonDB.staffMember(a.staffId);
+    if (!a.serviceIds.every(id => staff.serviceIds.includes(id))) return { text: `${first(staff.name)} no hace ${svcTxt(a)}.` };
+    const date = targetDate(t) || a.date, dur = durOf(a);
+    const earlier = has(t, 'adelant', 'antes', 'mas temprano');
+    let start = parseTime(t, '(?:a las|a la|para las|para la|tipo)');
+    const rel = relMinutes(t);
+    if (!start && rel) start = U.fromMin(U.toMin(a.start) + (earlier ? -rel : rel));
+    if (!start && earlier) {
+      const opts = freeStarts(staff.id, date, dur, a.id).filter(m => date < a.date || m < U.toMin(a.start));
+      if (!opts.length) return { text: `${first(staff.name)} no tiene espacio antes de las ${U.fmtTime(a.start)} ${dayLabel(date)}.` };
+      start = U.fromMin(opts[0]);
+    }
+    if (!start && date !== a.date) start = a.start; // "pásala al lunes": misma hora
+    if (!start) return { text: `¿A qué hora paso la cita de ${first(c.name)} (${when(a.date, a.start)})? Dime por ejemplo “pásala a las 5”.` };
+    const min = U.toMin(start);
+    if (SalonDB.isFree(staff.id, date, min, dur, a.id)) {
+      return {
+        text: `¿Muevo la cita de ${c.name} (${svcTxt(a)}) de ${when(a.date, a.start)} a ${when(date, start)} con ${first(staff.name)}?`,
+        confirm: { label: 'mover', run: () => doMove(a, date, start, staff.id) },
+      };
+    }
+    // Ocupado: ofrece las horas libres más cercanas o a otra persona del equipo a esa hora
+    const alts = nearest(freeStarts(staff.id, date, dur, a.id), min);
+    const other = SalonDB.staffFor(a.serviceIds).find(s => s.id !== staff.id && SalonDB.isFree(s.id, date, min, dur, a.id));
+    const buttons = alts.map(m => ({ label: `Mover a las ${U.fmtTime(U.fromMin(m))}`, run: () => doMove(a, date, U.fromMin(m), staff.id) }));
+    if (other) buttons.push({ label: `Con ${first(other.name)} a las ${U.fmtTime(start)}`, run: () => doMove(a, date, start, other.id) });
+    return {
+      text: `${first(staff.name)} ya tiene cita ${when(date, start)}.${alts.length ? ` Tiene libre a las ${alts.map(m => U.fmtTime(U.fromMin(m))).join(', ')}.` : ''}${other ? ` A esa hora está libre ${first(other.name)}.` : ''}${buttons.length ? ' Elige una opción.' : ' Prueba otro día.'}`,
+      buttons,
+    };
+  }
+
+  function cancelAppt(a) {
+    const c = SalonDB.client(a.clientId), st = SalonDB.staffMember(a.staffId);
+    ctx.apptId = a.id;
+    return {
+      text: `¿Cancelo la cita de ${c.name} (${svcTxt(a)}), ${when(a.date, a.start)} con ${first(st.name)}?`,
+      confirm: {
+        label: 'cancelar', run: () => {
+          SalonDB.setStatus(a.id, 'cancelada');
+          window.AdminUI.render();
+          const fill = fillSuggestion(a.date, a.staffId, U.toMin(a.start));
+          return { text: `Cancelada. ${first(st.name)} quedó libre ${when(a.date, a.start)}.${fill ? ' ' + fill.text : ''}`, buttons: [waBtn(a, 'cancel')], confirm: fill ? fill.confirm : null };
+        },
+      },
+    };
+  }
+
   /* ---------- Respuestas ---------- */
   function answer(raw) {
     const t = norm(raw);
     if (!t) return { text: 'No te escuché bien. ¿Me lo repites?' };
+
+    // Cambios sobre citas existentes (van antes que "agendar")
+    const client = findClient(t);
+    const moveWords = has(t, 'mueve', 'mover', 'muevel', 'cambia', 'cambiar', 'pasa', 'pasal', 'adelant', 'atrasa', 'atrasal', 'retrasa', 'corre', 'reprogram');
+    const refersToCita = client || /\b(la cita|esa cita|esa|pasala|muevela|cambiala|adelantala|atrasala|correla|cancelala)\b/.test(t);
+    if (has(t, 'hueco', 'huecos', 'llena', 'rellena', 'aprovecha') || (has(t, 'adelant') && has(t, 'citas') && !client)) {
+      const s = fillSuggestion(parseDate(t, true) || U.today(), (findStaff(t) || {}).id || null);
+      return s || { text: `No encontré citas que se puedan adelantar ${dayLabel(parseDate(t, true) || U.today())}.` };
+    }
+    if (has(t, 'cancela', 'anula', 'elimina') && refersToCita) {
+      const a = pickAppt(t, client);
+      return a ? cancelAppt(a) : { text: client ? `${client.name} no tiene citas próximas.` : '¿De quién es la cita que quieres cancelar?' };
+    }
+    if (/\bconfirma(le|la)?\b/.test(t) && client) {
+      const a = upcomingOf(client).find(x => x.status === 'pendiente') || upcomingOf(client)[0];
+      if (!a) return { text: `${client.name} no tiene citas próximas.` };
+      SalonDB.setStatus(a.id, 'confirmada');
+      window.AdminUI.render();
+      return { text: `Confirmé la cita de ${client.name}, ${when(a.date, a.start)}.`, buttons: [waBtn(a, 'confirm')] };
+    }
+    if (moveWords && refersToCita) {
+      const a = pickAppt(t, client);
+      if (a) return moveAppt(t, a);
+      return { text: client ? `${client.name} no tiene citas próximas para mover.` : '¿De quién es la cita? Dime por ejemplo “mueve la cita de María a las 5”.' };
+    }
 
     // Agendar una cita
     if (/\b(agenda|agendar|agendame|agendale|reserva|reservar|reservale|anota|anotale|apunta|apuntale|separa)\s+(a|para|una|le)\b/.test(t)) {
@@ -215,16 +385,44 @@
   }
 
   /* ---------- Ventana del asistente ---------- */
-  const history = [{ who: 'bot', text: '¡Hola! Soy tu asistente. Tócame el micrófono y pregúntame lo que necesites.' }];
-  const SUGGEST = ['¿Cómo voy hoy?', '¿Quién está libre mañana a las 4?', '¿Cuánto llevamos este mes?', '¿Qué me recomiendas?', 'Agenda a Carla el sábado a las 10 para corte'];
+  const history = [{ who: 'bot', text: '¡Hola! Soy tu asistente. Puedo mover, adelantar o cancelar citas y contarte cómo va el negocio. Toca el micrófono y háblame.' }];
+  const runs = [];      // acciones de los botones del chat
+  let pending = null;   // acción que espera un "sí"
   let rec = null;
+  const YES = /^(si|dale|hazlo|ok|okey|okay|confirmo|confirmado|de una|claro|listo|por favor|si por favor|afirmativo|correcto)\b/;
+  const NO = /^(no|mejor no|dejalo|deja asi|olvidalo|cancela eso)\b/;
+
+  // Ejemplos con nombres reales de la agenda, para que la demo funcione al tocar
+  function suggestions() {
+    const next = SalonDB.appointments({ from: U.today() }).find(a => isActive(a) && !(a.date === U.today() && U.toMin(a.start) <= U.nowMin()));
+    const out = ['¿Cómo voy hoy?'];
+    if (next) {
+      const n = SalonDB.client(next.clientId).name.split(' ').slice(0, 2).join(' ');
+      out.push(`Adelanta la cita de ${n}`, `Mueve la cita de ${n} a las ${U.fmtTime(U.fromMin(Math.min(U.toMin(next.start) + 120, 17 * 60))).replace(':00', '').replace(/ (am|pm)/, '')}`);
+    }
+    out.push('Adelanta las citas de hoy', '¿Quién está libre mañana a las 4?', '¿Qué me recomiendas?');
+    return out;
+  }
+
+  // Agrega la respuesta al chat; si pide confirmación, deja la acción esperando un "sí"
+  function reply(r) {
+    const buttons = (r.buttons || []).map(b => (b.run ? { ...b, i: runs.push(b.run) - 1 } : b));
+    if (r.confirm) {
+      pending = r.confirm.run;
+      buttons.unshift({ label: `Sí, ${r.confirm.label}`, i: runs.push(() => { pending = null; return r.confirm.run(); }) - 1, primary: true },
+        { label: 'No', i: runs.push(() => { pending = null; return { text: 'Listo, no cambio nada.' }; }) - 1 });
+    }
+    history.push({ who: 'bot', text: r.text, buttons });
+    speak(r.text);
+    if (r.then) setTimeout(r.then, 900);
+  }
 
   function open() {
     UI.modal(`<div class="modal-head"><h2>✨ Asistente</h2><div class="row">
         <button class="icon-btn" id="asVoice" aria-label="${voiceOn ? 'Silenciar respuestas' : 'Leer respuestas en voz alta'}" title="Respuestas en voz alta">${voiceOn ? '🔊' : '🔇'}</button>
         <button class="icon-btn" data-action="close" aria-label="Cerrar">${UI.icon('close')}</button></div></div>
       <div class="chat" id="asChat" aria-live="polite"></div>
-      <div class="chips mt" id="asChips">${SUGGEST.map(s => `<button class="chip" type="button">${esc(s)}</button>`).join('')}</div>
+      <div class="chips mt" id="asChips">${suggestions().map(s => `<button class="chip" type="button">${esc(s)}</button>`).join('')}</div>
       <form class="row mt" id="asForm">
         <input id="asIn" autocomplete="off" placeholder="Escribe o toca el micrófono…" aria-label="Pregunta para el asistente">
         <button type="button" class="btn mic-btn" id="asMic" aria-label="Hablar">🎤</button>
@@ -232,17 +430,39 @@
       </form>
       ${SR ? '' : '<p class="muted small mt">En este navegador usa el micrófono del teclado para dictar.</p>'}`, m => {
       const chat = m.querySelector('#asChat'), input = m.querySelector('#asIn'), mic = m.querySelector('#asMic');
-      const paint = () => { chat.innerHTML = history.map(h => `<div class="bubble ${h.who}">${esc(h.text)}</div>`).join(''); chat.scrollTop = chat.scrollHeight; };
+      const paint = () => {
+        chat.innerHTML = history.map((h, k) => `<div class="bubble ${h.who}">${esc(h.text)}${h.buttons && h.buttons.length ? `<div class="bubble-actions">${h.buttons.map(b => b.href
+          ? `<a class="btn btn-sm btn-wa" target="_blank" rel="noopener" href="${b.href}">${esc(b.label)}</a>`
+          : `<button type="button" class="btn btn-sm ${b.primary ? 'btn-primary' : ''}" data-run="${b.i}" ${h.used ? 'disabled' : ''}>${esc(b.label)}</button>`).join('')}</div>` : ''}</div>`).join('');
+        chat.scrollTop = chat.scrollHeight;
+      };
+      const runAction = i => {
+        // Los botones de una respuesta se usan una sola vez
+        history.forEach(h => { if (h.buttons && h.buttons.some(b => b.i === i)) h.used = true; });
+        reply(runs[i]());
+        paint();
+      };
       const ask = q => {
         q = q.trim();
         if (!q) return;
         history.push({ who: 'me', text: q });
-        const r = answer(q);
-        history.push({ who: 'bot', text: r.text });
-        paint(); input.value = '';
-        speak(r.text);
-        if (r.then) setTimeout(r.then, 900);
+        input.value = '';
+        const t = norm(q);
+        if (pending && YES.test(t)) {
+          const run = pending; pending = null;
+          history.forEach(h => { if (h.buttons) h.used = true; });
+          reply(run());
+        } else if (pending && NO.test(t)) {
+          pending = null;
+          history.forEach(h => { if (h.buttons) h.used = true; });
+          reply({ text: 'Listo, no cambio nada.' });
+        } else {
+          pending = null;
+          reply(answer(q));
+        }
+        paint();
       };
+      chat.addEventListener('click', e => { const b = e.target.closest('[data-run]'); if (b && !b.disabled) runAction(+b.dataset.run); });
       paint();
       m.querySelector('#asForm').addEventListener('submit', e => { e.preventDefault(); ask(input.value); });
       m.querySelector('#asChips').addEventListener('click', e => { const b = e.target.closest('.chip'); if (b) ask(b.textContent); });

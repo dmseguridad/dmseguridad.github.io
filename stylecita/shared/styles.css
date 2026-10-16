@@ -234,3 +234,5 @@ body:has(.layout) .assist-fab { display: flex; }
 .mic-btn { font-size: 1.2rem; min-width: 48px; }
 .mic-btn.on { background: var(--accent-2); border-color: var(--accent-2); color: #fff; animation: micpulse 1.2s infinite; }
 @keyframes micpulse { 50% { box-shadow: 0 0 0 8px rgba(230, 57, 70, .18); } }
+.bubble-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.bubble-actions .btn { min-height: 34px; }

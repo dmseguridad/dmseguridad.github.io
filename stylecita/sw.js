@@ -1,4 +1,4 @@
-const CACHE = 'salon-app-v7';
+const CACHE = 'salon-app-v8';
 const SHELL = [
   './', './admin/', './cliente/',
   './admin/app.js', './admin/assistant.js', './cliente/app.js',
