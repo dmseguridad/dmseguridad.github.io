@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StyleCita · Agenda para peluquerías</title>
+<meta name="description" content="Agenda, servicios y tienda para tu peluquería, con app para que tus clientes reserven solos.">
+<link rel="icon" href="shared/icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#1d4ed8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="shared/styles.css">
+<style>
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 16px 60px; }
+  .hero-l { text-align: center; max-width: 680px; margin: 0 auto 36px; }
+  .hero-l img { width: 72px; height: 72px; border-radius: 20px; }
+  .hero-l h1 { font-size: clamp(1.8rem, 5vw, 2.6rem); margin: 16px 0 10px; }
+  .hero-l .grad { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .door { display: block; text-decoration: none; color: var(--text); transition: border-color .15s, transform .15s; }
+  .door:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .door ul { padding-left: 18px; margin: 10px 0 14px; color: var(--muted); }
+  .door li { margin: 4px 0; }
+  .ic { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: rgba(29, 78, 216, .1); color: var(--accent); margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero-l">
+    <img src="shared/icon.svg" alt="">
+    <h1>Tu peluquería, <span class="grad">siempre agendada</span></h1>
+    <p class="muted">Administra citas, servicios, equipo y productos. Tus clientes ven los horarios libres, reservan solos desde el celular y apartan lo que vendes.</p>
+  </div>
+  <div class="grid g2">
+    <a class="card door" href="admin/">
+      <div class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></div>
+      <h2>Panel del salón</h2>
+      <ul><li>Agenda del día por estilista</li><li>Confirmar reservas y avisar por WhatsApp</li><li>Servicios, precios y horarios del equipo</li><li>Clientes con historial y tienda con stock</li></ul>
+      <span class="btn btn-primary">Abrir panel · PIN 1234</span>
+    </a>
+    <a class="card door" href="cliente/">
+      <div class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M8 16 19 3M16 16 5 3"/></svg></div>
+      <h2>App del cliente</h2>
+      <ul><li>Elige servicios y estilista</li><li>Ve los horarios libres y reserva</li><li>Cancela o repite citas anteriores</li><li>Aparta productos para retirar en el salón</li></ul>
+      <span class="btn">Abrir app · 0987654321</span>
+    </a>
+  </div>
+  <p class="muted small" style="text-align:center;margin-top:28px">Demo: los datos se guardan solo en este navegador. Abre el panel y la app en dos pestañas para ver llegar las reservas.</p>
+</div>
+<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});</script>
+</body>
+</html>
