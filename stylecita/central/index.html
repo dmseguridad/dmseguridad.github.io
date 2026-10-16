@@ -7,25 +7,32 @@
 <meta name="description" content="Control de gimnasios (KadaMeta) y peluquerías (Style App): pagos, tarjetas y cobros automáticos.">
 <meta name="robots" content="noindex">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" href="../shared/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="../shared/icon.svg">
-<meta name="theme-color" content="#0b0b0c">
+<link rel="icon" href="dm-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="dm-icon.png">
+<meta name="theme-color" content="#0f1d28">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Panel del dueño">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Barlow+Semi+Condensed:wght@600;700;800&display=swap">
 <link rel="stylesheet" href="../shared/styles.css">
 <style>
+  /* Colores de DM Seguridad Digital: solo para este panel del dueño */
+  :root { --bg: #0f1d28; --surface: #192d3d; --surface-2: #213a4e; --border: #2d4659; --text: #eef0f2; --muted: #93a3b1; --accent: #0dcc30; --on-accent: #04210b; --accent-2: #fcfc00; --bar: #35506a; --shadow: 0 14px 40px rgba(0, 0, 0, .45); }
+  h1, .brand, .brand-lg h1, .modal-head h2 { font-family: "Barlow Semi Condensed", system-ui, sans-serif; letter-spacing: .01em; }
+  h1 { font-weight: 800; }
+  .page-head h1::after { background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+  .center-screen { background: radial-gradient(circle at 15% 0%, rgba(13, 204, 48, .2), transparent 50%), radial-gradient(circle at 90% 100%, rgba(252, 252, 0, .08), transparent 45%), var(--bg); }
+  .btn-primary { background: linear-gradient(90deg, #0dcc30, #7ee23a); border-color: #0dcc30; }
   .layout { display: grid; grid-template-columns: 236px minmax(0, 1fr); min-height: 100vh; }
-  .sidebar { background: #050506; border-right: 1px solid var(--border); color: #fff; padding: 18px 12px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; }
+  .sidebar { background: #0b1620; border-right: 1px solid var(--border); color: #fff; padding: 18px 12px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; }
   .brand { font-weight: 800; font-size: 1.05rem; padding: 4px 8px 20px; display: flex; gap: 10px; align-items: center; }
   .brand img { width: 36px; height: 36px; border-radius: 10px; }
-  .brand small { display: block; font-weight: 600; color: var(--accent); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; }
+  .brand small { display: block; font-weight: 600; color: var(--accent-2); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; }
   .nav { display: flex; flex-direction: column; gap: 2px; }
   .nav a { position: relative; display: flex; gap: 11px; align-items: center; padding: 10px 12px; border-radius: 11px; color: var(--muted); text-decoration: none; font-weight: 600; }
   .nav a:hover { background: rgba(255, 255, 255, .08); color: #fff; }
-  .nav a.active { background: rgba(201, 162, 74, .14); color: var(--accent); }
+  .nav a.active { background: rgba(13, 204, 48, .14); color: var(--accent); }
   .nav .count { margin-left: auto; background: var(--accent-2); color: var(--on-accent); border-radius: 999px; font-size: .72rem; padding: 1px 7px; }
   .nav .logout { margin-top: auto; }
   .main { padding: 28px; width: 100%; max-width: 1280px; min-width: 0; }

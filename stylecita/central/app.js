@@ -26,7 +26,7 @@
     const scroll = window.scrollY;
     app.innerHTML = `<div class="layout">
       <aside class="sidebar">
-        <div class="brand"><img src="../shared/icon.svg" alt=""><div>Panel del dueño<small>KadaMeta · Style App</small></div></div>
+        <div class="brand"><img src="dm-icon.png" alt="DM"><div>Panel del dueño<small>KadaMeta · Style App</small></div></div>
         <div class="seg" role="tablist" aria-label="Producto">${[['todo', 'Todo'], ['gym', 'KadaMeta'], ['salon', 'Style App']].map(([k, l]) => `<button class="${state.product === k ? 'on' : ''}" data-action="product" data-p="${k}" role="tab" aria-selected="${state.product === k}">${l}</button>`).join('')}</div>
         <nav class="nav" aria-label="Secciones">
           ${NAV.map(([k, l, i]) => `<a href="#/${k}" class="${k === page ? 'active' : ''}" ${k === page ? 'aria-current="page"' : ''}>${UI.icon(i, 18)}<span>${l}</span>${counts[k] ? `<span class="count">${counts[k]}</span>` : ''}</a>`).join('')}
@@ -40,7 +40,7 @@
   }
   function renderLogin() {
     app.innerHTML = `<div class="center-screen"><form class="card login-card stack" data-form="login">
-      <div class="brand-lg"><img src="../shared/icon.svg" alt="" style="width:46px;height:46px;border-radius:12px"><div><h1>Panel del dueño</h1><div class="muted small">KadaMeta · Style App</div></div></div>
+      <div class="brand-lg"><img src="dm-icon.png" alt="DM" style="width:46px;height:46px;border-radius:12px"><div><h1>Panel del dueño</h1><div class="muted small">KadaMeta · Style App</div></div></div>
       <div class="field"><label for="pin">PIN</label><input id="pin" name="pin" type="password" inputmode="numeric" autocomplete="current-password" required autofocus></div>
       <button class="btn btn-primary btn-block btn-lg">Entrar</button>
       <p class="muted small" style="text-align:center">Demo: PIN <strong>2468</strong></p>
