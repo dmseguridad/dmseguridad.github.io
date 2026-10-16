@@ -1,7 +1,7 @@
-const CACHE = 'salon-app-v6';
+const CACHE = 'salon-app-v7';
 const SHELL = [
   './', './admin/', './cliente/',
-  './admin/app.js', './cliente/app.js',
+  './admin/app.js', './admin/assistant.js', './cliente/app.js',
   './shared/styles.css', './shared/store.js', './shared/ui.js', './shared/icon.svg', './shared/pattern.svg', './shared/sync.js', './shared/finance.js',
 ];
 

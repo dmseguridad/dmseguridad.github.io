@@ -448,17 +448,17 @@
       <div class="modal-actions"><button class="btn" data-action="client" data-id="${c.id}">Ver cliente</button><span class="spacer"></span>${active ? `<button class="btn" data-action="edit-appt" data-id="${a.id}">${UI.icon('edit', 18)} Reprogramar</button>` : ''}</div>`);
   }
 
-  function apptForm({ id = null, staffId = 'any', date = state.date, start = '', clientId = null } = {}) {
+  function apptForm({ id = null, staffId = 'any', date = state.date, start = '', clientId = null, serviceIds = [], clientName = '' } = {}) {
     const a = id ? SalonDB.appointment(id) : null;
     const c = a ? SalonDB.client(a.clientId) : clientId ? SalonDB.client(clientId) : null;
     if (a) { staffId = a.staffId; date = a.date; start = a.start; }
     if (date < U.today()) date = U.today();
-    const sel = a ? a.serviceIds : [];
+    const sel = a ? a.serviceIds : serviceIds;
     UI.modal(`<div class="modal-head"><h2>${a ? 'Reprogramar cita' : 'Nueva cita'}</h2>${closeBtn}</div>
       <form class="stack" data-form="appt" data-id="${id || ''}">
         <datalist id="cl">${SalonDB.clients().map(x => `<option value="${esc(x.name)} · ${esc(x.phone)}"></option>`).join('')}</datalist>
         <div class="form-grid">
-          <div class="field"><label for="fc">Cliente</label><input id="fc" name="client" list="cl" required autocomplete="off" placeholder="Busca o escribe un nombre" value="${c ? esc(c.name) : ''}"></div>
+          <div class="field"><label for="fc">Cliente</label><input id="fc" name="client" list="cl" required autocomplete="off" placeholder="Busca o escribe un nombre" value="${c ? esc(c.name) : esc(clientName)}"></div>
           <div class="field"><label for="fp">Celular</label><input id="fp" name="phone" required inputmode="tel" placeholder="09…" value="${c ? esc(c.phone) : ''}"></div>
         </div>
         <div class="field"><span class="lbl">Servicios</span><div class="svc-checks">${SalonDB.services().map(s => `<label class="check"><input type="checkbox" name="svc" value="${s.id}" ${sel.includes(s.id) ? 'checked' : ''}> <span class="grow">${esc(s.name)}</span><span class="muted small">${U.money(s.price)}</span></label>`).join('')}</div></div>
@@ -751,6 +751,9 @@
   setInterval(() => {
     if (sessionStorage.getItem(SESSION) === '1' && !UI.isModalOpen() && ['agenda', 'inicio', 'finanzas'].includes(route())) render();
   }, 60000);
+
+  // Para el asistente de voz (admin/assistant.js)
+  window.AdminUI = { apptForm, openAppt, go: page => { location.hash = '#/' + page; } };
 
   render();
 })();
