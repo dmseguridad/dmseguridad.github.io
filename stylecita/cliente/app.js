@@ -5,8 +5,8 @@
   const SESSION = 'salon_client_id';
   const CART = 'salon_cart';
   const TABS = [['inicio', 'Inicio', 'home'], ['reservar', 'Reservar', 'calendar'], ['citas', 'Mis citas', 'clock'], ['tienda', 'Tienda', 'bag'], ['perfil', 'Perfil', 'user']];
-  const newBooking = (serviceIds = []) => ({ step: 1, serviceIds, staffId: null, date: null, start: null, notes: '', done: null });
-  const state = { booking: newBooking(), shopCat: 'Todo' };
+  const newBooking = (serviceIds = []) => ({ step: 1, serviceIds, staffId: null, date: null, start: null, notes: '', done: null, payMethod: 'salon', receipt: null });
+  const state = { booking: newBooking(), shopCat: 'Todo', bagPay: 'salon', bagReceipt: null };
 
   const route = () => (location.hash.replace(/^#\/?/, '') || 'inicio').split('?')[0];
   const me = () => SalonDB.client(localStorage.getItem(SESSION));
@@ -28,6 +28,41 @@
     const d = U.parseISO(date);
     return `<div class="date-box"><div class="m">${d.toLocaleDateString('es-EC', { weekday: 'short' }).replace('.', '')}</div><div class="d">${d.getDate()}</div><div class="m">${d.toLocaleDateString('es-EC', { month: 'short' }).replace('.', '')}</div></div>`;
   }
+
+  /* ---------------- Pagos ---------------- */
+  const copyBtn = v => `<button type="button" class="copy" data-action="copy" data-v="${esc(v)}">Copiar</button>`;
+  // Cuentas del salón con botones para copiar cada dato
+  function accountsHtml(amount) {
+    const pay = SalonDB.payments;
+    return `${pay.note ? `<div class="note small">${esc(pay.note)}</div>` : ''}
+      ${pay.accounts.map(a => `<div class="acc"><strong>${esc(a.bank)}</strong>
+        <div class="acc-row"><div><div class="k">Cuenta de ${esc(a.type.toLowerCase())}</div><div class="v">${esc(a.number)}</div></div>${copyBtn(a.number)}</div>
+        <div class="acc-row"><div><div class="k">Titular</div><div class="v">${esc(a.holder)}</div></div>${copyBtn(a.holder)}</div>
+        <div class="acc-row"><div><div class="k">Cédula / RUC</div><div class="v">${esc(a.idNumber)}</div></div>${copyBtn(a.idNumber)}</div>
+        ${a.email ? `<div class="acc-row"><div><div class="k">Correo</div><div class="v">${esc(a.email)}</div></div>${copyBtn(a.email)}</div>` : ''}
+      </div>`).join('')}
+      ${amount != null ? `<div class="acc-row" style="padding:10px 2px 0"><div><div class="k">Valor a transferir</div><div class="v" style="font-size:1.2rem">${U.money(amount)}</div></div>${copyBtn(Number(amount).toFixed(2))}</div>` : ''}`;
+  }
+  // Elección "en el salón" o "transferencia"; el comprobante se puede subir antes de confirmar
+  function payChooser({ method, amount, receipt, setAction, pickAction }) {
+    if (!SalonDB.transferEnabled()) return '<div class="muted small">Pagas en el salón.</div>';
+    return `<h2 class="mt">¿Cómo vas a pagar?</h2>
+      <button type="button" class="pay-opt ${method === 'salon' ? 'active' : ''}" data-action="${setAction}" data-m="salon"><span style="font-size:1.5rem">💵</span><div class="grow"><strong>En el salón</strong><div class="muted small">Efectivo o tarjeta</div></div></button>
+      <button type="button" class="pay-opt ${method === 'transferencia' ? 'active' : ''}" data-action="${setAction}" data-m="transferencia"><span style="font-size:1.5rem">🏦</span><div class="grow"><strong>Transferencia</strong><div class="muted small">Transfiere y sube la foto del comprobante</div></div></button>
+      ${method === 'transferencia' ? `<div class="stack mt">${accountsHtml(amount)}
+        ${receipt ? `<div class="pay-box"><div class="row between"><strong>Tu comprobante</strong><button type="button" class="copy" data-action="${pickAction}">Cambiar</button></div><img class="receipt-img" src="${receipt}" alt="Comprobante"></div>`
+          : `<button type="button" class="btn btn-block" data-action="${pickAction}">📎 Subir foto del comprobante</button><div class="muted small" style="text-align:center">También puedes subirlo después desde “Mis citas”.</div>`}</div>` : ''}`;
+  }
+  // Estado del pago y botones para pagar o subir el comprobante de una cita o pedido ya hecho
+  function payStatusHtml(kind, item) {
+    const p = SalonDB.paymentOf(item), done = kind === 'appt' ? ['completada', 'cancelada', 'no_asistio'].includes(item.status) : ['entregado', 'cancelado'].includes(item.status);
+    let btns = '';
+    if (!done && p.method === 'transferencia' && ['pendiente', 'rechazado'].includes(p.status)) btns = `<button class="btn btn-sm btn-primary" data-action="upload-receipt" data-kind="${kind}" data-id="${item.id}">📎 Subir comprobante</button><button class="btn btn-sm" data-action="show-accounts" data-kind="${kind}" data-id="${item.id}">Datos de pago</button>`;
+    if (!done && p.method === 'salon' && SalonDB.transferEnabled()) btns = `<button class="btn btn-sm" data-action="show-accounts" data-kind="${kind}" data-id="${item.id}">Pagar por transferencia</button>`;
+    return `<div class="row wrap" style="margin-top:8px">${UI.badge(SalonDB.payInfo(item))}${p.status === 'rechazado' ? '<span class="small" style="color:var(--bad)">Sube uno nuevo, por favor</span>' : ''}<span class="grow"></span>${btns}</div>`;
+  }
+  const findItem = (kind, id) => kind === 'appt' ? SalonDB.appointment(id) : SalonDB.orders().find(o => o.id === id);
+  async function pickReceipt() { return UI.pickImage({ max: 1000, quality: 0.72 }); }
 
   /* ---------------- Render principal ---------------- */
   function render() {
@@ -140,9 +175,9 @@
           <div class="list-item mt">${UI.icon('scissors', 20)}<div class="grow">${ids.map(id => SalonDB.service(id)).map(s => `<div class="row between"><span>${esc(s.name)}</span><span>${U.money(s.price)}</span></div>`).join('')}</div></div>
           <div class="list-item">${UI.icon('user', 20)}<span class="grow">${esc(staffTxt)}</span></div>
           <div class="list-item">${UI.icon('clock', 20)}<span class="grow">Dura aprox. ${U.fmtDur(SalonDB.duration(ids))}</span></div>
-          <div class="row between mt"><strong>Total</strong><strong style="font-size:1.25rem">${U.money(SalonDB.price(ids))}</strong></div>
-          <div class="muted small">Pagas en el salón.</div></div>
+          <div class="row between mt"><strong>Total</strong><strong style="font-size:1.25rem">${U.money(SalonDB.price(ids))}</strong></div></div>
         <div class="field"><label for="bn">¿Algo que debamos saber? (opcional)</label><input id="bn" value="${esc(b.notes)}" placeholder="Ej.: quiero un tono más claro"></div>
+        ${payChooser({ method: b.payMethod, amount: SalonDB.price(ids), receipt: b.receipt, setAction: 'pay-method', pickAction: 'pick-receipt' })}
         <button class="btn btn-primary btn-lg btn-block" data-action="confirm-booking">Confirmar reserva</button>
         <p class="muted small" style="text-align:center">Puedes cancelar hasta ${SalonDB.settings.cancelHours} h antes desde “Mis citas”.</p>`;
     },
@@ -154,6 +189,7 @@
         ${up.length ? up.map(a => `<div class="card"><div class="next-appt">${dateBox(a.date)}<div class="grow">
             <div class="row between"><strong>${U.fmtTime(a.start)}</strong>${UI.badge(SalonDB.STATUS[a.status])}</div>
             <div>${esc(svcNames(a.serviceIds))}</div><div class="muted small">Con ${esc(staffName(a.staffId))} · ${U.money(a.price)}</div></div></div>
+          ${payStatusHtml('appt', a)}
           <div class="row wrap mt">${SalonDB.canCancel(a) ? `<button class="btn btn-sm btn-danger" data-action="cancel-appt" data-id="${a.id}">Cancelar cita</button>` : '<span class="muted small">Para cambios de último momento, escríbenos.</span>'}
             <span class="grow"></span><a class="btn btn-sm btn-wa" target="_blank" rel="noopener" href="${salonWa(`Hola, tengo una cita el ${U.fmtLong(a.date)} a las ${U.fmtTime(a.start)} (${svcNames(a.serviceIds)}).`)}">${UI.icon('whatsapp', 16)} Escribir</a></div></div>`).join('')
           : `<div class="card empty">No tienes citas próximas.<div class="mt"><a class="btn btn-primary" href="#/reservar" data-action="book-new">Reservar ahora</a></div></div>`}
@@ -174,7 +210,7 @@
         <div class="prod-grid">${list.map(prodCard).join('') || '<div class="empty">Sin productos</div>'}</div>
         ${n ? `<div class="sumbar"><div class="grow"><strong>${U.money(total)}</strong><div class="muted small">${n} producto${n > 1 ? 's' : ''} en tu bolsa</div></div>
           <button class="btn btn-primary" data-action="open-bag">${UI.icon('bag', 18)} Ver bolsa</button></div>` : ''}
-        ${orders.length ? `<h2 class="mt">Mis pedidos</h2><div class="card">${orders.map(o => `<div class="list-item"><div class="grow small">${o.items.map(i => `${i.qty}× ${esc((SalonDB.product(i.productId) || {}).name || '')}`).join(', ')}<div class="muted">${U.fmtDate(o.createdAt)} · ${U.money(o.total)}</div></div>${UI.badge(SalonDB.ORDER_STATUS[o.status])}</div>`).join('')}</div>` : ''}`;
+        ${orders.length ? `<h2 class="mt">Mis pedidos</h2><div class="card">${orders.map(o => `<div class="list-item" style="display:block"><div class="row"><div class="grow small">${o.items.map(i => `${i.qty}× ${esc((SalonDB.product(i.productId) || {}).name || '')}`).join(', ')}<div class="muted">${U.fmtDate(o.createdAt)} · ${U.money(o.total)}</div></div>${UI.badge(SalonDB.ORDER_STATUS[o.status])}</div>${payStatusHtml('order', o)}</div>`).join('')}</div>` : ''}`;
     },
 
     perfil(c) {
@@ -209,7 +245,8 @@
       <h1>${ok ? '¡Cita confirmada!' : '¡Reserva enviada!'}</h1>
       <p class="muted">${ok ? 'Te esperamos.' : 'El salón la confirmará pronto. Te avisaremos por WhatsApp.'}</p>
       <div class="card" style="text-align:left"><div class="next-appt">${dateBox(a.date)}<div class="grow"><strong>${U.fmtTime(a.start)}</strong>
-        <div>${esc(svcNames(a.serviceIds))}</div><div class="muted small">Con ${esc(staffName(a.staffId))} · ${U.money(a.price)}</div></div></div></div>
+        <div>${esc(svcNames(a.serviceIds))}</div><div class="muted small">Con ${esc(staffName(a.staffId))} · ${U.money(a.price)}</div></div></div>
+        ${payStatusHtml('appt', a)}</div>
       <div class="stack mt"><a class="btn btn-primary btn-block" href="#/citas">Ver mis citas</a>
         <a class="btn btn-block" href="#/tienda">Mirar la tienda</a></div></div>`;
   }
@@ -221,7 +258,8 @@
     UI.modal(`<div class="modal-head"><h2>Tu bolsa</h2><button class="icon-btn" data-action="close" aria-label="Cerrar">${UI.icon('close')}</button></div>
       ${items.map(({ p, q }) => `<div class="list-item">${prodImg(p, 'prod-thumb')}<div class="grow"><strong>${esc(p.name)}</strong><div class="muted small">${q} × ${U.money(p.price)}</div></div><strong>${U.money(p.price * q)}</strong></div>`).join('')}
       <div class="row between mt"><strong>Total</strong><strong style="font-size:1.3rem">${U.money(total)}</strong></div>
-      <div class="note mt">Apartamos tus productos y los retiras en el salón. Pagas al retirar.</div>
+      <div class="note mt">Apartamos tus productos y los retiras en el salón.</div>
+      ${payChooser({ method: state.bagPay, amount: total, receipt: state.bagReceipt, setAction: 'bag-pay', pickAction: 'bag-receipt' })}
       <div class="modal-actions"><button class="btn" data-action="clear-bag">Vaciar</button><button class="btn btn-primary" data-action="place-order">Apartar pedido</button></div>`);
   }
 
@@ -244,8 +282,10 @@
     'confirm-booking'() {
       const b = state.booking;
       b.notes = (document.getElementById('bn') || {}).value || '';
+      const method = SalonDB.transferEnabled() ? b.payMethod : 'salon';
       try {
-        b.done = SalonDB.book({ clientId: me().id, serviceIds: b.serviceIds, staffId: b.staffId, date: b.date, start: b.start, source: 'app', notes: b.notes.trim() });
+        b.done = SalonDB.book({ clientId: me().id, serviceIds: b.serviceIds, staffId: b.staffId, date: b.date, start: b.start, source: 'app', notes: b.notes.trim(), payMethod: method });
+        if (method === 'transferencia' && b.receipt) b.done = SalonDB.uploadReceipt('appt', b.done.id, b.receipt);
       } catch (e) { UI.toast(e.message, 'bad'); b.step = 3; render(); return; }
       render(); window.scrollTo(0, 0);
     },
@@ -263,8 +303,46 @@
     'open-bag': openBag,
     'clear-bag'() { setCart({}); UI.closeModal(); render(); },
     'place-order'() {
-      try { SalonDB.placeOrder(me().id, cart()); } catch (e) { UI.toast(e.message, 'bad'); return; }
-      setCart({}); UI.closeModal(); render(); UI.toast('¡Pedido apartado! Te avisamos cuando esté listo 🛍️');
+      const method = SalonDB.transferEnabled() ? state.bagPay : 'salon';
+      let o;
+      try { o = SalonDB.placeOrder(me().id, cart(), method); } catch (e) { UI.toast(e.message, 'bad'); return; }
+      if (method === 'transferencia' && state.bagReceipt) SalonDB.uploadReceipt('order', o.id, state.bagReceipt);
+      const missing = method === 'transferencia' && !state.bagReceipt;
+      setCart({}); state.bagReceipt = null; state.bagPay = 'salon';
+      UI.closeModal(); render();
+      UI.toast(missing ? 'Pedido apartado. Sube tu comprobante en “Mis pedidos”.' : '¡Pedido apartado! Te avisamos cuando esté listo 🛍️', missing ? 'warn' : 'ok');
+    },
+    // Pagos
+    'pay-method'(el) { state.booking.payMethod = el.dataset.m; render(); },
+    async 'pick-receipt'() {
+      try { const img = await pickReceipt(); if (img) { state.booking.receipt = img; render(); } } catch (e) { UI.toast(e.message, 'bad'); }
+    },
+    'bag-pay'(el) { state.bagPay = el.dataset.m; openBag(); },
+    async 'bag-receipt'() {
+      try { const img = await pickReceipt(); if (img) { state.bagReceipt = img; openBag(); } } catch (e) { UI.toast(e.message, 'bad'); }
+    },
+    async 'upload-receipt'(el) {
+      const { kind, id } = el.dataset;
+      try {
+        const img = await pickReceipt();
+        if (!img) return;
+        SalonDB.uploadReceipt(kind, id, img);
+        if (state.booking.done && state.booking.done.id === id) state.booking.done = SalonDB.appointment(id);
+        UI.closeModal(); render();
+        UI.toast('Comprobante enviado. El salón lo revisará pronto.');
+      } catch (e) { UI.toast(e.message, 'bad'); }
+    },
+    'show-accounts'(el) {
+      const { kind, id } = el.dataset, item = findItem(kind, id);
+      UI.modal(`<div class="modal-head"><h2>Datos para transferir</h2><button class="icon-btn" data-action="close" aria-label="Cerrar">${UI.icon('close')}</button></div>
+        <div class="stack">${accountsHtml(kind === 'appt' ? item.price : item.total)}
+        <button class="btn btn-primary btn-block btn-lg" data-action="upload-receipt" data-kind="${kind}" data-id="${id}">📎 Ya transferí, subir comprobante</button></div>`);
+    },
+    copy(el) {
+      const v = el.dataset.v;
+      const done = () => { const t = el.textContent; el.textContent = '¡Copiado!'; setTimeout(() => { el.textContent = t; }, 1400); };
+      if (navigator.clipboard) navigator.clipboard.writeText(v).then(done, () => UI.toast(v, 'warn'));
+      else UI.toast(v, 'warn');
     },
   };
 
@@ -291,6 +369,8 @@
     e.preventDefault();
     FORMS[f.dataset.form](f);
   });
+  // Guarda la nota mientras se escribe, para no perderla al cambiar la forma de pago
+  document.addEventListener('input', e => { if (e.target.id === 'bn') state.booking.notes = e.target.value; });
   window.addEventListener('hashchange', () => {
     UI.closeModal();
     // Al salir de una reserva terminada, la siguiente empieza de cero

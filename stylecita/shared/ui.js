@@ -172,3 +172,12 @@
     },
   };
 })();
+
+/* Cédula ecuatoriana (10 dígitos, con dígito verificador) o RUC (13 dígitos terminado en 001) */
+window.validId = function (v) {
+  const d = String(v || '').replace(/\D/g, '');
+  if (d.length === 13) return /001$/.test(d) && Number(d.slice(0, 2)) >= 1 && Number(d.slice(0, 2)) <= 24;
+  if (d.length !== 10 || Number(d.slice(0, 2)) < 1 || Number(d.slice(0, 2)) > 24) return false;
+  const sum = [...d.slice(0, 9)].reduce((t, c, i) => { let n = Number(c) * (i % 2 ? 1 : 2); if (n > 9) n -= 9; return t + n; }, 0);
+  return (10 - sum % 10) % 10 === Number(d[9]);
+};

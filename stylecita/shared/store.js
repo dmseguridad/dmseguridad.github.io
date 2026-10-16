@@ -51,6 +51,44 @@
     entregado: { label: 'Entregado', cls: 'ok' },
     cancelado: { label: 'Cancelado', cls: 'bad' },
   };
+  // Estado del pago cuando el cliente paga por transferencia y sube su comprobante
+  const PAY_STATUS = {
+    salon: { label: 'Paga en el salón', cls: '' },
+    pendiente: { label: 'Falta comprobante', cls: 'warn' },
+    en_revision: { label: 'Comprobante por revisar', cls: 'info' },
+    verificado: { label: 'Pago verificado', cls: 'ok' },
+    rechazado: { label: 'Comprobante rechazado', cls: 'bad' },
+  };
+  const BANKS = ['Banco Pichincha', 'Banco Guayaquil', 'Produbanco', 'Banco del Pacífico', 'Banco Bolivariano', 'Banco Internacional', 'Banco de Machala', 'Banco del Austro', 'JEP', 'Cooperativa 29 de Octubre', 'DeUna'];
+  // Datos de ejemplo: el salón los cambia en Ajustes
+  const defaultPayments = () => ({
+    transfer: true,
+    accounts: [{ id: 'b1', bank: 'Banco Pichincha', type: 'Ahorros', number: '2201234567', holder: 'María Estilo Color', idNumber: '1312345679', email: 'pagos@estiloycolor.ec' }],
+    note: 'Transfiere el valor exacto y sube la foto del comprobante. Lo revisamos en minutos.',
+  });
+  // Comprobante de muestra (imagen SVG) para que la demo tenga algo que revisar
+  function demoReceipt(amount, date) {
+    const t = (x, y, s, txt, o = '') => `<text x="${x}" y="${y}" font-family="Arial" font-size="${s}" ${o}>${txt}</text>`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="360" height="560" viewBox="0 0 360 560"><rect width="360" height="560" fill="#f3f6fb"/><rect width="360" height="120" fill="#0f265c"/>`
+      + t(180, 58, 20, 'Banco Pichincha', 'fill="#fff" text-anchor="middle" font-weight="bold"') + t(180, 88, 14, 'Comprobante de transferencia', 'fill="#cfe0ff" text-anchor="middle"')
+      + `<circle cx="180" cy="170" r="30" fill="#0e9f6e"/><path d="M166 170l10 10 20-20" stroke="#fff" stroke-width="6" fill="none"/>`
+      + t(180, 236, 18, '¡Transferencia exitosa!', 'fill="#0f1b3d" text-anchor="middle" font-weight="bold"') + t(180, 290, 34, '$' + Number(amount).toFixed(2), 'fill="#0f1b3d" text-anchor="middle" font-weight="bold"')
+      + [['Para', 'María Estilo Color'], ['Cuenta', 'Ahorros ****4567'], ['Fecha', date], ['Comprobante', String(Math.round(amount * 7919) % 900000 + 100000)]]
+        .map(([k, v], i) => t(30, 350 + i * 35, 14, k, 'fill="#5b6882"') + t(330, 350 + i * 35, 14, v, 'fill="#0f1b3d" text-anchor="end"')).join('')
+      + t(180, 525, 11, 'Imagen de ejemplo para la demo', 'fill="#98a1b0" text-anchor="middle"') + '</svg>';
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+  // Agrega a la demo una cita y un pedido pagados por transferencia, con comprobante por revisar
+  function addDemoPayments(data) {
+    const today = U.today();
+    const a = data.appointments.find(x => x.date > today && x.status === 'pendiente') || data.appointments.find(x => x.date >= today && x.status === 'confirmada');
+    if (a) a.payment = { method: 'transferencia', status: 'en_revision', receipt: demoReceipt(a.price, U.fmtDate(today)), uploadedAt: today };
+    const o = data.orders.find(x => x.status === 'pendiente');
+    if (o) o.payment = { method: 'transferencia', status: 'en_revision', receipt: demoReceipt(o.total, U.fmtDate(today)), uploadedAt: today };
+  }
+  const newPayment = method => method === 'transferencia'
+    ? { method, status: 'pendiente', receipt: null, uploadedAt: null }
+    : { method: 'salon', status: 'salon', receipt: null, uploadedAt: null };
 
   /* ---------- Datos de ejemplo ---------- */
   function seed() {
@@ -135,6 +173,8 @@
   function load() {
     try { db = JSON.parse(localStorage.getItem(KEY)); } catch (e) { db = null; }
     if (!db || db.version !== VERSION) { db = seed(); save(); }
+    // Pagos por transferencia (agregado después): se completa sin borrar los datos existentes
+    if (!db.settings.payments) { db.settings.payments = defaultPayments(); addDemoPayments(db); save(); }
   }
   function save() {
     try { localStorage.setItem(KEY, JSON.stringify(db)); }
@@ -198,7 +238,7 @@
 
   /* ---------- API ---------- */
   window.SalonDB = {
-    STATUS, ORDER_STATUS,
+    STATUS, ORDER_STATUS, PAY_STATUS, BANKS,
     get settings() { return db.settings; },
     saveSettings(patch) { Object.assign(db.settings, patch); save(); },
     reload: load,
@@ -246,7 +286,7 @@
     appointment: id => byId(db.appointments, id),
     slots, isFree,
     /* Crea o reprograma una cita. Lanza un error con mensaje claro si el horario ya no está libre. */
-    book({ id = null, clientId, serviceIds, staffId = 'any', date, start, source = 'app', notes = '' }) {
+    book({ id = null, clientId, serviceIds, staffId = 'any', date, start, source = 'app', notes = '', payMethod = 'salon' }) {
       if (!serviceIds.length) throw new Error('Elige al menos un servicio');
       const dur = duration(serviceIds), t = U.toMin(start);
       let st = staffId;
@@ -259,7 +299,7 @@
       } else if (!isFree(st, date, t, dur, id)) throw new Error('Ese horario ya no está libre. Elige otro.');
       const prev = id ? byId(db.appointments, id) : null;
       const status = prev && prev.status !== 'cancelada' ? prev.status : (source === 'salon' || db.settings.autoConfirm ? 'confirmada' : 'pendiente');
-      return upsert(db.appointments, { id, clientId, staffId: st, serviceIds, date, start, end: U.fromMin(t + dur), price: price(serviceIds), status, source: prev ? prev.source : source, notes, createdAt: prev ? prev.createdAt : U.today() });
+      return upsert(db.appointments, { id, clientId, staffId: st, serviceIds, date, start, end: U.fromMin(t + dur), price: price(serviceIds), status, source: prev ? prev.source : source, notes, createdAt: prev ? prev.createdAt : U.today(), payment: prev && prev.payment ? prev.payment : newPayment(payMethod) });
     },
     setStatus(id, status) { const a = byId(db.appointments, id); if (a) { a.status = status; save(); } return a; },
     // El cliente puede cancelar solo con la anticipación que fija el salón
@@ -284,7 +324,7 @@
     deleteProduct(id) { db.products = db.products.filter(p => p.id !== id); save(); },
     orders: ({ clientId } = {}) => db.orders.filter(o => !clientId || o.clientId === clientId).sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.id.localeCompare(a.id)),
     /* Pedido para retirar y pagar en el salón; separa el stock al momento */
-    placeOrder(clientId, cart) {
+    placeOrder(clientId, cart, payMethod = 'salon') {
       const items = [];
       for (const [pid, qty] of Object.entries(cart)) {
         const p = byId(db.products, pid);
@@ -294,13 +334,36 @@
       }
       if (!items.length) throw new Error('Tu bolsa está vacía');
       items.forEach(i => { byId(db.products, i.productId).stock -= i.qty; });
-      return upsert(db.orders, { id: 'o' + U.uid(), clientId, items, total: items.reduce((t, i) => t + i.price * i.qty, 0), status: 'pendiente', createdAt: U.today() });
+      return upsert(db.orders, { id: 'o' + U.uid(), clientId, items, total: items.reduce((t, i) => t + i.price * i.qty, 0), status: 'pendiente', createdAt: U.today(), payment: newPayment(payMethod) });
     },
     setOrderStatus(id, status) {
       const o = byId(db.orders, id);
       if (!o) return;
       if (status === 'cancelado' && o.status !== 'cancelado') o.items.forEach(i => { const p = byId(db.products, i.productId); if (p) p.stock += i.qty; });
       o.status = status; save(); return o;
+    },
+
+    // Pagos por transferencia
+    get payments() { return db.settings.payments; },
+    savePayments(patch) { Object.assign(db.settings.payments, patch); save(); },
+    saveAccount(acc) { return upsert(db.settings.payments.accounts, acc); },
+    deleteAccount(id) { db.settings.payments.accounts = db.settings.payments.accounts.filter(a => a.id !== id); save(); },
+    // Se puede pagar por transferencia solo si el salón lo activó y tiene al menos una cuenta
+    transferEnabled: () => !!(db.settings.payments.transfer && db.settings.payments.accounts.length),
+    payInfo: item => PAY_STATUS[(item.payment || { status: 'salon' }).status],
+    paymentOf: item => item.payment || newPayment('salon'),
+    // kind: 'appt' (cita) u 'order' (pedido de la tienda)
+    uploadReceipt(kind, id, image) {
+      const item = byId(kind === 'appt' ? db.appointments : db.orders, id);
+      if (!item) return;
+      item.payment = { method: 'transferencia', status: 'en_revision', receipt: image, uploadedAt: U.today() };
+      save(); return item;
+    },
+    reviewPayment(kind, id, ok) {
+      const item = byId(kind === 'appt' ? db.appointments : db.orders, id);
+      if (!item || !item.payment) return;
+      item.payment.status = ok ? 'verificado' : 'rechazado';
+      save(); return item;
     },
 
     // Resumen
@@ -314,6 +377,7 @@
         revMonth: done.filter(a => U.month(a.date) === month).reduce((t, a) => t + a.price, 0),
         pending: db.appointments.filter(a => a.status === 'pendiente' && a.date >= today).sort((a, b) => (a.date + a.start).localeCompare(b.date + b.start)),
         ordersOpen: db.orders.filter(o => o.status === 'pendiente' || o.status === 'listo'),
+        receipts: [...db.appointments.filter(a => a.status !== 'cancelada').map(x => ({ kind: 'appt', item: x })), ...db.orders.filter(o => o.status !== 'cancelado').map(x => ({ kind: 'order', item: x }))].filter(r => r.item.payment && r.item.payment.status === 'en_revision'),
         lowStock: db.products.filter(p => p.active && p.stock <= 3),
       };
     },

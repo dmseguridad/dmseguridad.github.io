@@ -46,7 +46,7 @@
     let page = route();
     if (!PAGES[page]) page = 'inicio';
     const d = SalonDB.dashboard();
-    const counts = { inicio: d.pending.length, tienda: d.ordersOpen.filter(o => o.status === 'pendiente').length };
+    const counts = { inicio: d.pending.length + d.receipts.length, tienda: d.ordersOpen.filter(o => o.status === 'pendiente').length };
     const scroll = window.scrollY;
     app.innerHTML = `<div class="layout">
       <aside class="sidebar">
@@ -99,6 +99,11 @@
           ${d.todays.length ? d.todays.map(a => apptRow(a)).join('') : '<div class="empty">Hoy no hay citas</div>'}
         </div>
       </div>
+      ${d.receipts.length ? `<div class="card mt"><div class="row between"><h2>Comprobantes por revisar</h2><span class="badge info">${d.receipts.length}</span></div>
+        ${d.receipts.map(({ kind, item }) => `<div class="list-item clickable" data-action="${kind}" data-id="${item.id}">
+          <span class="prod-thumb">${item.payment.receipt ? `<img src="${item.payment.receipt}" alt="">` : '🧾'}</span>
+          <div class="grow"><strong>${esc(clientName(item.clientId))}</strong><div class="muted small">${kind === 'appt' ? `Cita · ${esc(svcNames(item.serviceIds))} · ${U.fmtDate(item.date)}` : 'Pedido de la tienda'}</div></div>
+          <strong>${U.money(kind === 'appt' ? item.price : item.total)}</strong><span class="btn btn-sm btn-primary">Revisar</span></div>`).join('')}</div>` : ''}
       ${d.lowStock.length ? `<div class="alert warn mt">Poco stock: ${d.lowStock.map(p => `${esc(p.name)} (${p.stock})`).join(', ')}. <a href="#/tienda">Ver tienda</a></div>` : ''}
       <div class="grid g2 mt">
         <div class="card"><h2>Ingresos de los últimos 14 días</h2>${Charts.bars({ data: SalonDB.revenueByDay(14), fmt: v => v ? '$' + Math.round(v) : '', highlightLast: true })}</div>
@@ -236,6 +241,15 @@
           <button class="btn btn-primary">Guardar cambios</button>
         </form>
         <div class="stack">
+          <form class="card stack" data-form="payments"><h2>Datos para pagos</h2>
+            <p class="muted small">Tus clientes ven estas cuentas en la app, transfieren y suben la foto del comprobante. Tú lo apruebas aquí.</p>
+            <label class="check"><input type="checkbox" name="transfer" ${SalonDB.payments.transfer ? 'checked' : ''}> Aceptar pagos por transferencia en la app</label>
+            ${SalonDB.payments.accounts.map(a => `<div class="acc"><div class="row between"><strong>${esc(a.bank)}</strong><button type="button" class="btn btn-sm" data-action="account" data-id="${a.id}">${UI.icon('edit', 16)} Editar</button></div>
+              <div class="small">${esc(a.type)} · ${esc(a.number)}</div><div class="muted small">${esc(a.holder)} · CI/RUC ${esc(a.idNumber)}${a.email ? ' · ' + esc(a.email) : ''}</div></div>`).join('') || '<div class="alert warn">Agrega al menos una cuenta para recibir transferencias.</div>'}
+            <button type="button" class="btn" data-action="account">${UI.icon('plus', 18)} Agregar cuenta</button>
+            <div class="field"><label>Indicaciones para el cliente</label><input name="note" value="${esc(SalonDB.payments.note)}"></div>
+            <button class="btn btn-primary">Guardar</button>
+          </form>
           <div class="card stack"><h2>App para tus clientes</h2>
             <p class="muted">Comparte este enlace. Tus clientes ven los horarios libres, reservan su cita y apartan productos.</p>
             <input value="${esc(link)}" readonly id="clientLink" aria-label="Enlace de la app de clientes">
@@ -272,7 +286,52 @@
     if (['pendiente', 'listo'].includes(o.status)) btns += `<button class="btn btn-sm btn-danger" data-action="order-status" data-status="cancelado" data-id="${o.id}">Cancelar</button>`;
     return `<div class="list-item" style="flex-wrap:wrap"><div class="grow"><div class="row between"><strong>${esc(c.name)}</strong><strong>${U.money(o.total)}</strong></div>
       <div class="muted small">${esc(items)} · ${U.fmtDate(o.createdAt)}</div>
-      <div class="row wrap mt" style="margin-top:8px">${UI.badge(SalonDB.ORDER_STATUS[o.status])}<span class="grow"></span>${btns}</div></div></div>`;
+      <div class="row wrap mt" style="margin-top:8px">${UI.badge(SalonDB.ORDER_STATUS[o.status])}<button class="btn btn-sm" data-action="order" data-id="${o.id}">${UI.badge(SalonDB.payInfo(o))}</button><span class="grow"></span>${btns}</div></div></div>`;
+  }
+
+  /* Bloque de pago de una cita o pedido: estado, comprobante y botones para aprobarlo */
+  function payBlock(kind, item) {
+    const p = SalonDB.paymentOf(item), c = SalonDB.client(item.clientId) || { name: '', phone: '' };
+    const amount = kind === 'appt' ? item.price : item.total;
+    const ref = { 'data-kind': kind, 'data-id': item.id };
+    const attrs = Object.entries(ref).map(([k, v]) => `${k}="${v}"`).join(' ');
+    let btns = '';
+    if (p.status === 'en_revision') btns = `<button class="btn btn-sm btn-primary" data-action="pay-review" data-ok="1" ${attrs}>${UI.icon('check', 16)} Aprobar pago</button><button class="btn btn-sm btn-danger" data-action="pay-review" data-ok="0" ${attrs}>Rechazar</button>`;
+    if (p.status === 'rechazado') btns = `<a class="btn btn-sm btn-wa" target="_blank" rel="noopener" href="${U.waLink(c.phone, `Hola ${U.first(c.name)}, no pudimos validar tu comprobante de ${U.money(amount)} en ${SalonDB.settings.salonName}. ¿Nos lo envías de nuevo desde la app? 🙏`)}">${UI.icon('whatsapp', 16)} Avisar al cliente</a>`;
+    if (p.status !== 'verificado') btns += `<button class="btn btn-sm" data-action="pay-upload" ${attrs}>Subir comprobante</button>`;
+    return `<div class="pay-box"><div class="row between wrap"><strong>Pago · ${U.money(amount)}</strong>${UI.badge(SalonDB.payInfo(item))}</div>
+      <div class="muted small">${p.method === 'transferencia' ? 'Por transferencia' + (p.uploadedAt ? ` · comprobante subido el ${U.fmtDate(p.uploadedAt)}` : '') : 'En el salón (efectivo o tarjeta)'}</div>
+      ${p.receipt ? `<img class="receipt-img" src="${p.receipt}" alt="Comprobante de pago">` : ''}
+      ${btns ? `<div class="row wrap" style="margin-top:10px">${btns}</div>` : ''}</div>`;
+  }
+
+  function openOrder(id) {
+    const o = SalonDB.orders().find(x => x.id === id);
+    if (!o) return;
+    const c = SalonDB.client(o.clientId) || { name: 'Cliente' };
+    UI.modal(`<div class="modal-head"><h2>Pedido de ${esc(c.name)}</h2>${closeBtn}</div>
+      <div class="stack">${o.items.map(i => { const p = SalonDB.product(i.productId) || {}; return `<div class="list-item">${prodThumb(p)}<div class="grow">${esc(p.name || 'Producto')}<div class="muted small">${i.qty} × ${U.money(i.price)}</div></div><strong>${U.money(i.qty * i.price)}</strong></div>`; }).join('')}
+        ${UI.badge(SalonDB.ORDER_STATUS[o.status])}
+        ${payBlock('order', o)}</div>`);
+  }
+
+  function accountForm(id) {
+    const a = id ? SalonDB.payments.accounts.find(x => x.id === id) : { bank: '', type: 'Ahorros', number: '', holder: '', idNumber: '', email: '' };
+    UI.modal(`<div class="modal-head"><h2>${id ? 'Editar cuenta' : 'Nueva cuenta'}</h2>${closeBtn}</div>
+      <form class="stack" data-form="account" data-id="${id || ''}">
+        <datalist id="banks">${SalonDB.BANKS.map(b => `<option value="${b}"></option>`).join('')}</datalist>
+        <div class="form-grid">
+          <div class="field"><label>Banco o cooperativa</label><input name="bank" list="banks" required value="${esc(a.bank)}"></div>
+          <div class="field"><label>Tipo de cuenta</label><select name="type">${['Ahorros', 'Corriente'].map(t => `<option ${a.type === t ? 'selected' : ''}>${t}</option>`).join('')}</select></div>
+        </div>
+        <div class="field"><label>Número de cuenta</label><input name="number" required inputmode="numeric" value="${esc(a.number)}"></div>
+        <div class="field"><label>Titular de la cuenta</label><input name="holder" required value="${esc(a.holder)}"></div>
+        <div class="form-grid">
+          <div class="field"><label>Cédula o RUC del titular</label><input name="idNumber" required inputmode="numeric" maxlength="13" value="${esc(a.idNumber)}"></div>
+          <div class="field"><label>Correo (opcional)</label><input name="email" type="email" value="${esc(a.email)}"></div>
+        </div>
+        <div class="modal-actions">${id ? `<button type="button" class="btn btn-danger" data-action="del-account" data-id="${id}">${UI.icon('trash', 18)} Eliminar</button>` : ''}<span class="spacer"></span><button type="button" class="btn" data-action="close">Cancelar</button><button class="btn btn-primary">Guardar</button></div>
+      </form>`);
   }
 
   /* ---------------- Modales ---------------- */
@@ -288,6 +347,7 @@
           <div class="muted small">${U.cap(U.fmtLong(a.date))} · ${U.fmtTime(a.start)} – ${U.fmtTime(a.end)}</div>
           <div class="muted small">Con ${esc(st ? st.name : '—')} · ${U.money(a.price)}</div>
           ${a.notes ? `<div class="small" style="margin-top:6px">📝 ${esc(a.notes)}</div>` : ''}</div>
+        ${payBlock('appt', a)}
         <div class="row wrap"><a class="btn btn-wa" target="_blank" rel="noopener" href="${waAppt(a, 'confirm')}">${UI.icon('whatsapp', 18)} Enviar confirmación</a>
           <a class="btn btn-wa" target="_blank" rel="noopener" href="${waAppt(a, 'remind')}">${UI.icon('whatsapp', 18)} Recordatorio</a></div>
         ${active ? `<div class="row wrap">
@@ -469,6 +529,28 @@
       const v = document.getElementById('clientLink').value;
       (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => UI.toast('Enlace copiado'), () => { document.getElementById('clientLink').select(); UI.toast('Selecciona y copia el enlace', 'warn'); });
     },
+    order: (el, id) => openOrder(id),
+    account: (el, id) => accountForm(id),
+    'del-account'(el, id) { if (!confirm('¿Eliminar esta cuenta?')) return; SalonDB.deleteAccount(id); UI.closeModal(); render(); UI.toast('Cuenta eliminada'); },
+    'pay-review'(el) {
+      const { kind, id } = el.dataset, ok = el.dataset.ok === '1';
+      if (!ok && !confirm('¿Rechazar este comprobante? El cliente podrá subir otro.')) return;
+      SalonDB.reviewPayment(kind, id, ok);
+      render();
+      kind === 'appt' ? openAppt(id) : openOrder(id);
+      UI.toast(ok ? 'Pago verificado ✓' : 'Comprobante rechazado', ok ? 'ok' : 'warn');
+    },
+    // Si el cliente manda el comprobante por WhatsApp, el salón lo sube aquí
+    async 'pay-upload'(el) {
+      const { kind, id } = el.dataset;
+      try {
+        const img = await UI.pickImage({ max: 1000, quality: 0.72 });
+        if (!img) return;
+        SalonDB.uploadReceipt(kind, id, img);
+        render(); kind === 'appt' ? openAppt(id) : openOrder(id);
+        UI.toast('Comprobante agregado');
+      } catch (e) { UI.toast(e.message, 'bad'); }
+    },
     reset() { if (!confirm('¿Borrar todo y cargar los datos de ejemplo?')) return; SalonDB.reset(); render(); UI.toast('Demo reiniciada'); },
   };
 
@@ -507,6 +589,17 @@
       const d = UI.formData(f);
       SalonDB.saveProduct({ id: f.dataset.id || null, name: d.name.trim(), category: d.category.trim(), price: Number(d.price), stock: Math.max(0, parseInt(d.stock, 10) || 0), emoji: d.emoji.trim(), photo: d.photo || null, description: d.description.trim(), active: !!d.active });
       UI.closeModal(); render(); UI.toast('Producto guardado');
+    },
+    account(f) {
+      const d = UI.formData(f);
+      const idNumber = U.phone(d.idNumber);
+      if (!validId(idNumber)) return UI.toast('La cédula o RUC no es válido. Revisa los números.', 'bad');
+      SalonDB.saveAccount({ id: f.dataset.id || null, bank: d.bank.trim(), type: d.type, number: d.number.trim(), holder: d.holder.trim(), idNumber, email: d.email.trim() });
+      UI.closeModal(); render(); UI.toast('Cuenta guardada');
+    },
+    payments(f) {
+      SalonDB.savePayments({ transfer: f.elements.transfer.checked, note: f.elements.note.value.trim() });
+      render(); UI.toast('Datos de pago guardados');
     },
     settings(f) {
       const d = UI.formData(f);
