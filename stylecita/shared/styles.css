@@ -210,3 +210,16 @@ svg text { font-family: inherit; }
 .live-badge.on::before { background: var(--ok); box-shadow: 0 0 0 0 rgba(14, 159, 110, .5); animation: pulse 1.8s infinite; }
 @keyframes pulse { 70% { box-shadow: 0 0 0 9px rgba(14, 159, 110, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 159, 110, 0); } }
 .toast.big { font-size: 1.15rem; padding: 16px 22px; border-left-width: 6px; }
+/* Finanzas y asistente */
+.delta { font-weight: 800; white-space: nowrap; }
+.delta.up { color: var(--ok); }
+.delta.down { color: var(--bad); }
+.insights { background: linear-gradient(135deg, rgba(29, 78, 216, .07), rgba(230, 57, 70, .04) 70%), var(--surface); }
+.insight { display: flex; gap: 12px; align-items: flex-start; padding: 12px 0; border-top: 1px solid var(--border); }
+.insight:first-of-type { border-top: 0; }
+.insight .ico { font-size: 1.35rem; line-height: 1.2; width: 30px; text-align: center; flex: none; }
+.insight.bad strong { color: var(--bad); }
+.insight.ok strong { color: var(--ok); }
+.fin-trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; text-align: center; }
+.fin-trio .mini-stat { padding: 10px 6px; }
+.fin-trio .value { font-size: clamp(1rem, 2.4vw, 1.35rem); }

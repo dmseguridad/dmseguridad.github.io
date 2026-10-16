@@ -1,8 +1,8 @@
-const CACHE = 'salon-app-v5';
+const CACHE = 'salon-app-v6';
 const SHELL = [
   './', './admin/', './cliente/',
   './admin/app.js', './cliente/app.js',
-  './shared/styles.css', './shared/store.js', './shared/ui.js', './shared/icon.svg', './shared/pattern.svg', './shared/sync.js',
+  './shared/styles.css', './shared/store.js', './shared/ui.js', './shared/icon.svg', './shared/pattern.svg', './shared/sync.js', './shared/finance.js',
 ];
 
 self.addEventListener('install', e => {

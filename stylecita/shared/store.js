@@ -37,7 +37,7 @@
   window.U = U;
 
   const KEY = 'salonapp_db_v1';
-  const VERSION = 2;
+  const VERSION = 3;
   const STATUS = {
     pendiente: { label: 'Por confirmar', cls: 'warn' },
     confirmada: { label: 'Confirmada', cls: 'info' },
@@ -122,7 +122,7 @@
       { id: 'e4', name: 'Valeria Pico', role: 'Manicurista', color: '#0e9f6e', serviceIds: ['s9', 's10', 's11'], hours: H('09:00', '17:00', [0, 1]), active: true },
     ];
     const names = ['María José Vera', 'Carla Intriago', 'Luis Mendoza', 'Gabriela Loor', 'Jorge Delgado', 'Daniela Macías', 'Pedro Alcívar', 'Fernanda Ponce', 'Ricardo Chávez', 'Paola Mero', 'Camila Reyes', 'Diego Bravo', 'Lucía García', 'Bryan Anchundia'];
-    const clients = names.map((name, i) => ({ id: 'c' + (i + 1), name, phone: '09' + String(87654321 - i * 1234567).padStart(8, '0'), createdAt: U.addDays(today, -90 + i * 3), notes: '' }));
+    const clients = names.map((name, i) => ({ id: 'c' + (i + 1), name, phone: '09' + String(87654321 - i * 1234567).padStart(8, '0'), createdAt: U.addDays(today, -120 + i * 3), notes: '' }));
     const P = (id, name, category, price, stock, emoji, description) => ({ id, name, category, price, stock, emoji, photo: null, description, active: true });
     const products = [
       P('p1', 'Shampoo sin sal 400 ml', 'Cabello', 9.5, 12, '🧴', 'Limpieza suave, ideal después de keratina o tinte.'),
@@ -135,13 +135,13 @@
       P('p8', 'Esmalte en gel', 'Uñas', 6, 20, '💅', 'Colores de temporada. Pregunta por los tonos.'),
     ];
 
-    // Citas: 30 días atrás y 7 adelante, sin cruces por estilista
+    // Citas: 2 meses atrás y 7 adelante, sin cruces por estilista
     let s = 20261016;
     const rnd = () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; };
     const pick = arr => arr[Math.floor(rnd() * arr.length)];
     const appointments = [];
     const now = U.nowMin();
-    for (let d = -30; d <= 7; d++) {
+    for (let d = -62; d <= 7; d++) {
       const date = U.addDays(today, d), wd = U.weekday(date);
       staff.forEach(st => {
         const sh = settings.hours[wd], own = st.hours[wd];

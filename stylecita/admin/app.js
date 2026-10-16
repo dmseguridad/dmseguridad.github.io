@@ -3,11 +3,11 @@
   const app = document.getElementById('app');
   const esc = U.esc;
   const SESSION = 'salon_admin_session';
-  const state = { date: U.today(), q: '' };
+  const state = { date: U.today(), q: '', fin: 'semana' };
   const PX = 1.4; // píxeles por minuto en la agenda
 
   const NAV = [
-    ['inicio', 'Inicio', 'home'], ['agenda', 'Agenda', 'calendar'], ['servicios', 'Servicios', 'scissors'],
+    ['inicio', 'Inicio', 'home'], ['agenda', 'Agenda', 'calendar'], ['finanzas', 'Finanzas', 'chart'], ['servicios', 'Servicios', 'scissors'],
     ['equipo', 'Equipo', 'users'], ['clientes', 'Clientes', 'user'], ['tienda', 'Tienda', 'bag'], ['ajustes', 'Ajustes', 'settings'],
   ];
   const DURATIONS = [15, 20, 30, 45, 60, 75, 90, 120, 150, 180, 240];
@@ -86,10 +86,11 @@
         <div class="row wrap"><a class="btn" href="#/agenda">${UI.icon('calendar', 18)} Ver agenda</a><button class="btn btn-primary" data-action="new-appt">${UI.icon('plus', 18)} Nueva cita</button></div></div>
       <div class="grid g4">
         ${stat('Citas hoy', d.todays.length, `${left} por atender`)}
-        ${stat('Ingresos hoy', U.money(d.revToday), 'servicios atendidos')}
+        ${(() => { const td = Finance.today(); return stat('Ingresos hoy', U.money(d.revToday), `${delta(td.diff)} vs ${U.DAYS_SHORT[U.weekday(td.lwDate)].toLowerCase()} pasado a esta hora · cierre estimado ${U.money(td.projection)}`); })()}
         ${stat('Ingresos del mes', U.money(d.revMonth), U.cap(new Date().toLocaleDateString('es-EC', { month: 'long' })))}
         ${stat('Pedidos de la tienda', d.ordersOpen.length, newOrders ? `${newOrders} nuevos` : 'al día', newOrders ? 'warn' : 'ok')}
       </div>
+      <div class="mt">${insightsCard(Finance.insights(), 3)}</div>
       <div class="grid g2 mt">
         <div class="card"><div class="row between"><h2>Por confirmar</h2><span class="badge warn">${d.pending.length}</span></div>
           ${d.pending.length ? d.pending.slice(0, 8).map(a => apptRow(a, { showDate: true, actions: `<button class="btn btn-sm btn-primary" data-action="status" data-status="confirmada" data-id="${a.id}">Confirmar</button>` })).join('') : '<div class="empty">No hay reservas pendientes 🎉</div>'}
@@ -156,6 +157,63 @@
         <div class="ag-time" style="height:${H}px">${times}</div>${cols.map(c => c.body).join('')}
       </div></div>
       <p class="muted small mt">Toca un espacio libre para agendar. Las citas con borde punteado están por confirmar.</p>`;
+    },
+
+    finanzas() {
+      const p = Finance.period(state.fin), td = Finance.today();
+      const isWeek = state.fin === 'semana';
+      const prevName = isWeek ? 'la semana pasada' : 'el mes pasado';
+      const range = `${U.fmtDate(p.from)} – ${U.fmtDate(p.end)}`;
+      const staff = Finance.byStaff(p.from, p.end);
+      const cats = Finance.byCategory(p.from, p.end), catMax = cats.length ? cats[0].revenue : 1, catTotal = cats.reduce((t, c) => t + c.revenue, 0);
+      const pay = Finance.byPayment(p.from, p.end);
+      const lwDay = U.DAYS[U.weekday(td.lwDate)].toLowerCase();
+      return `<div class="page-head"><div><h1>Finanzas</h1><div class="muted">${isWeek ? 'Esta semana' : U.cap(new Date().toLocaleDateString('es-EC', { month: 'long', year: 'numeric' }))} · ${range}</div></div>
+        <div class="chips">${[['semana', 'Semana'], ['mes', 'Mes']].map(([k, l]) => `<button class="chip ${state.fin === k ? 'active' : ''}" data-action="fin-period" data-p="${k}">${l}</button>`).join('')}</div></div>
+
+      ${insightsCard(Finance.insights())}
+
+      <div class="grid g4 mt">
+        ${stat('Ingresos', U.money(p.cur.total), `${delta(p.diff)} vs mismo tramo de ${prevName}`)}
+        ${stat('Proyección de cierre', U.money(p.projection), `${delta(p.projDiff)} vs ${U.money(p.prevFull.total)} de ${prevName}`)}
+        ${stat('Ticket promedio', U.money(p.cur.ticket), `${p.cur.count} servicios · antes ${U.money(p.prevSame.ticket)}`)}
+        ${stat('Perdido por faltas y cancelaciones', U.money(p.cur.lost), `${p.cur.noShows} faltas`, p.cur.noShows ? 'bad' : 'ok')}
+      </div>
+
+      <div class="grid g2 mt">
+        <div class="card"><h2>Hoy contra el ${lwDay} pasado</h2>
+          <div class="fin-trio mt">
+            <div class="mini-stat"><div class="value">${U.money(td.sofar)}</div><div class="label">Hoy hasta ahora</div></div>
+            <div class="mini-stat"><div class="value">${U.money(td.lwSameTime)}</div><div class="label">${U.cap(lwDay)} pasado a esta hora</div></div>
+            <div class="mini-stat"><div class="value">${td.diff == null ? '—' : (td.diff >= 0 ? '+' : '') + Math.round(td.diff * 100) + '%'}</div><div class="label">Diferencia</div></div>
+          </div>
+          <div class="note mt">Si se atienden las citas que faltan hoy, cierras en <strong>${U.money(td.projection)}</strong> ${delta(td.projDiff)} · el ${lwDay} pasado cerró en ${U.money(td.lwTotal)}.</div>
+        </div>
+        <div class="card"><h2>Esta semana vs la pasada</h2>${compareBars(Finance.weekCompare())}
+          <div class="row wrap small muted" style="gap:14px"><span><span class="color-dot" style="display:inline-block;background:var(--accent)"></span> Esta semana</span><span><span class="color-dot" style="display:inline-block;background:var(--accent);opacity:.35"></span> Reservado</span><span><span class="color-dot" style="display:inline-block;background:var(--bar)"></span> Semana pasada</span></div>
+        </div>
+      </div>
+
+      <div class="card mt"><h2>Por estilista</h2><div class="table-wrap"><table>
+        <thead><tr><th>Estilista</th><th>Ingresos</th><th>Servicios</th><th class="hide-sm">Ticket</th><th>Ocupación</th></tr></thead><tbody>
+        ${staff.map(s => `<tr><td><div class="row">${staffAv(s.staff, 30)}<strong>${esc(s.staff.name)}</strong></div></td><td><strong>${U.money(s.revenue)}</strong></td><td>${s.count}</td><td class="hide-sm">${U.money(s.ticket)}</td>
+          <td style="min-width:130px"><div class="row small"><span style="width:38px">${Math.round(s.occupancy * 100)}%</span><div class="grow">${UI.progress(s.occupancy)}</div></div></td></tr>`).join('')}
+        </tbody></table></div></div>
+
+      <div class="grid g2 mt">
+        <div class="card"><h2>Por tipo de servicio</h2>
+          ${cats.map(c => `<div style="margin-top:10px"><div class="row between small"><span>${esc(c.category)}</span><span><strong>${U.money(c.revenue)}</strong> <span class="muted">${catTotal ? Math.round(c.revenue / catTotal * 100) : 0}%</span></span></div>${UI.progress(c.revenue / catMax)}</div>`).join('') || '<div class="empty">Sin datos aún</div>'}
+          <div class="row between mt small"><span class="muted">Tienda (pedidos entregados)</span><strong>${U.money(p.cur.shop)}</strong></div>
+        </div>
+        <div class="card"><h2>Formas de pago</h2>
+          <div class="list-item"><span class="grow">💵 En el salón</span><strong>${U.money(pay.salon)}</strong></div>
+          <div class="list-item"><span class="grow">🏦 Transferencias verificadas</span><strong>${U.money(pay.verified)}</strong></div>
+          <div class="list-item"><span class="grow">🧾 Comprobantes por revisar</span><strong>${U.money(pay.toReview)}</strong></div>
+          <div class="list-item"><span class="grow">⏳ Transferencias sin comprobante</span><strong style="color:${pay.missing ? 'var(--warn)' : 'inherit'}">${U.money(pay.missing)}</strong></div>
+          <div class="list-item"><span class="grow">🆕 Clientes nuevos</span><strong>${p.cur.newClients}</strong></div>
+        </div>
+      </div>
+      <p class="muted small mt">Ingresos = servicios atendidos + tienda entregada. La proyección suma lo que ya ganaste, las citas reservadas (descontando las faltas habituales) y lo que normalmente facturas esos días.</p>`;
     },
 
     servicios() {
@@ -263,6 +321,36 @@
       </div>`;
     },
   };
+
+  // ▲ 12% en verde o ▼ 8% en rojo
+  const delta = p => p == null || !isFinite(p) ? '' : `<span class="delta ${p >= 0 ? 'up' : 'down'}">${p >= 0 ? '▲' : '▼'} ${Math.abs(Math.round(p * 100))}%</span>`;
+
+  function insightsCard(list, max = 6) {
+    if (!list.length) return '';
+    return `<div class="card insights"><div class="row between"><h2>✨ Asistente</h2><span class="muted small">Sugerencias según tus datos de hoy</span></div>
+      ${list.slice(0, max).map(i => `<div class="insight ${i.level}"><span class="ico">${i.icon}</span><div class="grow"><strong>${esc(i.title)}</strong><div class="muted small">${esc(i.text)}</div>
+        ${i.action ? `<a class="btn btn-sm mt" style="margin-top:8px" target="_blank" rel="noopener" href="${i.action.href}">${UI.icon('whatsapp', 16)} ${esc(i.action.label)}</a>` : ''}</div></div>`).join('')}
+    </div>`;
+  }
+
+  // Barras por día: semana pasada (gris) junto a esta semana (azul) y lo reservado encima (azul claro)
+  function compareBars(data) {
+    const W = window.innerWidth < 520 ? 380 : 600, H = 210, pt = 22, pb = 26;
+    const max = Math.max(1, ...data.map(d => Math.max(d.last, d.now + d.booked)));
+    const gw = W / data.length, bw = gw * 0.3, y = v => H - pb - (H - pt - pb) * v / max;
+    let s = `<svg viewBox="0 0 ${W} ${H}" width="100%" class="chart" role="img" aria-label="Ingresos por día, esta semana contra la semana pasada">`;
+    data.forEach((d, i) => {
+      const x = i * gw + gw * 0.18;
+      s += `<rect x="${x}" y="${y(d.last)}" width="${bw}" height="${Math.max(1, H - pb - y(d.last))}" rx="4" fill="var(--bar)"><title>${d.label} semana pasada: ${U.money(d.last)}</title></rect>`;
+      const x2 = x + bw + 3;
+      s += `<rect x="${x2}" y="${y(d.now)}" width="${bw}" height="${Math.max(1, H - pb - y(d.now))}" rx="4" fill="var(--accent)"><title>${d.label}: ${U.money(d.now)}</title></rect>`;
+      if (d.booked) s += `<rect x="${x2}" y="${y(d.now + d.booked)}" width="${bw}" height="${H - pb - y(d.booked)}" rx="4" fill="var(--accent)" opacity=".3"><title>${d.label} reservado: ${U.money(d.booked)}</title></rect>`;
+      const top = d.now + d.booked;
+      if (top) s += `<text x="${x2 + bw / 2}" y="${y(top) - 6}" text-anchor="middle" font-size="11" font-weight="700" fill="var(--text)">$${Math.round(top)}</text>`;
+      s += `<text x="${x + bw + 1.5}" y="${H - 8}" text-anchor="middle" font-size="11" font-weight="${d.isToday ? 800 : 400}" fill="${d.isToday ? 'var(--accent)' : 'var(--muted)'}">${d.isToday ? 'Hoy' : d.label}</text>`;
+    });
+    return s + '</svg>';
+  }
 
   function clientRows() {
     const q = state.q.trim().toLowerCase();
@@ -500,6 +588,7 @@
         UI.toast('Cita confirmada. Envíale la confirmación por WhatsApp.');
       } else { UI.closeModal(); UI.toast(`Cita marcada: ${SalonDB.STATUS[a.status].label.toLowerCase()}`); }
     },
+    'fin-period'(el) { state.fin = el.dataset.p; render(); },
     'day-prev'() { state.date = U.addDays(state.date, -1); render(); },
     'day-next'() { state.date = U.addDays(state.date, 1); render(); },
     'day-today'() { state.date = U.today(); if (route() === 'agenda') render(); },
@@ -660,7 +749,7 @@
   });
   // La agenda y el resumen se refrescan solos cada minuto (la línea de la hora avanza en la TV)
   setInterval(() => {
-    if (sessionStorage.getItem(SESSION) === '1' && !UI.isModalOpen() && ['agenda', 'inicio'].includes(route())) render();
+    if (sessionStorage.getItem(SESSION) === '1' && !UI.isModalOpen() && ['agenda', 'inicio', 'finanzas'].includes(route())) render();
   }, 60000);
 
   render();
