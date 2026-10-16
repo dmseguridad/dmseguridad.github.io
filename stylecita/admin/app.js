@@ -280,10 +280,10 @@
       const waiting = pays.find(p => p.status === 'en_revision');
       const iva = Math.round(C.PRICE * C.IVA * 100) / 100;
       const untilTxt = sub.until ? `Pagado hasta el ${U.fmtDate(sub.until, { day: 'numeric', month: 'long', year: 'numeric' })}` : `Prueba gratis hasta el ${U.fmtDate(sub.access, { day: 'numeric', month: 'long' })}`;
-      return `<div class="page-head"><div><h1>Mi suscripción</h1><div class="muted">Plan StyleCita para tu salón</div></div></div>
+      return `<div class="page-head"><div><h1>Mi suscripción</h1><div class="muted">Plan Style App para tu salón</div></div></div>
       <div class="grid g2">
         <div class="stack">
-          <div class="card"><div class="row between"><h2>Plan StyleCita</h2>${UI.badge(C.STATUS[sub.status])}</div>
+          <div class="card"><div class="row between"><h2>Plan Style App</h2>${UI.badge(C.STATUS[sub.status])}</div>
             <div class="muted">${untilTxt}</div>
             <div class="list-item mt"><span class="grow">Suscripción mensual</span><span>${U.money(C.PRICE)}</span></div>
             <div class="list-item"><span class="grow">IVA ${Math.round(C.IVA * 100)}%</span><span>${U.money(iva)}</span></div>
@@ -304,7 +304,7 @@
               <div class="acc-row"><div><div class="k">Titular</div><div class="v">${esc(a.holder)}</div></div>${copyBtn(a.holder)}</div>
               <div class="acc-row"><div><div class="k">Cédula / RUC</div><div class="v">${esc(a.idNumber)}</div></div>${copyBtn(a.idNumber)}</div></div>`).join('')}
             <button class="btn btn-primary btn-lg btn-block" data-action="sub-report">📎 Ya transferí, subir comprobante</button>
-            <a class="btn btn-wa btn-block" target="_blank" rel="noopener" href="${U.waLink(C.settings.whatsapp, `Hola StyleCita 👋, soy de ${SalonDB.settings.salonName}. Tengo una consulta sobre mi suscripción.`)}">${UI.icon('whatsapp', 18)} Soporte por WhatsApp</a>
+            <a class="btn btn-wa btn-block" target="_blank" rel="noopener" href="${U.waLink(C.settings.whatsapp, `Hola Style App 👋, soy de ${SalonDB.settings.salonName}. Tengo una consulta sobre mi suscripción.`)}">${UI.icon('whatsapp', 18)} Soporte por WhatsApp</a>
           </div>
         </div>
       </div>`;
@@ -391,7 +391,7 @@
     return s + '</svg>';
   }
 
-  /* ---------- Suscripción del salón a StyleCita ---------- */
+  /* ---------- Suscripción del salón a Style App ---------- */
   function mySub() {
     const s = Central.salon(Central.DEMO_SALON);
     return { salon: s, status: Central.statusOf(s), until: s.paidUntil, access: Central.accessUntil(s) };
@@ -689,7 +689,7 @@
         const img = await UI.pickImage({ max: 1000, quality: 0.72 });
         if (!img) return;
         Central.reportPayment(Central.DEMO_SALON, months, img);
-        render(); UI.toast('Comprobante enviado a StyleCita. Te avisamos al aprobarlo.');
+        render(); UI.toast('Comprobante enviado a Style App. Te avisamos al aprobarlo.');
       } catch (e) { UI.toast(e.message, 'bad'); }
     },
     'copy-link'() {
@@ -825,12 +825,12 @@
     lastPending = n;
     if (msg) { UI.toast(msg, 'ok big', 8000); chime(); }
   });
-  // StyleCita aprueba, rechaza o pausa la suscripción desde su panel central
+  // Style App aprueba, rechaza o pausa la suscripción desde su panel central
   window.addEventListener('central-change', e => {
     const d = e.detail || {};
     if (!UI.isModalOpen()) render();
     if (!d.remote || d.replay) return;
-    if (d.t === 'subreview' && d.salonId === Central.DEMO_SALON) UI.toast(d.status === 'aprobado' ? '✅ StyleCita aprobó tu pago. ¡Gracias!' : '⚠️ Tu comprobante fue rechazado. Revisa y súbelo de nuevo.', d.status === 'aprobado' ? 'ok big' : 'warn big', 8000);
+    if (d.t === 'subreview' && d.salonId === Central.DEMO_SALON) UI.toast(d.status === 'aprobado' ? '✅ Style App aprobó tu pago. ¡Gracias!' : '⚠️ Tu comprobante fue rechazado. Revisa y súbelo de nuevo.', d.status === 'aprobado' ? 'ok big' : 'warn big', 8000);
   });
   // La agenda y el resumen se refrescan solos cada minuto (la línea de la hora avanza en la TV)
   setInterval(() => {

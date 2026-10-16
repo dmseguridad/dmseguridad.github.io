@@ -1,11 +1,11 @@
 {
-  "name": "StyleCita · Central",
-  "short_name": "StyleCita Central",
+  "name": "Style App · Central",
+  "short_name": "Style App Central",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#f4f6fb",
-  "theme_color": "#1d4ed8",
+  "background_color": "#0b0b0c",
+  "theme_color": "#0b0b0c",
   "lang": "es",
   "icons": [{ "src": "../shared/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
 }

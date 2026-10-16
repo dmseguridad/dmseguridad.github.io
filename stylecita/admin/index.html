@@ -3,17 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Panel · StyleCita</title>
+<title>Panel · Style App</title>
 <meta name="description" content="Agenda, servicios, equipo, clientes y tienda de tu peluquería.">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="../shared/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../shared/icon.svg">
-<meta name="theme-color" content="#1d4ed8">
+<meta name="theme-color" content="#0b0b0c">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="StyleCita Panel">
+<meta name="apple-mobile-web-app-title" content="Style App Panel">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap">
 <link rel="stylesheet" href="../shared/styles.css">
 <style>
   .layout { display: grid; grid-template-columns: 236px minmax(0, 1fr); min-height: 100vh; }
@@ -22,8 +22,8 @@
   .nav { display: flex; flex-direction: column; gap: 2px; }
   .nav a { position: relative; display: flex; gap: 11px; align-items: center; padding: 10px 12px; border-radius: 11px; color: var(--muted); text-decoration: none; font-weight: 600; }
   .nav a:hover { background: var(--surface-2); color: var(--text); }
-  .nav a.active { background: rgba(29, 78, 216, .1); color: var(--accent); }
-  .nav .count { margin-left: auto; background: var(--accent); color: #fff; border-radius: 999px; font-size: .72rem; padding: 1px 7px; }
+  .nav a.active { background: rgba(201, 162, 74, .1); color: var(--accent); }
+  .nav .count { margin-left: auto; background: var(--accent); color: var(--on-accent); border-radius: 999px; font-size: .72rem; padding: 1px 7px; }
   .nav .logout { margin-top: auto; }
   .main { padding: 28px; width: 100%; max-width: 1280px; min-width: 0; }
   .actions { white-space: nowrap; text-align: right; }
@@ -40,7 +40,7 @@
   .ag-time span { position: absolute; right: 8px; transform: translateY(-50%); font-size: .72rem; color: var(--muted); font-weight: 600; }
   .ag-cell { position: absolute; left: 0; right: 0; border: 0; border-top: 1px dashed rgba(15, 27, 61, .06); background: none; cursor: pointer; padding: 0; }
   .ag-cell.hour { border-top: 1px solid var(--border); }
-  .ag-cell:hover { background: rgba(29, 78, 216, .07); }
+  .ag-cell:hover { background: rgba(201, 162, 74, .07); }
   .ag-off { position: absolute; left: 0; right: 0; background: repeating-linear-gradient(45deg, rgba(15, 27, 61, .04) 0 8px, transparent 8px 16px); pointer-events: none; }
   .ag-appt { position: absolute; left: 5px; right: 5px; z-index: 2; border: 0; border-left: 4px solid var(--c); background: color-mix(in srgb, var(--c) 22%, var(--surface-2)); color: var(--text); border-radius: 9px; padding: 5px 8px; text-align: left; font: inherit; font-size: .8rem; cursor: pointer; overflow: hidden; line-height: 1.25; }
   .ag-appt:hover { filter: brightness(1.15); }

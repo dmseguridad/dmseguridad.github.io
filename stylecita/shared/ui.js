@@ -34,7 +34,7 @@
   // Ancho lógico menor en pantallas chicas para que los textos del gráfico se lean bien
   const chartW = () => (window.innerWidth < 520 ? 380 : 600);
   window.UI = {
-    BRAND: 'StyleCita', // nombre del producto
+    BRAND: 'Style App', // nombre del producto
     icon(name, size = 20) {
       return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
     },

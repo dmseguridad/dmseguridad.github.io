@@ -4,33 +4,33 @@
     <clipPath id="pc"><rect x="-9" y="-22" width="18" height="40"/></clipPath>
     <g id="scissors"><circle cx="-12" cy="18" r="8"/><circle cx="12" cy="18" r="8"/><path d="M-7 12 L18 -28 M7 12 L-18 -28"/><circle cx="0" cy="4" r="1.6"/></g>
     <g id="comb"><rect x="-34" y="-8" width="68" height="9" rx="2"/><path d="M-31 1v12M-26 1v12M-21 1v12M-16 1v12M-11 1v12M-6 1v12M-1 1v12M4 1v12M9 1v12M14 1v12M19 1v12M24 1v12M29 1v12"/></g>
-    <g id="pole" stroke="#0f1b3d">
-      <circle cx="0" cy="-34" r="5" fill="#0f1b3d"/><rect x="-12" y="-29" width="24" height="7" rx="2" fill="#0f1b3d"/>
-      <rect x="-9" y="-22" width="18" height="40" fill="#fff"/>
+    <g id="pole" stroke="#cfc8ba">
+      <circle cx="0" cy="-34" r="5" fill="#cfc8ba"/><rect x="-12" y="-29" width="24" height="7" rx="2" fill="#cfc8ba"/>
+      <rect x="-9" y="-22" width="18" height="40" fill="#141416"/>
       <g clip-path="url(#pc)" stroke="none">
-        <path fill="#e63946" d="M-9 -14 L9 -24 L9 -18 L-9 -8Z M-9 2 L9 -8 L9 -2 L-9 8Z M-9 18 L9 8 L9 14 L-9 24Z"/>
-        <path fill="#1d4ed8" d="M-9 -22 L9 -32 L9 -26 L-9 -16Z M-9 -6 L9 -16 L9 -10 L-9 0Z M-9 10 L9 0 L9 6 L-9 16Z"/>
+        <path fill="#9c7b3a" d="M-9 -14 L9 -24 L9 -18 L-9 -8Z M-9 2 L9 -8 L9 -2 L-9 8Z M-9 18 L9 8 L9 14 L-9 24Z"/>
+        <path fill="#c9a24a" d="M-9 -22 L9 -32 L9 -26 L-9 -16Z M-9 -6 L9 -16 L9 -10 L-9 0Z M-9 10 L9 0 L9 6 L-9 16Z"/>
       </g>
-      <rect x="-9" y="-22" width="18" height="40"/><rect x="-12" y="18" width="24" height="7" rx="2" fill="#0f1b3d"/>
+      <rect x="-9" y="-22" width="18" height="40"/><rect x="-12" y="18" width="24" height="7" rx="2" fill="#cfc8ba"/>
     </g>
     <g id="razor"><path d="M-30 6 L8 6 L8 -4 Q-6 -10 -30 -4 Z"/><path d="M-24 1 L4 1"/><path d="M8 1 L32 13 Q35 17 31 18 L8 7"/></g>
-    <g id="blade" stroke="none"><rect x="-16" y="-8" width="32" height="16" rx="2" fill="#1d4ed8"/><path d="M-9 0h18" stroke="#fff" stroke-width="3"/><circle cx="-9" cy="0" r="2.6" fill="#fff"/><circle cx="9" cy="0" r="2.6" fill="#fff"/><path d="M-13 -8 v-0 M-16 -3 h-3 M16 -3 h3" stroke="#1d4ed8" stroke-width="2"/></g>
+    <g id="blade" stroke="none"><rect x="-16" y="-8" width="32" height="16" rx="2" fill="#c9a24a"/><path d="M-9 0h18" stroke="#141416" stroke-width="3"/><circle cx="-9" cy="0" r="2.6" fill="#141416"/><circle cx="9" cy="0" r="2.6" fill="#141416"/><path d="M-13 -8 v-0 M-16 -3 h-3 M16 -3 h3" stroke="#c9a24a" stroke-width="2"/></g>
     <g id="dryer"><circle cx="-8" cy="-6" r="16"/><circle cx="-8" cy="-6" r="7"/><path d="M-14 -12 l12 12 M-2 -12 l-12 12" opacity=".6"/><path d="M7 -14 L30 -12 L30 2 L7 3"/><path d="M-6 10 L-2 34 L8 34 L6 7"/></g>
     <g id="clipper"><rect x="-12" y="-20" width="24" height="46" rx="10"/><path d="M-12 -12 h24"/><path d="M-10 -20 v-7 M-6 -20v-7 M-2 -20v-7 M2 -20v-7 M6 -20v-7 M10 -20v-7"/><circle cx="0" cy="6" r="3"/><path d="M-4 16 h8"/></g>
-    <g id="wax"><ellipse cx="0" cy="-6" rx="20" ry="7"/><path d="M-20 -6 v11 a20 7 0 0 0 40 0 v-11"/><text x="0" y="-3.5" font-size="7.5" font-family="Georgia, serif" font-style="italic" font-weight="bold" text-anchor="middle" fill="#0f1b3d" stroke="none">WAX</text></g>
+    <g id="wax"><ellipse cx="0" cy="-6" rx="20" ry="7"/><path d="M-20 -6 v11 a20 7 0 0 0 40 0 v-11"/><text x="0" y="-3.5" font-size="7.5" font-family="Georgia, serif" font-style="italic" font-weight="bold" text-anchor="middle" fill="#cfc8ba" stroke="none">WAX</text></g>
     <g id="brush"><path d="M-10 -4 Q-15 -24 0 -27 Q15 -24 10 -4 Z"/><path d="M-5 -6 L-6 -20 M0 -6 V-23 M5 -6 L6 -20" opacity=".6"/><rect x="-7" y="-4" width="14" height="6" rx="1"/><path d="M-5 2 L-7 22 h14 L5 2"/></g>
   </defs>
   <g fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
     <use xlink:href="#pole" transform="translate(56 70) rotate(-8) scale(1.4)"/>
-    <use xlink:href="#scissors" stroke="#0f1b3d" transform="translate(168 62) rotate(28) scale(1.4)"/>
-    <use xlink:href="#comb" stroke="#e63946" transform="translate(288 66) rotate(-22) scale(1.4)"/>
-    <use xlink:href="#dryer" stroke="#1d4ed8" transform="translate(70 188) rotate(-12) scale(1.4)"/>
+    <use xlink:href="#scissors" stroke="#cfc8ba" transform="translate(168 62) rotate(28) scale(1.4)"/>
+    <use xlink:href="#comb" stroke="#9c7b3a" transform="translate(288 66) rotate(-22) scale(1.4)"/>
+    <use xlink:href="#dryer" stroke="#c9a24a" transform="translate(70 188) rotate(-12) scale(1.4)"/>
     <use xlink:href="#blade" transform="translate(186 168) rotate(18) scale(1.4)"/>
-    <use xlink:href="#clipper" stroke="#e63946" transform="translate(294 196) rotate(22) scale(1.4)"/>
-    <use xlink:href="#razor" stroke="#1d4ed8" transform="translate(176 270) rotate(-24) scale(1.4)"/>
-    <use xlink:href="#wax" stroke="#0f1b3d" transform="translate(58 300) rotate(-6) scale(1.4)"/>
-    <use xlink:href="#brush" stroke="#0f1b3d" transform="translate(292 312) rotate(12) scale(1.4)"/>
+    <use xlink:href="#clipper" stroke="#9c7b3a" transform="translate(294 196) rotate(22) scale(1.4)"/>
+    <use xlink:href="#razor" stroke="#c9a24a" transform="translate(176 270) rotate(-24) scale(1.4)"/>
+    <use xlink:href="#wax" stroke="#cfc8ba" transform="translate(58 300) rotate(-6) scale(1.4)"/>
+    <use xlink:href="#brush" stroke="#cfc8ba" transform="translate(292 312) rotate(12) scale(1.4)"/>
     <use xlink:href="#blade" transform="translate(236 118) rotate(-30) scale(1)"/>
-    <use xlink:href="#comb" stroke="#e63946" transform="translate(132 336) rotate(8) scale(.85)"/>
+    <use xlink:href="#comb" stroke="#9c7b3a" transform="translate(132 336) rotate(8) scale(.85)"/>
   </g>
 </svg>

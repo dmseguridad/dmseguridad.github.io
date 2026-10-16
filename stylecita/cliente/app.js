@@ -31,9 +31,9 @@
 
   // Poste de barbería (azul, blanco y rojo) que decora la bienvenida
   const POLE = `<svg class="hero-pole" viewBox="-14 -42 28 72" aria-hidden="true"><defs><clipPath id="hpc"><rect x="-9" y="-22" width="18" height="40"/></clipPath></defs>
-    <circle cx="0" cy="-35" r="5" fill="#0f1b3d"/><rect x="-12" y="-30" width="24" height="8" rx="2" fill="#0f1b3d"/><rect x="-9" y="-22" width="18" height="40" fill="#fff"/>
+    <circle cx="0" cy="-35" r="5" fill="#c9a24a"/><rect x="-12" y="-30" width="24" height="8" rx="2" fill="#c9a24a"/><rect x="-9" y="-22" width="18" height="40" fill="#fff"/>
     <g clip-path="url(#hpc)"><path fill="#e63946" d="M-9 -14 L9 -24 L9 -18 L-9 -8Z M-9 2 L9 -8 L9 -2 L-9 8Z M-9 18 L9 8 L9 14 L-9 24Z"/><path fill="#1d4ed8" d="M-9 -22 L9 -32 L9 -26 L-9 -16Z M-9 -6 L9 -16 L9 -10 L-9 0Z M-9 10 L9 0 L9 6 L-9 16Z"/></g>
-    <rect x="-9" y="-22" width="18" height="40" fill="none" stroke="#0f1b3d" stroke-width="1.5"/><rect x="-12" y="18" width="24" height="8" rx="2" fill="#0f1b3d"/></svg>`;
+    <rect x="-9" y="-22" width="18" height="40" fill="none" stroke="#c9a24a" stroke-width="1.5"/><rect x="-12" y="18" width="24" height="8" rx="2" fill="#c9a24a"/></svg>`;
 
   /* ---------------- Pagos ---------------- */
   const copyBtn = v => `<button type="button" class="copy" data-action="copy" data-v="${esc(v)}">Copiar</button>`;

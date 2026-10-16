@@ -3,30 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Central · StyleCita</title>
-<meta name="description" content="Control de las peluquerías suscritas a StyleCita y sus pagos.">
+<title>Central · Style App</title>
+<meta name="description" content="Control de las peluquerías suscritas a Style App y sus pagos.">
 <meta name="robots" content="noindex">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="../shared/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="../shared/icon.svg">
-<meta name="theme-color" content="#1d4ed8">
+<meta name="theme-color" content="#0b0b0c">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="StyleCita Central">
+<meta name="apple-mobile-web-app-title" content="Style App Central">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap">
 <link rel="stylesheet" href="../shared/styles.css">
 <style>
   .layout { display: grid; grid-template-columns: 236px minmax(0, 1fr); min-height: 100vh; }
-  .sidebar { background: #0f1b3d; color: #fff; padding: 18px 12px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; }
+  .sidebar { background: #050506; border-right: 1px solid var(--border); color: #fff; padding: 18px 12px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; }
   .brand { font-weight: 800; font-size: 1.05rem; padding: 4px 8px 20px; display: flex; gap: 10px; align-items: center; }
   .brand img { width: 36px; height: 36px; border-radius: 10px; }
-  .brand small { display: block; font-weight: 600; color: #9fb3e8; font-size: .74rem; }
+  .brand small { display: block; font-weight: 600; color: var(--accent); font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; }
   .nav { display: flex; flex-direction: column; gap: 2px; }
-  .nav a { position: relative; display: flex; gap: 11px; align-items: center; padding: 10px 12px; border-radius: 11px; color: #b9c6e8; text-decoration: none; font-weight: 600; }
+  .nav a { position: relative; display: flex; gap: 11px; align-items: center; padding: 10px 12px; border-radius: 11px; color: var(--muted); text-decoration: none; font-weight: 600; }
   .nav a:hover { background: rgba(255, 255, 255, .08); color: #fff; }
-  .nav a.active { background: rgba(255, 255, 255, .14); color: #fff; }
-  .nav .count { margin-left: auto; background: var(--accent-2); color: #fff; border-radius: 999px; font-size: .72rem; padding: 1px 7px; }
+  .nav a.active { background: rgba(201, 162, 74, .14); color: var(--accent); }
+  .nav .count { margin-left: auto; background: var(--accent-2); color: var(--on-accent); border-radius: 999px; font-size: .72rem; padding: 1px 7px; }
   .nav .logout { margin-top: auto; }
   .main { padding: 28px; width: 100%; max-width: 1280px; min-width: 0; }
   .actions { white-space: nowrap; text-align: right; }

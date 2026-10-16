@@ -1,5 +1,5 @@
-/* Suscripciones de StyleCita: los salones que pagan, sus pagos reportados y su estado.
-   Lo usan el panel central (dueño de StyleCita) y la sección "Mi suscripción" de cada salón.
+/* Suscripciones de Style App: los salones que pagan, sus pagos reportados y su estado.
+   Lo usan el panel central (dueño de Style App) y la sección "Mi suscripción" de cada salón.
    Demo: guarda en localStorage y comparte los cambios en vivo por ntfy.sh (tema público, solo datos
    de prueba). En producción va en Supabase, con cada salón viendo solo lo suyo. */
 (function () {
@@ -36,7 +36,7 @@
       S('sal-7', 'Studio K', 'Kevin Anchundia', '0984556677', 'Manta', 1, U.addDays(t, -5), null, { trialUntil: U.addDays(t, 9) }),
     ];
     const receipt = (amount, who) => {
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="420" viewBox="0 0 320 420"><rect width="320" height="420" fill="#f3f6fb"/><rect width="320" height="90" fill="#1f3a8a"/><text x="160" y="52" font-family="Arial" font-size="18" fill="#fff" text-anchor="middle" font-weight="bold">Banco Guayaquil</text><text x="160" y="150" font-family="Arial" font-size="16" fill="#0f1b3d" text-anchor="middle" font-weight="bold">Transferencia exitosa</text><text x="160" y="200" font-family="Arial" font-size="32" fill="#0f1b3d" text-anchor="middle" font-weight="bold">$${amount.toFixed(2)}</text><text x="30" y="260" font-family="Arial" font-size="13" fill="#5b6882">De</text><text x="290" y="260" font-family="Arial" font-size="13" fill="#0f1b3d" text-anchor="end">${who}</text><text x="30" y="290" font-family="Arial" font-size="13" fill="#5b6882">Para</text><text x="290" y="290" font-family="Arial" font-size="13" fill="#0f1b3d" text-anchor="end">StyleCita</text><text x="30" y="320" font-family="Arial" font-size="13" fill="#5b6882">Concepto</text><text x="290" y="320" font-family="Arial" font-size="13" fill="#0f1b3d" text-anchor="end">Suscripción</text><text x="160" y="395" font-family="Arial" font-size="10" fill="#98a1b0" text-anchor="middle">Imagen de ejemplo para la demo</text></svg>`;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="420" viewBox="0 0 320 420"><rect width="320" height="420" fill="#f3f6fb"/><rect width="320" height="90" fill="#1f3a8a"/><text x="160" y="52" font-family="Arial" font-size="18" fill="#fff" text-anchor="middle" font-weight="bold">Banco Guayaquil</text><text x="160" y="150" font-family="Arial" font-size="16" fill="#0f1b3d" text-anchor="middle" font-weight="bold">Transferencia exitosa</text><text x="160" y="200" font-family="Arial" font-size="32" fill="#0f1b3d" text-anchor="middle" font-weight="bold">$${amount.toFixed(2)}</text><text x="30" y="260" font-family="Arial" font-size="13" fill="#5b6882">De</text><text x="290" y="260" font-family="Arial" font-size="13" fill="#0f1b3d" text-anchor="end">${who}</text><text x="30" y="290" font-family="Arial" font-size="13" fill="#5b6882">Para</text><text x="290" y="290" font-family="Arial" font-size="13" fill="#0f1b3d" text-anchor="end">Style App</text><text x="30" y="320" font-family="Arial" font-size="13" fill="#5b6882">Concepto</text><text x="290" y="320" font-family="Arial" font-size="13" fill="#0f1b3d" text-anchor="end">Suscripción</text><text x="160" y="395" font-family="Arial" font-size="10" fill="#98a1b0" text-anchor="middle">Imagen de ejemplo para la demo</text></svg>`;
       return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     };
     const P = (id, salonId, months, status, daysAgo, who) => ({ id, salonId, months, amount: TOTAL * months, status, receipt: receipt(TOTAL * months, who), createdAt: U.addDays(t, -daysAgo), reviewedAt: status === 'en_revision' ? null : U.addDays(t, -daysAgo) });
@@ -156,7 +156,7 @@
     },
     deleteAccount(id) { db.settings.accounts = db.settings.accounts.filter(a => a.id !== id); save(); },
 
-    /* Números del negocio StyleCita */
+    /* Números del negocio Style App */
     metrics() {
       const t = U.today(), month = U.month(t);
       const by = {}; Object.keys(STATUS).forEach(k => { by[k] = 0; });

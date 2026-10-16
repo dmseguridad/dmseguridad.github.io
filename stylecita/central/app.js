@@ -1,4 +1,4 @@
-/* Panel central de StyleCita: el dueño del producto controla las peluquerías y sus pagos */
+/* Panel central de Style App: el dueño del producto controla las peluquerías y sus pagos */
 (function () {
   const app = document.getElementById('app');
   const esc = U.esc;
@@ -17,10 +17,10 @@
     const day = d => d ? U.fmtDate(d, { day: 'numeric', month: 'long' }) : '—';
     const until = day(s.paidUntil), name = U.first(s.owner);
     const msgs = {
-      vence: () => `Hola ${name} 👋, te escribimos de StyleCita. Tu suscripción de ${s.name} vence el ${until}. Puedes pagar ${U.money(C.TOTAL)} por transferencia y subir el comprobante en tu panel, sección “Mi suscripción”. ¡Gracias!`,
-      vencido: () => `Hola ${name}, tu suscripción de StyleCita para ${s.name} venció el ${until}. Para que tu panel no se pause, reporta tu pago en “Mi suscripción”. Cualquier duda, aquí estamos 🙏`,
-      prueba: () => `Hola ${name} 👋, ¿cómo te va con StyleCita en ${s.name}? Tu prueba gratis termina el ${day(s.trialUntil)}. El plan cuesta ${U.money(C.PRICE)} + IVA al mes. ¿Te ayudo a activarlo?`,
-      aprobado: () => `Hola ${name}, recibimos tu pago de StyleCita ✅. ${s.name} queda activo hasta el ${until}. ¡Gracias por confiar en nosotros!`,
+      vence: () => `Hola ${name} 👋, te escribimos de Style App. Tu suscripción de ${s.name} vence el ${until}. Puedes pagar ${U.money(C.TOTAL)} por transferencia y subir el comprobante en tu panel, sección “Mi suscripción”. ¡Gracias!`,
+      vencido: () => `Hola ${name}, tu suscripción de Style App para ${s.name} venció el ${until}. Para que tu panel no se pause, reporta tu pago en “Mi suscripción”. Cualquier duda, aquí estamos 🙏`,
+      prueba: () => `Hola ${name} 👋, ¿cómo te va con Style App en ${s.name}? Tu prueba gratis termina el ${day(s.trialUntil)}. El plan cuesta ${U.money(C.PRICE)} + IVA al mes. ¿Te ayudo a activarlo?`,
+      aprobado: () => `Hola ${name}, recibimos tu pago de Style App ✅. ${s.name} queda activo hasta el ${until}. ¡Gracias por confiar en nosotros!`,
     };
     return U.waLink(s.phone, (msgs[kind] || msgs.vence)());
   }
@@ -39,7 +39,7 @@
     const scroll = window.scrollY;
     app.innerHTML = `<div class="layout">
       <aside class="sidebar">
-        <div class="brand"><img src="../shared/icon.svg" alt=""><div>StyleCita<small>Central</small></div></div>
+        <div class="brand"><img src="../shared/icon.svg" alt=""><div>Style App<small>Central</small></div></div>
         <nav class="nav" aria-label="Secciones">
           ${NAV.map(([k, l, i]) => `<a href="#/${k}" class="${k === page ? 'active' : ''}" ${k === page ? 'aria-current="page"' : ''}>${UI.icon(i, 18)}<span>${l}</span>${counts[k] ? `<span class="count">${counts[k]}</span>` : ''}</a>`).join('')}
           <a href="#" class="logout" data-action="logout">${UI.icon('logout', 18)}<span>Salir</span></a>
@@ -52,7 +52,7 @@
   }
   function renderLogin() {
     app.innerHTML = `<div class="center-screen"><form class="card login-card stack" data-form="login">
-      <div class="brand-lg"><img src="../shared/icon.svg" alt="" style="width:46px;height:46px;border-radius:12px"><div><h1>StyleCita</h1><div class="muted small">Panel central</div></div></div>
+      <div class="brand-lg"><img src="../shared/icon.svg" alt="" style="width:46px;height:46px;border-radius:12px"><div><h1>Style App</h1><div class="muted small">Panel central</div></div></div>
       <div class="field"><label for="pin">PIN</label><input id="pin" name="pin" type="password" inputmode="numeric" autocomplete="current-password" required autofocus></div>
       <button class="btn btn-primary btn-block btn-lg">Entrar</button>
       <p class="muted small" style="text-align:center">Demo: PIN <strong>2468</strong></p>
