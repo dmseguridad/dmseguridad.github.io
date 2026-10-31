@@ -56,11 +56,11 @@
   const IVA_RATE = 0.15;
   function cartTotal(cart){ return cart.reduce((s,i) => s + (i.price * i.qty), 0); }
   function round2(n){ return Math.round(n * 100) / 100; }
-  // Welcome coupon from promo.js: applies to equipment only (no kits, no IVA-0 plans).
+  // Welcome coupon from promo.js: applies to equipment only (no kits, no installation services, no IVA-0 plans).
   function promoInfo(cart){
     const P = window.DMPromo;
     if (!P || !P.active()) return null;
-    const eligible = round2(cartTotal(cart.filter(i => !i.iva0 && i.cat !== 'kits' && !/^DMS-KIT/.test(i.sku))));
+    const eligible = round2(cartTotal(cart.filter(i => !i.iva0 && i.cat !== 'kits' && i.cat !== 'servicios' && !/^DMS-(KIT|INS)/.test(i.sku))));
     const ok = eligible >= P.min;
     return { code: P.code, rate: P.rate, min: P.min, eligible, ok,
              discount: ok ? round2(eligible * P.rate) : 0,

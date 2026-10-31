@@ -102,7 +102,7 @@
         </div>
         <div class="dm-promo-body">
           <div class="dm-promo-code">${CODE}</div>
-          <small>Se aplica solo en tu carrito durante las próximas ${hoursLeft()} horas.<br>Compras desde $${MIN} en equipos. No aplica a kits ni a planes Starlink.</small>
+          <small>Se aplica solo en tu carrito durante las próximas ${hoursLeft()} horas.<br>Compras desde $${MIN} en equipos. No aplica a kits, planes Starlink ni servicios de instalación.</small>
           ${onCatalog
             ? '<button class="dm-promo-cta" type="button">Ver equipos</button>'
             : '<a class="dm-promo-cta" href="catalogo.html">Ver catálogo</a>'}
